@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+	:root {
+		--cr-primary: #dc2626;
+		--cr-primary-dark: #b91c1c;
+		--cr-surface: #ffffff;
+		--cr-surface-muted: #f8fafc;
+		--cr-border: #e5e7eb;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+		@apply bg-gray-50 text-gray-900 antialiased overflow-x-hidden;
+	}
+
+	h1,
+	h2,
+	h3 {
+		font-family: 'Sora', 'Inter', system-ui, sans-serif;
+	}
+
+	img,
+	video,
+	canvas,
+	iframe {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* Avoid long strings (emails/URLs) breaking layout on small screens */
+	* {
+		overflow-wrap: break-word;
+	}
+
+	*::selection {
+		background-color: #fee2e2;
+		color: #b91c1c;
+	}
+}
+
+@layer components {
+	.cr-section {
+		@apply relative scroll-mt-24;
+	}
+
+	.cr-section-light {
+		@apply bg-white;
+	}
+
+	.cr-section-muted {
+		@apply bg-slate-50;
+	}
+
+	.cr-container {
+		@apply mx-auto max-w-7xl px-3 sm:px-6 lg:px-8;
+	}
+
+	/* Slightly tighter than before so sections appear a bit higher */
+	.cr-section-pad {
+		@apply py-12 lg:py-16;
+	}
+
+	.cr-card {
+		@apply rounded-lg border border-gray-200 bg-white shadow-sm ring-1 ring-black/5;
+	}
+
+	.cr-card-hover {
+		@apply transition-all duration-300 ease-out hover:-translate-y-1 hover:border-gray-300 hover:shadow-md;
+	}
+
+	.cr-heading-xl {
+		@apply mt-4 text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl lg:text-3xl;
+	}
+
+	.cr-heading-lg {
+		@apply mt-3 text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl lg:text-[1.7rem];
+	}
+
+	.cr-heading-md {
+		@apply text-lg font-extrabold tracking-tight text-gray-900 sm:text-xl;
+	}
+
+	.cr-btn-primary {
+		@apply inline-flex items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 active:translate-y-0;
+	}
+
+	.cr-btn-outline {
+		@apply inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 active:translate-y-0;
+	}
+
+	.cr-input {
+		@apply mt-2 w-full rounded-md border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100;
+	}
+
+	.cr-textarea {
+		@apply mt-2 w-full resize-none rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100;
+	}
+}
