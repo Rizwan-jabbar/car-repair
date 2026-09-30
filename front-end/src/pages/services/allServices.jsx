@@ -22,7 +22,6 @@ function AllServices () {
 		return list
 			.map((item) => item?.service ?? item)
 			.filter((service) => service && typeof service === 'object')
-			.filter((service) => service?.isAvailable !== false)
 	}, [items])
 
 	const {user} = useSelector((state) => state.user)
@@ -86,43 +85,59 @@ function AllServices () {
 					{!loading && !error && services.map((service) => (
 						<motion.article
 							key={service._id ?? service.id ?? service.title}
-							className='group relative overflow-hidden p-6 cr-card cr-card-hover focus-within:ring-2 focus-within:ring-red-600/30'
+							className='group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5 transition-shadow duration-200 hover:shadow-lg focus-within:ring-2 focus-within:ring-red-600/30'
 							variants={cardIn}
-							whileHover={{ y: -6 }}
+							whileHover={{ y: -5 }}
 						>
-							<div
-								className='pointer-events-none absolute inset-0 opacity-0 transition duration-200 group-hover:opacity-100'
-								aria-hidden='true'
-							>
-								<div className='absolute -right-24 -top-24 h-56 w-56 rounded-full bg-red-600/10 blur-2xl' />
+                            <div className='relative h-32 bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300' aria-label={`${service.title} image`}>
+								<div className='absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.35),transparent_55%)]' />
+								{service.image && (
+									<img
+										src={service.image}
+										alt={service.title}
+										className='absolute inset-0 h-full w-full object-cover'
+										onError={(event) => { event.currentTarget.style.display = 'none' }}
+									/>
+								)}
+								<div className='absolute -bottom-5 left-5 inline-flex h-11 w-11 items-center justify-center rounded-full border-4 border-white bg-red-600 text-white shadow-md'>
+									<FiTool className='h-5 w-5' aria-hidden='true' />
+								</div>
+								{service.isAvailable === false && (
+									<span className='absolute right-4 top-4 rounded-full border border-red-200 bg-white/95 px-2.5 py-1 text-[11px] font-bold text-red-700 shadow-sm'>
+										Currently unavailable
+									</span>
+								)}
 							</div>
 
-							<div className='flex h-full flex-col'>
-								<div className='flex items-start gap-4'>
-									<div className='inline-flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600 ring-1 ring-red-100 transition-all duration-200 group-hover:bg-red-100 group-hover:scale-[1.02]'>
-										<FiTool className='h-5 w-5' aria-hidden='true' />
-									</div>
-
-									<div className='min-w-0'>
-										<p className='text-[11px] font-semibold uppercase tracking-wide text-gray-500'>Service</p>
-										<h3 className='mt-1 text-base font-extrabold tracking-tight text-gray-900 sm:text-lg'>
-											{service.title}
-										</h3>
-										<p className='mt-2 text-sm leading-6 text-gray-600'>
-											{service.description}
-										</p>
-									</div>
+							<div className='flex min-h-[205px] flex-col p-5'>
+								<div className='pl-1'>
+									<p className='text-[11px] font-semibold uppercase tracking-wide text-gray-500'>Service</p>
+									<h3 className='mt-1 line-clamp-2 text-base font-extrabold tracking-tight text-gray-900 sm:text-lg'>
+										{service.title}
+									</h3>
+									<p className='mt-2 line-clamp-3 text-sm leading-5 text-gray-600'>
+										{service.description}
+									</p>
 								</div>
 
-								<div className='mt-5 flex items-center justify-between border-t border-gray-100 pt-4'>
-									<NavLink
-									to={user ? `/book-repair?service=${encodeURIComponent(service.title)}` : '/login'}
-										className='inline-flex items-center gap-2 text-sm font-semibold text-red-600 transition-colors hover:text-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
-									>
-										Book now
-										<span className='text-red-500' aria-hidden='true'>→</span>
-									</NavLink>
-									<span className='text-xs font-semibold text-gray-500'>Estimate first</span>
+								<div className='mt-auto flex items-end justify-between gap-3 border-t border-gray-100 pt-4'>
+									<div>
+										<p className='text-[11px] font-medium text-gray-500'>From</p>
+										<p className='text-sm font-extrabold text-red-600'>
+											{service.price ? `Rs. ${Number(service.price).toLocaleString()}` : 'Get a quote'}
+										</p>
+									</div>
+									{service.isAvailable !== false ? (
+										<NavLink
+											to={user ? `/book-repair?service=${encodeURIComponent(service.title)}` : '/login'}
+											className='inline-flex items-center gap-2 rounded-full bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
+										>
+											Book Now
+											<span className='text-red-300' aria-hidden='true'>→</span>
+										</NavLink>
+									) : (
+										<span className='rounded-full bg-red-50 px-3 py-2 text-xs font-bold text-red-700'>Unavailable</span>
+									)}
 								</div>
 							</div>
 						</motion.article>

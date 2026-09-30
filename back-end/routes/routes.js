@@ -19,6 +19,15 @@ const bannerUpload = upload.fields([
 	{ name: 'imageThree', maxCount: 1 }
 ])
 
+const serviceUpload = (req, res, next) => {
+	upload.single('image')(req, res, (error) => {
+		if (error) {
+			return res.status(400).json({ message: error.message || 'Invalid service image' })
+		}
+		next()
+	})
+}
+
 
 
 // user routes
@@ -47,7 +56,7 @@ router.delete('/reviews/:reviewId', authMiddleWare, roleAuthMiddleWare(['admin']
 
 
 // services routes
-router.post('/addServices', authMiddleWare, roleAuthMiddleWare(['admin']), serviceController.addService);
+router.post('/addServices', authMiddleWare, roleAuthMiddleWare(['admin']), serviceUpload, serviceController.addService);
 router.get('/getServices', serviceController.getServices);
 router.delete('/deleteService/:serviceId', authMiddleWare, roleAuthMiddleWare(['admin']), serviceController.deleteService);
 router.put('/updateService/:serviceId', authMiddleWare, roleAuthMiddleWare(['admin']), serviceController.updateService);

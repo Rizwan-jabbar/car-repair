@@ -2,14 +2,21 @@ import Service from "../../models/servicesModel/servicesModel.js";
 
 const addService = async (req, res) => {
     try {
-        const { title, description, price } = req.body;
-        if (!title || !description || price === undefined) {
-            return res.status(400).json({ message: 'Please fill in all fields' });
+        const { title, description, price, isAvailable } = req.body;
+        if (!title || !description || price === undefined || !req.file) {
+            return res.status(400).json({ message: 'Please fill in all fields and upload an image' });
         }
-        const service = await Service.create({ title, description, price });
+        const service = await Service.create({
+            title,
+            description,
+            price,
+            isAvailable: isAvailable !== 'false',
+            image: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`,
+        });
         return res.status(201).json({ message: 'Service added successfully', service });
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error' });
+        console.error('Add service error:', error);
+        return res.status(500).json({ message: error.message || 'Internal server error' });
     }
 };
 

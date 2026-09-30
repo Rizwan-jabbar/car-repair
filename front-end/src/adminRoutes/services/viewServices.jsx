@@ -153,6 +153,7 @@ function ViewServices () {
                         <table className='w-full min-w-[760px] text-left'>
                             <thead className='border-b border-gray-200 bg-gray-50'>
                                 <tr>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Image</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Title</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Price</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Availability</th>
@@ -163,7 +164,7 @@ function ViewServices () {
                             <tbody className='[&>tr:nth-child(even)]:bg-gray-50/40'>
                                 {services.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className='px-4 py-6 text-center text-sm font-semibold text-gray-500'>
+                                        <td colSpan={6} className='px-4 py-6 text-center text-sm font-semibold text-gray-500'>
                                             No services found.
                                         </td>
                                     </tr>
@@ -176,8 +177,20 @@ function ViewServices () {
                                             <tr
                                                 key={key}
                                                 onClick={() => setSelectedService(service)}
-                                                className='cursor-pointer border-b border-gray-100 transition hover:bg-red-50/40'
+                                                className={`cursor-pointer border-b border-gray-100 transition hover:bg-red-50/60 ${!isAvailable ? 'bg-red-50/50' : ''}`}
                                             >
+                                                <td className='px-4 py-3'>
+                                                    <div className='h-12 w-16 overflow-hidden rounded-md border border-gray-200 bg-gradient-to-br from-slate-100 to-slate-300'>
+                                                        {service?.image && (
+                                                            <img
+                                                                src={service.image}
+                                                                alt={service?.title || 'Service'}
+                                                                className='h-full w-full object-cover'
+                                                                onError={(event) => { event.currentTarget.style.display = 'none' }}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </td>
                                                 <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{service?.title || '-'}</td>
                                                 <td className='px-4 py-3 text-sm font-semibold text-gray-800'>
                                                     Rs. {Number(service?.price || 0).toLocaleString()}
@@ -239,10 +252,22 @@ function ViewServices () {
                                         key={key}
                                         layout
                                         onClick={() => setSelectedService(service)}
-                                        className='rounded-xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 shadow-sm ring-1 ring-black/5'
+                                        className={`rounded-xl border p-4 shadow-sm ring-1 ring-black/5 ${isAvailable ? 'border-gray-200 bg-gradient-to-b from-white to-gray-50' : 'border-red-200 bg-red-50/50'}`}
                                     >
                                         <div className='flex items-start justify-between gap-3'>
-                                            <h3 className='text-sm font-bold text-gray-900'>{service?.title || '-'}</h3>
+                                            <div className='flex min-w-0 items-center gap-3'>
+                                                <div className='h-12 w-16 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gradient-to-br from-slate-100 to-slate-300'>
+                                                    {service?.image && (
+                                                        <img
+                                                            src={service.image}
+                                                            alt={service?.title || 'Service'}
+                                                            className='h-full w-full object-cover'
+                                                            onError={(event) => { event.currentTarget.style.display = 'none' }}
+                                                        />
+                                                    )}
+                                                </div>
+                                                <h3 className='truncate text-sm font-bold text-gray-900'>{service?.title || '-'}</h3>
+                                            </div>
                                             <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-semibold ${isAvailable ? 'border border-emerald-200 bg-emerald-50 text-emerald-700' : 'border border-gray-300 bg-gray-100 text-gray-700'}`}>
                                                 {isAvailable ? <FiCheckCircle className='h-3.5 w-3.5' /> : <FiXCircle className='h-3.5 w-3.5' />}
                                                 {isAvailable ? 'Available' : 'Unavailable'}

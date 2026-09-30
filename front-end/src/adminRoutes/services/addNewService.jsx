@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FiCheckCircle, FiPlusCircle } from 'react-icons/fi'
+import { FiCheckCircle, FiImage, FiPlusCircle } from 'react-icons/fi'
 
 import { createService } from '../../rtk/thunks/serviceThunk/serviceThunk'
 
@@ -12,6 +12,7 @@ function AddNewService () {
         title: '',
         description: '',
         price: '',
+        image: null,
         isAvailable: true,
     })
 
@@ -30,6 +31,8 @@ function AddNewService () {
             e.price = 'Price must be 0 or greater'
         }
 
+        if (!form.image) e.image = 'Service image is required'
+
         return e
     }, [form])
 
@@ -43,20 +46,21 @@ function AddNewService () {
             title: true,
             description: true,
             price: true,
+            image: true,
             isAvailable: true,
         })
 
         if (Object.keys(errors).length > 0) return
 
         try {
-            await dispatch(
-                createService({
-                    title: form.title.trim(),
-                    description: form.description.trim(),
-                    price: Number(form.price),
-                    isAvailable: Boolean(form.isAvailable),
-                }),
-            ).unwrap()
+            const serviceData = new FormData()
+            serviceData.append('title', form.title.trim())
+            serviceData.append('description', form.description.trim())
+            serviceData.append('price', String(Number(form.price)))
+            serviceData.append('isAvailable', String(Boolean(form.isAvailable)))
+            serviceData.append('image', form.image)
+
+            await dispatch(createService(serviceData)).unwrap()
 
             setSubmitted(true)
             setTouched({})
@@ -64,6 +68,7 @@ function AddNewService () {
                 title: '',
                 description: '',
                 price: '',
+                image: null,
                 isAvailable: true,
             })
         } catch {
@@ -148,6 +153,21 @@ function AddNewService () {
                             </div>
                         </label>
                     </div>
+
+                    <label className='block'>
+                        <span className='text-sm font-semibold text-gray-900'>Service Image</span>
+                        <div className='mt-2 flex items-center gap-3 rounded-md border border-dashed border-gray-300 bg-gray-50 p-3'>
+                            <FiImage className='h-5 w-5 text-gray-500' />
+                            <input
+                                type='file'
+                                accept='image/jpeg,image/png,image/gif,image/webp'
+                                onChange={(e) => setField('image', e.target.files?.[0] || null)}
+                                onBlur={() => markTouched('image')}
+                                className='block w-full text-sm text-gray-600 file:mr-3 file:rounded-md file:border-0 file:bg-red-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-red-700 hover:file:bg-red-100'
+                            />
+                        </div>
+                        {touched.image && errors.image && <p className='mt-1 text-xs font-semibold text-red-600'>{errors.image}</p>}
+                    </label>
 
                     {error && (
                         <div className='rounded-xl border border-red-200 bg-red-50 p-3'>

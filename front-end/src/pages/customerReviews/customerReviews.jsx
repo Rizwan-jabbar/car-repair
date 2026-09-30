@@ -179,15 +179,17 @@ function CustomerReviews() {
                     ))}
                 </div>
 
-                <motion.div className='mt-8 flex justify-center' variants={fadeUp}>
-                    <button
-                        type='button'
-                        onClick={() => navigate('/reviews')}
-                        className='cr-btn-outline'
-                    >
-                        View more reviews
-                    </button>
-                </motion.div>
+                {visibleReviews.length > previewReviews.length && (
+                    <motion.div className='mt-8 flex justify-center' variants={fadeUp}>
+                        <button
+                            type='button'
+                            onClick={() => navigate('/reviews')}
+                            className='cr-btn-outline'
+                        >
+                            View more reviews
+                        </button>
+                    </motion.div>
+                )}
 
                 <motion.div className='mt-8 flex flex-col items-center justify-between gap-3 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm ring-1 ring-black/5 sm:flex-row' variants={fadeUp}>
                     <div>

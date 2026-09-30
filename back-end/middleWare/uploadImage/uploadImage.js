@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
         const uploadPath = path.join(process.cwd(), 'uploads');
         // Create the uploads directory if it doesn't exist
         if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath);
+            fs.mkdirSync(uploadPath, { recursive: true });
         }
         cb(null, uploadPath);
     }
@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 // File filter to allow only image files
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif/;
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
     if (extname && mimetype) {
