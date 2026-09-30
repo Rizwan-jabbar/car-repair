@@ -22,6 +22,14 @@ app.use(`${API_BASE_PATH}/auth`, router)
 
 
 
-app.listen(PORT, () => {
-    console.log(`app is running on port ${PORT}`)
+const startServer = async () => {
+    await connectDB()
+    app.listen(PORT, () => {
+        console.log(`app is running on port ${PORT}`)
+    })
+}
+
+startServer().catch((error) => {
+    console.error('Server startup failed:', error)
+    process.exit(1)
 })
