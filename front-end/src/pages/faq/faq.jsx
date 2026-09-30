@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 
 import { fetchFaqs } from '../../rtk/thunks/faqThunk/faqThunk'
+import banner3 from '../../pictures/banner3.jpg'
 
 import { cardIn, fadeUp, sectionStagger } from '../../utils/motion'
 
@@ -64,25 +65,27 @@ function Faq () {
             </div>
 
             <div className='cr-container cr-section-pad'>
-                <div className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end'>
-                    <motion.div variants={fadeUp}>
-                        <p className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700'>
-                            <span className='h-2 w-2 rounded-full bg-red-600' />
+                <div className='relative overflow-hidden rounded-3xl bg-slate-50 px-6 py-8 sm:px-10 sm:py-10'>
+                    <div className='pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 bg-cover bg-center lg:block' style={{ backgroundImage: `linear-gradient(90deg, rgba(248,250,252,1), rgba(248,250,252,0.05)), url(${banner3})` }} />
+                    <div className='relative grid gap-8 lg:grid-cols-5 lg:items-center'>
+                    <motion.div className='lg:col-span-3' variants={fadeUp}>
+                        <p className='inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-red-600'>
+                            <span className='h-px w-9 bg-red-500' />
                             FAQ
                         </p>
-                        <h1 className='cr-heading-lg'>
-                            Frequently asked questions
+                        <h1 className='mt-3 max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-900 sm:text-5xl'>
+                            Frequently Asked <span className='text-red-600'>Questions</span>
                         </h1>
-                        <p className='mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-relaxed'>
+                        <p className='mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-relaxed'>
                             Everything you need to know about bookings, pricing, parts, warranties, and support.
                             If you still need help, our team is one call away.
                         </p>
                     </motion.div>
 
-                    <motion.div className='w-full max-w-sm p-5 cr-card' variants={cardIn}>
-                        <p className='text-sm font-semibold text-gray-600'>Knowledge base</p>
-                        <p className='mt-1 text-3xl font-extrabold text-gray-900'>{totalQuestions}</p>
-                        <p className='mt-2 text-xs font-semibold text-gray-500'>Detailed answers across key service topics</p>
+                    <motion.div className='relative w-full max-w-sm rounded-2xl border border-gray-200 bg-white/95 p-5 shadow-lg backdrop-blur-sm lg:col-span-2 lg:justify-self-end' variants={cardIn}>
+                        <p className='text-xs font-semibold text-slate-500'>Knowledge Base</p>
+                        <p className='mt-1 text-3xl font-extrabold text-red-600'>{totalQuestions}</p>
+                        <p className='mt-2 text-xs font-semibold text-slate-500'>Detailed answers across key service topics</p>
 
                         <div className='mt-4 rounded-xl border border-gray-200 bg-gray-50 p-3'>
                             <p className='text-xs font-semibold text-gray-700'>Need immediate help?</p>
@@ -106,6 +109,7 @@ function Faq () {
                             </div>
                         </div>
                     </motion.div>
+                    </div>
                 </div>
 
                 <div className='mt-10 grid gap-5 lg:grid-cols-2'>
@@ -134,72 +138,68 @@ function Faq () {
                         </motion.div>
                     )}
 
-                    {!loading && !error && faqGroups.map((group, groupIndex) => {
+                    {!loading && !error && faqGroups.flatMap((group, groupIndex) => group.items.map((faq, itemIndex) => {
                         const GroupIcon = group.icon
+                        const key = `${groupIndex}-${itemIndex}`
+                        const isOpen = openKey === key
 
                         return (
-                            <motion.article key={group.title} className='p-6 cr-card' variants={cardIn}>
-                                <div className='mb-4 flex items-center gap-2'>
-                                    <span className='inline-flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-700 ring-1 ring-red-100'>
+                            <motion.article key={faq?._id ?? `${faq.question}-${itemIndex}`} className={`overflow-hidden rounded-2xl border bg-[#fbfdff] shadow-[0_5px_18px_rgba(31,67,96,0.06)] transition hover:shadow-[0_8px_22px_rgba(31,67,96,0.1)] ${isOpen ? 'border-red-200' : 'border-[#dce7f0]'}`} variants={cardIn}>
+                                <div className='flex min-h-[112px] items-center gap-3 px-4 py-4'>
+                                    <span className='inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff0f1] text-red-600 ring-1 ring-red-100'>
                                         <GroupIcon className='h-4 w-4' aria-hidden='true' />
                                     </span>
-                                    <h2 className='text-base font-extrabold tracking-tight text-gray-900'>{group.title}</h2>
+                                    <div className='min-w-0'>
+                                        <p className='text-xs font-semibold text-red-500'>{group.title}</p>
+                                        <button
+                                            type='button'
+                                            onClick={() => setOpenKey((prev) => (prev === key ? '' : key))}
+                                            className='mt-1 flex w-full items-center justify-between gap-3 text-left'
+                                            aria-expanded={isOpen}
+                                        >
+                                            <span className='text-sm font-bold leading-5 text-[#17324d]'>{faq.question}</span>
+                                            <FiChevronDown
+                                                className={`h-4 w-4 shrink-0 text-[#17324d] transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                                                aria-hidden='true'
+                                            />
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div className='space-y-3'>
-                                    {group.items.map((faq, itemIndex) => {
-                                        const key = `${groupIndex}-${itemIndex}`
-                                        const isOpen = openKey === key
-
-                                        return (
-                                            <div key={faq?._id ?? `${faq.question}-${itemIndex}`} className='overflow-hidden rounded-xl border border-gray-200 bg-white'>
-                                                <button
-                                                    type='button'
-                                                    onClick={() => setOpenKey((prev) => (prev === key ? '' : key))}
-                                                    className='flex w-full items-center justify-between gap-3 px-4 py-3 text-left'
-                                                    aria-expanded={isOpen}
-                                                >
-                                                    <span className='text-sm font-semibold text-gray-900'>{faq.question}</span>
-                                                    <FiChevronDown
-                                                        className={`h-4 w-4 shrink-0 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-                                                        aria-hidden='true'
-                                                    />
-                                                </button>
-
-                                                <AnimatePresence initial={false}>
-                                                    {isOpen && (
-                                                        <motion.div
-                                                            initial={{ height: 0, opacity: 0 }}
-                                                            animate={{ height: 'auto', opacity: 1 }}
-                                                            exit={{ height: 0, opacity: 0 }}
-                                                            transition={{ duration: 0.2, ease: 'easeOut' }}
-                                                        >
-                                                            <div className='border-t border-gray-100 px-4 py-3'>
-                                                                <p className='text-sm leading-6 text-gray-600'>{faq.answer}</p>
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
-                                                </AnimatePresence>
+                                <AnimatePresence initial={false}>
+                                    {isOpen && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.2, ease: 'easeOut' }}
+                                        >
+                                            <div className='mx-4 mb-4 mt-0 border-l-2 border-red-500 bg-[#f7f6fb] px-4 py-3'>
+                                                <p className='text-sm leading-6 text-[#49677f]'>{faq.answer}</p>
                                             </div>
-                                        )
-                                    })}
-                                </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </motion.article>
                         )
-                    })}
+                    }))}
                 </div>
 
                 <motion.div
-                    className='mt-8 rounded-2xl border border-gray-200 bg-gradient-to-r from-white to-red-50 p-5 shadow-sm ring-1 ring-black/5 sm:p-6'
+                    className='relative mt-8 overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 p-6 text-white shadow-sm sm:p-8'
                     variants={fadeUp}
                 >
-                    <p className='text-sm font-extrabold text-gray-900'>Still have a question?</p>
-                    <p className='mt-1 text-sm text-gray-600'>
+                    <div className='pointer-events-none absolute inset-y-0 right-0 hidden w-2/5 bg-cover bg-center opacity-70 sm:block' style={{ backgroundImage: `linear-gradient(90deg, rgba(2,12,24,1), rgba(2,12,24,0.1)), url(${banner3})` }} />
+                    <div className='relative'>
+                    <p className='text-xs font-bold uppercase tracking-[0.16em] text-red-400'>Still have a question?</p>
+                    <p className='mt-2 text-2xl font-extrabold text-white'>We’re here to help.</p>
+                    <p className='mt-1 max-w-xl text-sm text-slate-300'>
                         Contact our support team and share your vehicle issue. We’ll guide you with the next best step.
                     </p>
                     <div className='mt-4 flex flex-wrap gap-2'>
-                        <a href='/contact' className='cr-btn-primary'>Contact support</a>
-                        <a href='/book-repair' className='cr-btn-outline'>Book a repair</a>
+                        <a href='/contact' className='inline-flex items-center rounded-md bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700'>Contact support</a>
+                        <a href='/book-repair' className='inline-flex items-center rounded-md border border-slate-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10'>Book a repair</a>
+                    </div>
                     </div>
                 </motion.div>
             </div>

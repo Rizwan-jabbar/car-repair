@@ -38,13 +38,14 @@ function AllServices () {
 			</div>
 
 			<div className='cr-container cr-section-pad'>
-				<div className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end'>
-					<motion.div variants={fadeUp}>
-						<p className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700'>
-							<span className='h-2 w-2 rounded-full bg-red-600' />
+				<div className='flex flex-col items-center gap-5 text-center'>
+					<motion.div className='max-w-3xl' variants={fadeUp}>
+						<p className='inline-flex items-center gap-4 text-xs font-bold uppercase tracking-[0.16em] text-red-600'>
+							<span className='h-px w-9 bg-red-500' />
 							Our Services
+							<span className='h-px w-9 bg-red-500' />
 						</p>
-						<h1 className='mt-3 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl'>
+						<h1 className='mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
 							Explore all services
 						</h1>
 						<p className='mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-relaxed'>
@@ -89,17 +90,17 @@ function AllServices () {
 							variants={cardIn}
 							whileHover={{ y: -5 }}
 						>
-                            <div className='relative h-32 bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300' aria-label={`${service.title} image`}>
+							<div className='relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300' aria-label={`${service.title} image`}>
 								<div className='absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.35),transparent_55%)]' />
 								{service.image && (
 									<img
 										src={service.image}
 										alt={service.title}
-										className='absolute inset-0 h-full w-full object-cover'
+										className='absolute inset-0 h-full w-full object-cover object-center transition duration-500 ease-out group-hover:scale-105'
 										onError={(event) => { event.currentTarget.style.display = 'none' }}
 									/>
 								)}
-								<div className='absolute -bottom-5 left-5 inline-flex h-11 w-11 items-center justify-center rounded-full border-4 border-white bg-red-600 text-white shadow-md'>
+								<div className='absolute bottom-3 left-5 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border-4 border-white bg-red-600 text-white shadow-md'>
 									<FiTool className='h-5 w-5' aria-hidden='true' />
 								</div>
 								{service.isAvailable === false && (

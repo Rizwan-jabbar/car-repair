@@ -47,12 +47,13 @@ function WhyUs () {
             <div className='cr-container cr-section-pad'>
                 <div className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end'>
                     <motion.div variants={fadeUp}>
-                        <p className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700'>
-                            <span className='h-2 w-2 rounded-full bg-red-600' />
+                        <p className='inline-flex items-center gap-4 text-xs font-bold uppercase tracking-[0.16em] text-red-600'>
+                            <span className='h-px w-9 bg-red-500' />
                             Why Choose Us
+                            <span className='h-px w-9 bg-red-500' />
                         </p>
 
-                        <h2 className='cr-heading-lg'>
+                        <h2 className='mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
                             Honest service. Quality repairs. Zero stress.
                         </h2>
 
