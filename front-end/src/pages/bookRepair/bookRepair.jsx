@@ -384,7 +384,7 @@ function BookRepair () {
                                             className='cr-btn-primary'
                                             disabled={loading}
                                         >
-                                            {loading ? 'Submitting...' : 'Submit Booking'}
+                                            {loading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Submitting booking' /> : 'Submit Booking'}
                                         </button>
 
                                     </div>

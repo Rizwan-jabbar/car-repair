@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AnimatePresence, motion } from 'framer-motion'
-import { FiCheckCircle, FiEdit3, FiTool, FiXCircle } from 'react-icons/fi'
+import { FiCalendar, FiCheckCircle, FiEdit3, FiImage, FiTool, FiTrash2, FiXCircle } from 'react-icons/fi'
 import { FiX } from 'react-icons/fi'
 
 import {
@@ -120,24 +120,28 @@ function ViewServices () {
     }
 
     return (
-        <section className='w-full max-w-full'>
-            <div className='mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm'>
+        <section className='w-full max-w-full bg-[#f5f9fe]'>
+            <div className='relative mb-5 overflow-hidden rounded-2xl border border-white bg-gradient-to-r from-white via-[#f9fbff] to-red-50/70 p-5 shadow-sm sm:p-6'>
+                <div className='pointer-events-none absolute -right-10 -top-20 h-52 w-52 rotate-45 border-[16px] border-red-100/60' />
                 <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
                     <div>
-                        <h1 className='text-2xl font-extrabold tracking-tight text-gray-900'>View Services</h1>
-                        <p className='mt-1 text-sm text-gray-600'>All services added by admin are listed here.</p>
+                        <p className='inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-red-600'><FiTool className='h-3.5 w-3.5' /> Services</p>
+                        <h1 className='mt-3 text-3xl font-extrabold tracking-tight text-[#102441]'>View Services</h1>
+                        <p className='mt-1 text-sm text-[#6c83a2]'>All services added by admin are listed here.</p>
+                        <div className='mt-3 h-0.5 w-8 bg-red-500' />
                     </div>
 
-                    <div className='inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 shadow-sm'>
-                        <FiTool className='h-4 w-4 text-red-600' />
-                        {services.length} services
+                    <div className='relative inline-flex min-w-[220px] items-center justify-between gap-4 rounded-2xl border border-red-100 bg-white/80 px-4 py-3 shadow-sm'>
+                        <span className='flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600'><FiTool className='h-5 w-5' /></span>
+                        <div className='mr-auto'><p className='text-xs font-semibold text-[#6c83a2]'>Total Services</p><p className='mt-1 text-2xl font-extrabold text-[#102441]'>{services.length}</p><p className='text-[10px] text-[#6c83a2]'>Active Services</p></div>
+                        <span className='flex h-9 w-9 items-center justify-center rounded-full bg-red-50 text-red-600'>›</span>
                     </div>
                 </div>
             </div>
 
             {loading && (
-                <div className='rounded-xl border border-gray-200 bg-white p-4 text-sm font-semibold text-gray-600'>
-                    Loading services...
+                <div className='flex items-center justify-center rounded-xl border border-gray-200 bg-white p-8'>
+                    <span className='h-7 w-7 animate-spin rounded-full border-4 border-red-100 border-t-red-600' aria-label='Loading services' />
                 </div>
             )}
 
@@ -149,19 +153,19 @@ function ViewServices () {
 
             {!loading && !error && (
                 <>
-                    <div className='hidden w-full max-w-full overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm md:block'>
+                    <div className='hidden w-full max-w-full overflow-x-auto md:block'>
                         <table className='w-full min-w-[760px] text-left'>
-                            <thead className='border-b border-gray-200 bg-gray-50'>
+                            <thead className='overflow-hidden rounded-2xl bg-gradient-to-r from-[#1d2d48] to-[#536780] text-white'>
                                 <tr>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Image</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Title</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Price</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Availability</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Created</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Actions</th>
+                                    <th className='rounded-l-2xl px-4 py-4 text-xs font-bold'><span className='inline-flex items-center gap-2'><FiImage className='h-4 w-4' /> Image</span></th>
+                                    <th className='px-4 py-4 text-xs font-bold'>Title</th>
+                                    <th className='px-4 py-4 text-xs font-bold'>Price</th>
+                                    <th className='px-4 py-4 text-xs font-bold'>Availability</th>
+                                    <th className='px-4 py-4 text-xs font-bold'><span className='inline-flex items-center gap-2'><FiCalendar className='h-4 w-4' /> Created</span></th>
+                                    <th className='rounded-r-2xl px-4 py-4 text-xs font-bold'>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className='[&>tr:nth-child(even)]:bg-gray-50/40'>
+                            <tbody className='before:block before:h-3 before:content-["_"]'>
                                 {services.length === 0 ? (
                                     <tr>
                                         <td colSpan={6} className='px-4 py-6 text-center text-sm font-semibold text-gray-500'>
@@ -177,10 +181,10 @@ function ViewServices () {
                                             <tr
                                                 key={key}
                                                 onClick={() => setSelectedService(service)}
-                                                className={`cursor-pointer border-b border-gray-100 transition hover:bg-red-50/60 ${!isAvailable ? 'bg-red-50/50' : ''}`}
+                                                className={`cursor-pointer rounded-2xl bg-white shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md ${!isAvailable ? 'bg-red-50/40' : ''}`}
                                             >
                                                 <td className='px-4 py-3'>
-                                                    <div className='h-12 w-16 overflow-hidden rounded-md border border-gray-200 bg-gradient-to-br from-slate-100 to-slate-300'>
+                                                    <div className='h-16 w-24 overflow-hidden rounded-xl border border-gray-200 bg-gradient-to-br from-slate-100 to-slate-300'>
                                                         {service?.image && (
                                                             <img
                                                                 src={service.image}
@@ -191,8 +195,8 @@ function ViewServices () {
                                                         )}
                                                     </div>
                                                 </td>
-                                                <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{service?.title || '-'}</td>
-                                                <td className='px-4 py-3 text-sm font-semibold text-gray-800'>
+                                                <td className='px-4 py-3 text-sm font-extrabold text-[#102441]'>{service?.title || '-'}</td>
+                                                <td className='px-4 py-3 text-lg font-extrabold text-[#102441]'>
                                                     Rs. {Number(service?.price || 0).toLocaleString()}
                                                 </td>
                                                 <td className='px-4 py-3'>
@@ -201,13 +205,13 @@ function ViewServices () {
                                                         {isAvailable ? 'Available' : 'Unavailable'}
                                                     </span>
                                                 </td>
-                                                <td className='px-4 py-3 text-sm text-gray-600'>{formatDate(service?.createdAt)}</td>
+                                                <td className='px-4 py-3 text-sm font-semibold text-[#344d6e]'>{formatDate(service?.createdAt)}<span className='mt-1 block text-[10px] font-normal text-[#8395ad]'>Created on</span></td>
                                                 <td className='px-4 py-3'>
                                                     <div className='flex items-center gap-2' onClick={(e) => e.stopPropagation()}>
                                                         <button
                                                             type='button'
                                                             onClick={() => onEditService(service)}
-                                                            className='inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50'
+                                                            className='inline-flex items-center gap-1 rounded-xl border border-blue-100 bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-blue-700 shadow-sm transition hover:bg-blue-100'
                                                         >
                                                             <FiEdit3 className='h-3.5 w-3.5' />
                                                             Edit
@@ -215,7 +219,7 @@ function ViewServices () {
                                                         <button
                                                             type='button'
                                                             onClick={() => onToggleAvailability(service)}
-                                                            className='inline-flex items-center gap-1 rounded-md border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100'
+                                                            className={`inline-flex items-center gap-1 rounded-xl border px-2.5 py-1.5 text-xs font-semibold transition ${isAvailable ? 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100' : 'border-emerald-100 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
                                                         >
                                                             {isAvailable ? <FiXCircle className='h-3.5 w-3.5' /> : <FiCheckCircle className='h-3.5 w-3.5' />}
                                                             {isAvailable ? 'Disable' : 'Enable'}
@@ -223,8 +227,9 @@ function ViewServices () {
                                                         <button
                                                             type='button'
                                                             onClick={() => onDeleteService(service)}
-                                                            className='inline-flex items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-700 transition hover:bg-red-100'
+                                                            className='inline-flex items-center gap-1 rounded-xl border border-red-100 bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-100'
                                                         >
+                                                            <FiTrash2 className='h-3.5 w-3.5' />
                                                             Delete
                                                         </button>
                                                     </div>

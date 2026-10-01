@@ -60,8 +60,8 @@ function UserBooking () {
             </div>
 
             {loading && (
-                <div className='rounded-xl border border-gray-200 bg-white p-4 text-sm font-semibold text-gray-600'>
-                    Loading appointments...
+                <div className='flex min-h-52 items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm' role='status' aria-label='Loading appointments'>
+                    <span className='h-9 w-9 animate-spin rounded-full border-4 border-red-100 border-t-red-600' />
                 </div>
             )}
 

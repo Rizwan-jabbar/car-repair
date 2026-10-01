@@ -107,8 +107,8 @@ function CustomerReviews() {
 
                 <div className='mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5'>
                     {loading && (
-                        <motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card sm:col-span-2 lg:col-span-5' variants={fadeUp}>
-                            Loading latest reviews...
+                        <motion.div className='flex min-h-40 items-center justify-center p-6 cr-card sm:col-span-2 lg:col-span-5' variants={fadeUp} role='status' aria-label='Loading reviews'>
+                            <span className='h-8 w-8 animate-spin rounded-full border-4 border-red-100 border-t-red-600' />
                         </motion.div>
                     )}
 

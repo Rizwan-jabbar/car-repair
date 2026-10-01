@@ -114,7 +114,7 @@ function Navbar () {
                     <span className='text-base font-extrabold tracking-tight text-gray-900 sm:text-lg lg:text-xl'>Auto<span className='text-red-600'>Sphere</span></span>
                 </NavLink>
 
-                <ul className='hidden items-center gap-1 bg-white p-0 md:flex'>
+                <ul className='hidden items-center gap-0.5 bg-white p-0 md:flex'>
                     <li
                         className='relative'
                         onMouseEnter={() => { setIsServicesOpen(true); setIsExploreOpen(false) }}
@@ -184,7 +184,7 @@ function Navbar () {
                     </li>
                 </ul>
 
-                <div className='hidden items-center gap-2 md:flex'>
+                <div className='hidden items-center gap-1.5 md:flex'>
                     <div className='hidden items-center gap-2 rounded-full px-2 py-1.5 text-[11px] text-[#7890a8] xl:flex'><FiSearch className='h-4 w-4 text-[#17345c]' />Search services, tips...</div>
                     {!isAuthed && !isHydratingAuth ? (
                         <>
@@ -217,14 +217,13 @@ function Navbar () {
                                 <button
                                     type='button'
                                     onClick={() => setIsProfileOpen((prev) => !prev)}
-                                    className='inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 transition hover:bg-gray-50'
+                                    className='inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 transition hover:bg-gray-50 hover:text-red-600'
                                     aria-haspopup='menu'
                                     aria-expanded={isProfileOpen}
+                                    aria-label='Open account menu'
+                                    title='Account menu'
                                 >
-                                    <span className='inline-flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-gray-700'>
-                                        <FiUser className='h-4 w-4' aria-hidden='true' />
-                                    </span>
-                                    <span className='max-w-[140px] truncate'>{user?.name || (isHydratingAuth ? 'Loading...' : 'Account')}</span>
+                                    <FiUser className='h-5 w-5' aria-hidden='true' />
                                 </button>
 
                                 <AnimatePresence>

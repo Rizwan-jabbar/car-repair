@@ -125,7 +125,7 @@ function AiChatBot () {
                             {loading && (
                                 <div className='flex justify-start'>
                                     <p className='rounded-2xl rounded-bl-sm border border-gray-200 bg-white px-3 py-2 text-sm text-gray-600'>
-                                        Typing...
+                                        <span className='block h-4 w-4 animate-spin rounded-full border-2 border-red-100 border-t-red-600' aria-label='Loading response' />
                                     </p>
                                 </div>
                             )}

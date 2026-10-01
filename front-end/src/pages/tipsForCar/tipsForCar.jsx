@@ -5,11 +5,13 @@ import {
     FiCheckCircle,
     FiClock,
     FiDroplet,
+    FiEdit3,
     FiPhone,
     FiShield,
     FiMessageSquare,
     FiTool,
     FiWind,
+    FiX,
     FiArrowRight,
     FiThermometer,
     FiSun,
@@ -160,10 +162,37 @@ function TipsForCar () {
                     <motion.div className='relative overflow-hidden rounded-xl border border-red-100 bg-gradient-to-br from-white via-white to-red-50 p-5 shadow-sm sm:p-6' variants={fadeUp}><div className='flex items-center gap-3'><span className='inline-flex h-11 w-11 items-center justify-center rounded-full bg-red-100 text-red-600'><FiAlertTriangle className='h-6 w-6' /></span><div><h3 className='text-base font-extrabold text-[#102957]'>Emergency travel checklist</h3><p className='mt-1 text-[11px] text-slate-500'>Keep these items in your car for safer road trips.</p></div></div><ul className='mt-4 space-y-2'>{emergencyChecklist.map((item) => <li key={item} className='flex items-center gap-2 text-[11px] text-slate-600'><FiCheckCircle className='h-3.5 w-3.5 shrink-0 text-red-600' />{item}</li>)}</ul><a href='tel:+923001234567' className='mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-red-700'><FiPhone className='h-3.5 w-3.5' /> Emergency call support <FiArrowRight className='h-3.5 w-3.5' /></a></motion.div>
                 </div>
 
-                <motion.div className='mt-5 rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6' variants={fadeUp}>
-                    <div className='flex items-center gap-2'><FiMessageSquare className='h-5 w-5 text-red-600' /><h3 className='text-base font-extrabold text-[#102957]'>Ask AI about your car issue</h3></div><p className='mt-2 text-sm leading-6 text-gray-600'>Describe your problem and get a quick suggestion. For final diagnosis, please book a professional inspection.</p>
-                    <form onSubmit={handleAskAi} className='mt-4'><label className='block'><span className='text-xs font-semibold uppercase tracking-wide text-gray-500'>Your question</span><textarea value={question} onChange={(e) => setQuestion(e.target.value)} placeholder='Example: My car makes a knocking sound while accelerating. What should I check first?' rows={4} className='cr-textarea' /></label><div className='mt-3 flex flex-wrap items-center gap-2'><button type='submit' disabled={aiLoading || !question.trim()} className='cr-btn-primary disabled:cursor-not-allowed disabled:opacity-60'>{aiLoading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Asking AI' /> : 'Ask AI'}</button><button type='button' onClick={() => { setQuestion(''); dispatch(clearAiAnswer()) }} className='cr-btn-outline'>Clear</button></div></form>
-                    {aiError && <p className='mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700'>{typeof aiError === 'string' ? aiError : (aiError?.error || 'Failed to get AI response')}</p>}{!!answer && <div className='mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4'><p className='text-xs font-semibold uppercase tracking-wide text-gray-500'>AI suggestion</p><p className='mt-2 text-sm leading-6 text-gray-700'>{answer}</p></div>}
+                <motion.div className='relative mt-5 overflow-hidden rounded-2xl border border-[#dce8f5] bg-white shadow-sm' variants={fadeUp}>
+                    <div className='relative overflow-hidden border-b border-[#edf2f8] bg-gradient-to-r from-white via-white to-red-50/70 px-5 py-6 sm:px-8'>
+                        <div className='pointer-events-none absolute -right-8 -top-16 h-40 w-64 rounded-full bg-red-100/60 blur-2xl' />
+                        <div className='relative flex items-center gap-4'>
+                            <span className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-red-600 text-white shadow-lg shadow-red-200'><FiMessageSquare className='h-7 w-7' /></span>
+                            <div>
+                                <p className='inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-red-600'>✦ AI Assistant</p>
+                                <h3 className='mt-2 text-2xl font-extrabold tracking-tight text-[#102441] sm:text-3xl'>Ask AI about your car issue</h3>
+                                <p className='mt-1 text-sm text-[#6c83a2]'>Describe your problem and get a quick suggestion. For final diagnosis, please book a professional inspection.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className='p-5 sm:p-8'>
+                        <form onSubmit={handleAskAi}>
+                            <label className='relative block'>
+                                <span className='sr-only'>Your question</span>
+                                <FiEdit3 className='pointer-events-none absolute left-4 top-4 h-5 w-5 text-red-500' />
+                                <textarea value={question} onChange={(e) => setQuestion(e.target.value)} placeholder='Example: My car makes a knocking sound while accelerating. What should I check first?' rows={5} className='w-full resize-none rounded-2xl border border-[#dce8f5] bg-[#fbfdff] py-4 pl-12 pr-4 text-sm text-[#314b6d] shadow-inner outline-none transition placeholder:text-[#9aacc3] focus:border-red-300 focus:ring-4 focus:ring-red-100' />
+                            </label>
+                            <div className='mt-5 flex flex-wrap items-center gap-3'>
+                                <button type='submit' disabled={aiLoading || !question.trim()} className='inline-flex min-h-14 items-center gap-3 rounded-2xl bg-gradient-to-r from-red-600 to-red-500 px-7 text-base font-extrabold text-white shadow-lg shadow-red-200 transition hover:-translate-y-0.5 hover:from-red-700 hover:to-red-600 disabled:cursor-not-allowed disabled:opacity-60'>
+                                    {aiLoading ? <span className='h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Asking AI' /> : <><FiMessageSquare className='h-5 w-5' /> Ask AI <FiArrowRight className='h-5 w-5' /></>}
+                                </button>
+                                <button type='button' onClick={() => { setQuestion(''); dispatch(clearAiAnswer()) }} className='inline-flex min-h-14 items-center gap-3 rounded-2xl border border-[#dce8f5] bg-white px-7 text-base font-bold text-[#7890ad] shadow-sm transition hover:bg-slate-50'><FiX className='h-5 w-5' /> Clear</button>
+                                <span className='ml-auto hidden items-center gap-2 rounded-full bg-[#f8fbff] px-4 py-3 text-xs font-semibold text-[#7188a7] lg:inline-flex'><FiShield className='h-5 w-5 text-red-500' /> Get accurate and helpful suggestions</span>
+                            </div>
+                        </form>
+                        {aiError && <p className='mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700'>{typeof aiError === 'string' ? aiError : (aiError?.error || 'Failed to get AI response')}</p>}
+                        {!!answer && <div className='mt-5 rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5'><p className='text-xs font-semibold uppercase tracking-wide text-emerald-700'>AI suggestion</p><p className='mt-2 text-sm leading-6 text-emerald-950'>{answer}</p></div>}
+                    </div>
                 </motion.div>
             </div>
         </motion.section>

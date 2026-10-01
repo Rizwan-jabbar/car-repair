@@ -58,13 +58,14 @@ function AddFaq () {
     const errorMessage = typeof error === 'string' ? error : (error?.message || 'Failed to add FAQ')
 
     return (
-        <section>
-            <div className='mb-5 rounded-2xl border border-gray-200 bg-gradient-to-r from-white via-white to-red-50 p-4 shadow-sm sm:p-5'>
-                <h1 className='text-2xl font-extrabold tracking-tight text-gray-900'>Add New FAQ</h1>
-                <p className='mt-1 text-sm text-gray-600'>Create a new FAQ using your API flow.</p>
+        <section className='bg-[#f5f9fe]'>
+            <div className='mb-5 rounded-2xl border border-white bg-gradient-to-r from-white via-[#f9fbff] to-red-50/70 p-5 shadow-sm sm:p-6'>
+                <p className='inline-flex rounded-full bg-red-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-red-600'>FAQ</p>
+                <h1 className='mt-2 text-2xl font-extrabold tracking-tight text-[#102441] sm:text-3xl'>Add New FAQ</h1>
+                <p className='mt-1 text-sm text-[#6c83a2]'>Create a new FAQ using your API flow.</p>
             </div>
 
-            <div className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-black/5 sm:p-6'>
+            <div className='rounded-2xl border border-[#dce8f5] bg-white p-4 shadow-sm ring-1 ring-white sm:p-6'>
                 {submitted && (
                     <div className='mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3'>
                         <p className='inline-flex items-center gap-2 text-sm font-semibold text-emerald-700'>

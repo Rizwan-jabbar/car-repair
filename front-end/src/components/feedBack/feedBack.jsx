@@ -270,7 +270,7 @@ function FeedBack () {
                                         disabled={loading}
                                     >
                                         <FiSend className='h-4 w-4' aria-hidden='true' />
-                                        {loading ? 'Submitting...' : 'Submit review'}
+                                        {loading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Submitting review' /> : 'Submit review'}
                                     </button>
                                 </form>
                             ) : (

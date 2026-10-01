@@ -165,7 +165,7 @@ function Register() {
                                 )}
 
                                 <button type='submit' className='cr-btn-primary w-full' disabled={loading}>
-                                    {loading ? 'Creating…' : 'Create account'}
+                                    {loading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Creating account' /> : 'Create account'}
                                 </button>
 
                                 <p className='text-center text-sm text-gray-600'>

@@ -274,7 +274,7 @@ function ContactUs () {
                                             disabled={loading}
                                         >
                                             <FiSend className='h-4 w-4' aria-hidden='true' />
-                                            {loading ? 'Sending...' : 'Send message'}
+                                            {loading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Sending message' /> : 'Send message'}
                                         </button>
                                         <p className='text-xs font-semibold text-gray-500'>We usually respond within 30 minutes.</p>
                                     </div>

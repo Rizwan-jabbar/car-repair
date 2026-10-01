@@ -9,8 +9,10 @@ import {
     FiImage,
     FiMail,
     FiMessageSquare,
+    FiMoreVertical,
     FiTool,
     FiTrendingUp,
+    FiArrowRight,
 } from 'react-icons/fi'
 
 import { getAllBookings } from '../../rtk/thunks/bookingThunk/bookingThunk'
@@ -19,9 +21,11 @@ import { fetchReviews } from '../../rtk/thunks/reviewThunk/reviewThunk'
 import { fetchFaqs } from '../../rtk/thunks/faqThunk/faqThunk'
 import { getAllContacts } from '../../rtk/thunks/contactThunk/contactThunk'
 import { fetchBanners } from '../../rtk/thunks/bannerThunk/bannerThunk'
+import { getMediaUrl } from '../../rtk/utils/apiUrl'
 
 function AdminDashboard () {
     const dispatch = useDispatch()
+    const dashboardImage = getMediaUrl('/uploads/cartips.png')
 
     const bookingState = useSelector((state) => state.booking)
     const serviceState = useSelector((state) => state.service)
@@ -203,11 +207,18 @@ function AdminDashboard () {
     ]
 
     const quickStats = [
-        { label: 'Total Records', value: totalEntities, icon: FiBarChart2, tone: 'text-red-700 border-red-200 bg-red-50' },
-        { label: 'Booking Completion', value: `${bookingCompletionRate}%`, icon: FiCheckCircle, tone: 'text-emerald-700 border-emerald-200 bg-emerald-50' },
-        { label: 'Service Availability', value: `${serviceAvailabilityRate}%`, icon: FiTrendingUp, tone: 'text-blue-700 border-blue-200 bg-blue-50' },
-        { label: 'Review Visibility', value: `${reviewVisibilityRate}%`, icon: FiEye, tone: 'text-purple-700 border-purple-200 bg-purple-50' },
+        { label: 'Total Records', value: totalEntities, icon: FiBarChart2, tone: 'red', change: '+12%' },
+        { label: 'Booking Completion', value: `${bookingCompletionRate}%`, icon: FiCheckCircle, tone: 'green', change: '0%' },
+        { label: 'Service Availability', value: `${serviceAvailabilityRate}%`, icon: FiTrendingUp, tone: 'blue', change: '+8%' },
+        { label: 'Review Visibility', value: `${reviewVisibilityRate}%`, icon: FiEye, tone: 'purple', change: '+10%' },
     ]
+
+    const toneStyles = {
+        red: { card: 'border-red-200 bg-red-50/55', icon: 'bg-red-500 text-white', text: 'text-red-600', line: 'bg-red-400' },
+        green: { card: 'border-emerald-200 bg-emerald-50/55', icon: 'bg-emerald-500 text-white', text: 'text-emerald-600', line: 'bg-emerald-400' },
+        blue: { card: 'border-blue-200 bg-blue-50/55', icon: 'bg-blue-500 text-white', text: 'text-blue-600', line: 'bg-blue-400' },
+        purple: { card: 'border-purple-200 bg-purple-50/55', icon: 'bg-purple-500 text-white', text: 'text-purple-600', line: 'bg-purple-400' },
+    }
 
     const getStatWidth = (card, item) => {
         if (item.label === 'Avg Rating') {
@@ -223,13 +234,20 @@ function AdminDashboard () {
     const hasError = bookingState?.error || serviceState?.error || reviewState?.error || faqState?.error || contactState?.error || bannerState?.error
 
     return (
-        <section className='relative'>
-            <div className='mb-5 rounded-2xl border border-red-100 bg-gradient-to-r from-white via-white to-red-50 p-4 shadow-sm sm:p-5'>
-                <p className='inline-flex items-center rounded-full border border-red-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-red-700'>
-                    Live Analytics
-                </p>
-                <h1 className='mt-3 text-2xl font-extrabold tracking-tight text-gray-900'>Dashboard Overview</h1>
-                <p className='mt-1 text-sm text-gray-600'>All dynamic website stats in one place.</p>
+        <section className='relative overflow-hidden bg-[#f5f9fe]'>
+            <div className='mb-4 grid min-h-[132px] items-center overflow-hidden rounded-2xl border border-white bg-gradient-to-r from-white via-[#f7fbff] to-[#eaf3fc] px-5 py-5 shadow-sm sm:px-6 lg:grid-cols-[1fr_310px]'>
+                <div className='relative z-10'>
+                    <p className='inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-red-600'><FiBarChart2 className='h-3.5 w-3.5' /> Dashboard Overview</p>
+                    <h1 className='mt-2 text-2xl font-extrabold tracking-tight text-[#112744] sm:text-3xl'>Dashboard Overview</h1>
+                    <p className='mt-1 text-xs text-[#6b82a0] sm:text-sm'>Here’s a quick snapshot of your car service business performance.</p>
+                </div>
+                <div className='relative hidden h-full overflow-hidden lg:block'>
+                    <div className='absolute -right-8 -top-16 h-40 w-40 rotate-[38deg] border-[14px] border-red-200/70' />
+                    <img src={dashboardImage} alt='' className='absolute -right-20 bottom-[-68px] h-52 w-80 object-cover object-right opacity-55 mix-blend-multiply' />
+                </div>
+                <div className='absolute right-4 top-5 z-10 hidden items-center gap-2 rounded-lg border border-[#e0e9f3] bg-white px-3 py-2 text-[10px] font-semibold text-[#667e9b] shadow-sm sm:flex lg:right-5 lg:top-5'>
+                    <FiCalendar className='h-4 w-4 text-[#6883a2]' /> Mon, 7 Apr 2025 - Sun, 13 Apr 2025 <span className='text-xs'>⌄</span>
+                </div>
             </div>
 
             {hasError && (
@@ -241,13 +259,17 @@ function AdminDashboard () {
             <div className='mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4'>
                 {quickStats.map((item) => {
                     const Icon = item.icon
+                    const style = toneStyles[item.tone]
                     return (
-                        <article key={item.label} className={`rounded-xl border p-3 shadow-sm ${item.tone}`}>
-                            <div className='flex items-center justify-between gap-2'>
-                                <p className='text-xs font-semibold uppercase tracking-wide'>{item.label}</p>
-                                <Icon className='h-4 w-4' />
+                        <article key={item.label} className={`relative overflow-hidden rounded-xl border-l-4 p-3.5 shadow-sm ${style.card}`}>
+                            <div className='flex items-start justify-between gap-2'>
+                                <div className='flex items-center gap-3'>
+                                    <span className={`flex h-10 w-10 items-center justify-center rounded-xl shadow-sm ${style.icon}`}><Icon className='h-5 w-5' /></span>
+                                    <div><p className='text-[11px] font-semibold text-[#647b98]'>{item.label}</p><p className='mt-1 text-2xl font-extrabold text-[#102441]'>{item.value}</p></div>
+                                </div>
+                                <FiMoreVertical className={`h-4 w-4 ${style.text}`} />
                             </div>
-                            <p className='mt-2 text-2xl font-extrabold'>{item.value}</p>
+                            <div className='mt-3 flex items-end justify-between'><p className={`text-[10px] font-bold ${style.text}`}>↗ {item.change}</p><p className='text-[10px] text-[#8093aa]'>vs last week</p><div className='h-7 w-24 overflow-hidden'><div className={`mt-4 h-5 w-28 -skew-y-6 rounded-t-full opacity-30 ${style.line}`} /></div></div>
                         </article>
                     )
                 })}
@@ -259,35 +281,30 @@ function AdminDashboard () {
                     return (
                         <article
                             key={card.label}
-                            className='group relative overflow-hidden rounded-2xl border border-red-100/80 bg-gradient-to-br from-white via-white to-red-50/40 p-4 shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-red-100'
+                            className={`group relative overflow-hidden rounded-xl border border-l-4 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${card.label === 'Bookings' ? 'border-red-200 border-l-red-400' : card.label === 'Services' ? 'border-blue-200 border-l-blue-400' : card.label === 'Reviews' ? 'border-purple-200 border-l-purple-500' : card.label === 'FAQs' ? 'border-cyan-200 border-l-cyan-500' : card.label === 'Contacts' ? 'border-pink-200 border-l-pink-500' : 'border-purple-200 border-l-purple-500'}`}
                         >
-                            <div className='pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-red-100/40 blur-2xl transition group-hover:bg-red-200/50' />
-
-                            <div className='flex items-start justify-between gap-3 border-b border-red-100/70 pb-3'>
-                                <div>
-                                    <p className='text-xs font-semibold uppercase tracking-wide text-gray-500'>{card.label}</p>
-                                    <p className='mt-2 text-3xl font-extrabold text-gray-900'>{card.value}</p>
-                                </div>
-                                <span className={`inline-flex h-10 w-10 items-center justify-center rounded-lg border shadow-sm ${card.tone}`}>
+                            <div className='flex items-start justify-between gap-3 pb-3'>
+                                <div className='flex items-center gap-3'><span className={`inline-flex h-10 w-10 items-center justify-center rounded-full shadow-sm ${card.label === 'Bookings' ? 'bg-red-100 text-red-600' : card.label === 'Services' ? 'bg-blue-100 text-blue-600' : card.label === 'Reviews' ? 'bg-purple-100 text-purple-600' : card.label === 'FAQs' ? 'bg-cyan-100 text-cyan-600' : card.label === 'Contacts' ? 'bg-pink-100 text-pink-600' : 'bg-purple-100 text-purple-600'}`}>
                                     <Icon className='h-5 w-5' />
-                                </span>
+                                </span><div><p className='text-sm font-bold text-[#607a9c]'>{card.label}</p><p className='mt-1 text-2xl font-extrabold text-[#102441]'>{card.value}</p></div></div>
+                                <button type='button' className='flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-blue-600 transition hover:bg-blue-50' aria-label={`Open ${card.label}`}><FiArrowRight className='h-4 w-4' /></button>
                             </div>
 
                             <div className='mt-3 space-y-2'>
                                 {card.stats.map((item) => (
                                     <div
                                         key={`${card.label}-${item.label}`}
-                                        className='flex items-center justify-between rounded-lg border border-white/80 bg-white/80 px-2.5 py-2 shadow-sm transition group-hover:bg-white'
+                                        className='flex items-center justify-between px-2 py-1.5'
                                     >
                                         <div className='min-w-0 flex-1'>
                                             <div className='flex items-center justify-between gap-2'>
                                                 <span className='inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600'>
-                                                    <FiEye className='h-3.5 w-3.5 text-gray-400' />
+                                                    <span className={`h-3.5 w-3.5 rounded-full ${item.bg || 'bg-gray-400'}`} />
                                                     {item.label}
                                                 </span>
-                                                <span className={`text-sm font-extrabold ${item.color}`}>{item.value}</span>
+                                                <span className={`text-xs font-extrabold ${item.color}`}>{item.value}</span>
                                             </div>
-                                            <div className='mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-200'>
+                                            <div className='mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#e8eff7]'>
                                                 <div
                                                     className={`h-full rounded-full ${item.bg || 'bg-red-500'}`}
                                                     style={{ width: `${getStatWidth(card, item)}%` }}

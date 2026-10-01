@@ -22,6 +22,7 @@ import {
     FiMenu,
     FiX,
 } from 'react-icons/fi'
+import sidebarHero from '../pictures/banner3.jpg'
 
 const getGroupFromPath = (path) => {
     if (path === '/admin') return 'dashboard'
@@ -46,11 +47,11 @@ function SideBar () {
         setIsMobileOpen(false)
     }, [pathname])
 
-    const groupClass = 'overflow-hidden rounded-2xl border border-gray-200 bg-white/95 shadow-sm'
-    const summaryClass = 'flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition'
-    const navItemBaseClass = 'mx-1 flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition'
-    const navItemInactiveClass = 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900'
-    const navItemActiveClass = 'bg-gradient-to-r from-red-50 to-rose-50 text-red-700 ring-1 ring-red-200 shadow-sm'
+    const groupClass = 'overflow-hidden rounded-2xl'
+    const summaryClass = 'flex min-h-[62px] w-full items-center justify-between gap-3 rounded-2xl border px-5 py-3 text-left text-base font-bold transition'
+    const navItemBaseClass = 'mx-1 flex min-h-[52px] items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition'
+    const navItemInactiveClass = 'text-[#243957] hover:bg-red-50 hover:text-red-700'
+    const navItemActiveClass = 'bg-gradient-to-r from-red-50 to-rose-50 text-[#1c3150] shadow-sm ring-1 ring-red-100'
 
     const closeMobile = () => setIsMobileOpen(false)
     const toggleGroup = (groupKey) => setOpenGroup((prev) => (prev === groupKey ? null : groupKey))
@@ -142,9 +143,13 @@ function SideBar () {
 
     const menuContent = (
         <>
-            <div className='mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3'>
-                <p className='text-xs font-semibold uppercase tracking-wide text-red-700'>Admin Panel</p>
-                <p className='mt-1 text-sm font-extrabold text-gray-900'>Website Navigation</p>
+            <div className='relative mb-4 h-[132px] overflow-hidden rounded-2xl bg-[#101b2e] shadow-lg'>
+                <img src={sidebarHero} alt='' className='absolute inset-0 h-full w-full object-cover opacity-45' />
+                <div className='absolute inset-0 bg-gradient-to-r from-[#0b1527] via-[#101b2e]/90 to-transparent' />
+                <div className='relative flex h-full items-center gap-3 px-5'>
+                    <span className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-600 text-white shadow-lg shadow-red-900/30'><FiTool className='h-6 w-6' /></span>
+                    <div><p className='text-[10px] font-bold uppercase tracking-[0.22em] text-slate-300'>Admin Panel</p><p className='mt-1 text-xl font-extrabold text-white'>Website Navigation</p><p className='mt-1 text-xs text-slate-300'>Manage your website content easily</p></div>
+                </div>
             </div>
 
             <div className='space-y-3'>
@@ -156,14 +161,14 @@ function SideBar () {
                         <div key={section.key} className={groupClass}>
                             <button
                                 type='button'
-                                className={`${summaryClass} ${isOpen ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-sm' : 'text-gray-800 hover:bg-gray-50'}`}
+                                className={`${summaryClass} ${isOpen ? 'border-red-500 bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-200' : 'border-[#e5edf6] bg-white text-[#243957] shadow-sm hover:border-red-100 hover:bg-red-50/40'}`}
                                 onClick={() => toggleGroup(section.key)}
                             >
-                                <span className='inline-flex items-center gap-2'>
-                                    <SectionIcon className={`h-4 w-4 ${isOpen ? 'text-white' : 'text-red-600'}`} />
+                                <span className='inline-flex items-center gap-3'>
+                                    <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${isOpen ? 'bg-red-700 text-white' : 'bg-red-50 text-red-600'}`}><SectionIcon className='h-5 w-5' /></span>
                                     {section.label}
                                 </span>
-                                <FiChevronDown className={`h-4 w-4 transition ${isOpen ? 'rotate-180 text-white/90' : 'text-gray-500'}`} />
+                                <FiChevronDown className={`h-5 w-5 transition ${isOpen ? 'rotate-180 text-white/90' : 'text-[#64748b]'}`} />
                             </button>
 
                             <AnimatePresence initial={false}>
@@ -176,7 +181,7 @@ function SideBar () {
                                         transition={{ duration: 0.24, ease: 'easeInOut' }}
                                         className='overflow-hidden'
                                     >
-                                        <div className='mt-3 space-y-2 px-3 pb-3'>
+                                        <div className='mt-3 space-y-2 rounded-2xl border-l-4 border-red-500 bg-white/70 px-2 pb-3 pt-1 shadow-sm'>
                                             {section.items.map((item) => {
                                                 const ItemIcon = item.icon
 
@@ -204,7 +209,8 @@ function SideBar () {
                                                     >
                                                         {({ isActive }) => (
                                                             <>
-                                                                <ItemIcon className={`h-4 w-4 ${isActive ? 'text-red-600' : 'text-gray-500'}`} />
+                                                                <span className={`h-2.5 w-2.5 rounded-full ${isActive ? 'bg-red-600' : 'bg-slate-300'}`} />
+                                                                <ItemIcon className={`h-5 w-5 rounded-lg p-1 ${isActive ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-500'}`} />
                                                                 {item.label}
                                                             </>
                                                         )}

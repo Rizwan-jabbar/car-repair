@@ -97,15 +97,16 @@ function ViewFaq () {
     }
 
     return (
-        <section className='w-full max-w-full'>
-            <div className='mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:mb-5 sm:rounded-2xl sm:bg-gradient-to-r sm:from-white sm:via-white sm:to-red-50 sm:p-5'>
+        <section className='w-full max-w-full bg-[#f5f9fe]'>
+            <div className='relative mb-5 overflow-hidden rounded-2xl border border-white bg-gradient-to-r from-white via-[#f9fbff] to-red-50/70 p-5 shadow-sm sm:p-6'>
                 <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
                     <div>
-                        <h1 className='text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl'>View FAQs</h1>
-                        <p className='mt-1 text-sm text-gray-600'>Manage FAQ entries in a clean tabular view.</p>
+                        <p className='inline-flex rounded-full bg-red-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-red-600'>FAQ</p>
+                        <h1 className='mt-2 text-2xl font-extrabold tracking-tight text-[#102441] sm:text-3xl'>View FAQs</h1>
+                        <p className='mt-1 text-sm text-[#6c83a2]'>Manage FAQ entries in a clean tabular view.</p>
                     </div>
 
-                    <div className='inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 shadow-sm'>
+                    <div className='inline-flex items-center gap-2 rounded-2xl border border-red-100 bg-white px-4 py-3 text-xs font-semibold text-red-700 shadow-sm'>
                         <FiHelpCircle className='h-4 w-4 text-red-600' />
                         {visibleFaqCount} visible FAQs
                     </div>
@@ -113,8 +114,8 @@ function ViewFaq () {
             </div>
 
             {loading && (
-                <div className='rounded-xl border border-gray-200 bg-white p-4 text-sm font-semibold text-gray-600'>
-                    Loading FAQs...
+                <div className='flex items-center justify-center rounded-xl border border-gray-200 bg-white p-8'>
+                    <span className='h-7 w-7 animate-spin rounded-full border-4 border-red-100 border-t-red-600' aria-label='Loading FAQs' />
                 </div>
             )}
 
@@ -126,16 +127,16 @@ function ViewFaq () {
 
             {!loading && !error && (
                 <>
-                    <div className='hidden overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5 md:block'>
+                    <div className='hidden overflow-x-auto md:block'>
                         <table className='min-w-full text-left'>
-                            <thead className='border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white'>
+                            <thead className='bg-gradient-to-r from-[#1d2d48] to-[#536780] text-white'>
                                 <tr>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Category</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Question</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className='[&>tr:nth-child(even)]:bg-gray-50/40'>
+                            <tbody className='before:block before:h-3 before:content-["_"]'>
                                 {faqs.length === 0 ? (
                                     <tr>
                                         <td colSpan={3} className='px-4 py-6 text-center text-sm font-semibold text-gray-500'>
@@ -151,7 +152,7 @@ function ViewFaq () {
                                             <tr
                                                 key={id}
                                                 onClick={() => setSelectedFaq(faq)}
-                                                className='cursor-pointer border-b border-gray-100 transition hover:bg-red-50/40'
+                                                className='cursor-pointer bg-white shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md'
                                             >
                                                 <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{faq?.category || '-'}</td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>

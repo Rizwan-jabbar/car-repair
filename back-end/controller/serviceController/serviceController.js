@@ -1,8 +1,35 @@
 import Service from "../../models/servicesModel/servicesModel.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const toPublicImagePath = (req, file) => {
-    if (!file?.filename) return ''
-    return `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+const uploadsPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../uploads')
+
+const toPersistentImage = (file) => {
+    if (!file?.path || !file?.mimetype) return ''
+
+    const imageData = fs.readFileSync(file.path).toString('base64')
+    return `data:${file.mimetype};base64,${imageData}`
+}
+
+const migrateLegacyImage = (service) => {
+    if (!service?.image || !service.image.includes('/uploads/')) return false
+
+    let filename = ''
+    try {
+        filename = path.basename(new URL(service.image).pathname)
+    } catch {
+        filename = path.basename(service.image)
+    }
+
+    const filePath = path.join(uploadsPath, filename)
+    if (!filename || !fs.existsSync(filePath)) return false
+
+    const imageData = fs.readFileSync(filePath).toString('base64')
+    const extension = path.extname(filename).toLowerCase()
+    const mimeType = extension === '.jpg' || extension === '.jpeg' ? 'image/jpeg' : `image/${extension.slice(1)}`
+    service.image = `data:${mimeType};base64,${imageData}`
+    return true
 }
 
 const addService = async (req, res) => {
@@ -16,7 +43,7 @@ const addService = async (req, res) => {
             description,
             price,
             isAvailable: isAvailable !== 'false',
-            image: toPublicImagePath(req, req.file),
+            image: toPersistentImage(req.file),
         });
         return res.status(201).json({ message: 'Service added successfully', service });
     } catch (error) {
@@ -31,6 +58,9 @@ const addService = async (req, res) => {
 const getServices = async (req, res) => {
     try {
         const services = await Service.find();
+        await Promise.all(services.map(async (service) => {
+            if (migrateLegacyImage(service)) await service.save()
+        }))
         return res.status(200).json({ services });  
     } catch (error) {
         return res.status(500).json({ message: 'Internal server error' });

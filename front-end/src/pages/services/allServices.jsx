@@ -67,8 +67,8 @@ function AllServices () {
 
 				<div className='mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'>
 					{loading && (
-						<motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card sm:col-span-2 lg:col-span-3' variants={fadeUp}>
-							Loading services...
+						<motion.div className='flex min-h-40 items-center justify-center p-6 cr-card sm:col-span-2 lg:col-span-3' variants={fadeUp} role='status' aria-label='Loading services'>
+										<span className='h-8 w-8 animate-spin rounded-full border-4 border-red-100 border-t-red-600' />
 						</motion.div>
 					)}
 
