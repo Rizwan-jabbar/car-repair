@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react'
-import { FiEdit3, FiStar } from 'react-icons/fi'
+import { FiEdit3, FiStar, FiCheckCircle, FiTool, FiArrowUpRight } from 'react-icons/fi'
 import { motion } from 'framer-motion'
 import { NavLink, useNavigate } from 'react-router-dom'
+import reviewImage from '../../pictures/banner3.jpg'
 
 import { cardIn, fadeUp, sectionStagger } from '../../utils/motion'
 import { fetchReviews } from '../../rtk/thunks/reviewThunk/reviewThunk'
@@ -13,12 +14,12 @@ function CustomerReviews() {
     const { items = [], loading, error } = useSelector((state) => state.review)
     const reviews = Array.isArray(items) ? items : []
     const visibleReviews = useMemo(
-        () => reviews.filter((r) => r?.visible === true || r?.isVisible === true),
+        () => reviews.filter((r) => r?.visible !== false && r?.isVisible !== false),
         [reviews],
     )
     const errorMessage = typeof error === 'string' ? error : (error?.message || 'Failed to load reviews')
 
-    const previewReviews = useMemo(() => visibleReviews.slice(0, 3), [visibleReviews])
+    const previewReviews = useMemo(() => visibleReviews.slice(0, 5), [visibleReviews])
 
     const avgRating = useMemo(() => {
         if (visibleReviews.length === 0) return 0
@@ -59,65 +60,60 @@ function CustomerReviews() {
             animate='show'
             variants={sectionStagger}
         >
-            <div className='pointer-events-none absolute inset-0 -z-10'>
-                <div className='absolute -top-28 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-red-500/10 blur-3xl' />
-                <div className='absolute -bottom-40 right-0 h-96 w-96 rounded-full bg-gray-900/5 blur-3xl' />
-            </div>
-
             <div className='cr-container cr-section-pad'>
-                <div className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end'>
+                <div className='grid items-center gap-8 lg:grid-cols-[1.05fr_1fr]'>
                     <motion.div variants={fadeUp}>
-                        <p className='inline-flex items-center gap-4 text-xs font-bold uppercase tracking-[0.16em] text-red-600'>
+                        <p className='inline-flex items-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-red-600'>
                             <span className='h-px w-9 bg-red-500' />
                             Customer Reviews
                             <span className='h-px w-9 bg-red-500' />
                         </p>
-                        <h2 className='mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
-                            Real feedback from real customers
+                        <h2 className='mt-3 max-w-xl text-3xl font-extrabold leading-tight tracking-tight text-[#102957] sm:text-4xl lg:text-[2.65rem]'>
+                            Real feedback from our valued customers
                         </h2>
-                        <p className='mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-relaxed'>
-                            See what people say about our repairs, turnaround time, and service quality.
+                        <p className='mt-3 max-w-xl text-sm leading-6 text-[#31557d] sm:text-base'>
+                            See what our customers have to say about our reliable auto repair services, professional team, and commitment to quality.
                         </p>
                     </motion.div>
 
-                    <motion.div className='w-full max-w-sm p-5 cr-card' variants={cardIn}>
-                        <div className='flex items-center justify-between gap-4'>
+                    <motion.div className='relative min-h-[180px] overflow-hidden rounded-xl border border-[#e1e9f1] bg-white shadow-sm' variants={cardIn}>
+                        <img src={reviewImage} alt='' className='absolute inset-0 h-full w-full object-cover object-center opacity-85' />
+                        <div className='absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/10' />
+                        <div className='relative max-w-[390px] p-5'>
+                            <div className='flex items-center justify-between gap-4'>
                             <div>
-                                <p className='text-sm font-semibold text-gray-600'>Average rating</p>
-                                <p className='mt-1 text-3xl font-extrabold text-gray-900'>{avgRating}</p>
+                                <p className='text-xs font-bold text-[#31557d]'>Average Rating</p>
+                                <p className='mt-1 text-3xl font-extrabold text-[#102957]'>{avgRating}</p>
                             </div>
                             <div className='text-right'>
                                 <StarRow rating={Math.round(avgRating)} />
-                                <p className='mt-2 text-xs font-semibold text-gray-500'>{visibleReviews.length} reviews</p>
+                                <p className='mt-2 text-[11px] font-semibold text-[#527292]'>Based on {visibleReviews.length} reviews</p>
                             </div>
+                            </div>
+
+                            <div className='mt-3 rounded-lg border border-[#dae6f0] bg-[#f4f8fc] p-2.5'>
+                                <p className='text-[11px] font-bold text-[#17345c]'>Top highlights</p>
+                                <p className='mt-1 text-[10px] text-[#527292]'>Reliable Service &nbsp;•&nbsp; Skilled Technicians &nbsp;•&nbsp; Fair Pricing</p>
+                            </div>
+
+                            <NavLink to='/feedback' className='mt-2.5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-red-700'>
+                                <FiEdit3 className='h-3.5 w-3.5' aria-hidden='true' /> Add your review
+                            </NavLink>
+
+                            <p className='mt-1 text-center text-[10px] font-semibold text-[#527292]'>Takes less than 2 minutes.</p>
                         </div>
-
-                        <div className='mt-4 rounded-xl border border-gray-200 bg-gray-50 p-3'>
-                            <p className='text-xs font-semibold text-gray-700'>Top highlights</p>
-                            <p className='mt-1 text-xs text-gray-600'>Transparency • Fast service • Friendly support</p>
-                        </div>
-
-                        <NavLink
-                            to='/feedback'
-                            className='mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 active:translate-y-0'
-                        >
-                            <FiEdit3 className='h-4 w-4' aria-hidden='true' />
-                            Add your review
-                        </NavLink>
-
-                        <p className='mt-2 text-center text-xs font-semibold text-gray-500'>Takes less than a minute.</p>
                     </motion.div>
                 </div>
 
-                <div className='mt-10 grid gap-5 lg:grid-cols-3'>
+                <div className='mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5'>
                     {loading && (
-                        <motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card lg:col-span-3' variants={fadeUp}>
+                        <motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card sm:col-span-2 lg:col-span-5' variants={fadeUp}>
                             Loading latest reviews...
                         </motion.div>
                     )}
 
                     {!loading && error && (
-                        <motion.div className='p-6 cr-card lg:col-span-3' variants={fadeUp}>
+                        <motion.div className='p-6 cr-card sm:col-span-2 lg:col-span-5' variants={fadeUp}>
                             <p className='text-sm font-semibold text-red-700'>{errorMessage}</p>
                             <button
                                 type='button'
@@ -130,7 +126,7 @@ function CustomerReviews() {
                     )}
 
                     {!loading && !error && previewReviews.length === 0 && (
-                        <motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card lg:col-span-3' variants={fadeUp}>
+                        <motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card sm:col-span-2 lg:col-span-5' variants={fadeUp}>
                             No reviews yet. Be the first to share your experience.
                         </motion.div>
                     )}
@@ -138,44 +134,31 @@ function CustomerReviews() {
                     {!loading && !error && previewReviews.map((r, idx) => (
                         <motion.article
                             key={r._id ?? r.id ?? idx}
-                            className='group p-6 cr-card cr-card-hover'
+                            className='group flex min-h-[250px] flex-col rounded-lg border border-[#dfe8f0] bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md'
                             variants={cardIn}
                             whileHover={{ y: -6 }}
                         >
-                            <div className='flex items-start justify-between gap-4'>
+                            <div className='flex items-start gap-3'>
+                                <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-red-500 text-red-600'><FiTool className='h-5 w-5' /></div>
                                 <div className='min-w-0'>
-                                    <p className='truncate text-sm font-extrabold text-gray-900'>{r.name}</p>
-                                    <div className='mt-2 flex flex-wrap items-center gap-x-3 gap-y-1'>
+                                    <p className='truncate text-xs font-extrabold text-[#17345c]'>{r.service || 'General Service'}</p>
+                                    <div className='mt-1 flex flex-wrap items-center gap-1'>
                                         <StarRow rating={Number(r?.rating) || 0} />
-                                        <span className='text-xs font-semibold text-gray-500'>{formatReviewDate(r)}</span>
+                                        <span className='text-[9px] font-semibold text-[#6c89a3]'>{formatReviewDate(r)}</span>
                                     </div>
                                 </div>
-
-                                {r.verified && (
-                                    <span className='shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700'>
-                                        Verified service
-                                    </span>
-                                )}
+                                <span className='ml-auto flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f3f7fb] text-[#17345c] transition group-hover:bg-red-600 group-hover:text-white'><FiArrowUpRight className='h-4 w-4' /></span>
                             </div>
 
-                            <h3 className='mt-4 text-base font-extrabold tracking-tight text-gray-900'>
-                                {r.title}
-                            </h3>
+                            <h3 className='mt-3 line-clamp-2 text-xs font-extrabold leading-4 text-[#17345c]'>{r.title || 'Customer Experience'}</h3>
+                            <p className='mt-2 flex-1 text-xs leading-5 text-[#31557d]'>&ldquo;{r.body}&rdquo;</p>
 
-                            <p className='mt-2 text-sm leading-6 text-gray-600'>
-                                {r.body}
-                            </p>
-
-                            <div className='mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 pt-4'>
-                                <span className='text-xs font-semibold text-gray-500'>Service: {r.service}</span>
-
-                                <button
-                                    type='button'
-                                    className='rounded-md border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-800 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2 active:translate-y-0'
-                                >
-                                    Helpful
-                                </button>
+                            <div className='mt-4 flex items-center gap-2 border-t border-[#edf1f5] pt-3'>
+                                <span className='flex h-7 w-7 items-center justify-center rounded-full bg-[#153b64] text-xs font-bold text-white'>{(r.name || 'C').charAt(0)}</span>
+                                <span className='text-[10px] font-bold text-[#17345c]'>{r.name || 'Customer'}<span className='block text-[9px] font-normal text-[#7190aa]'>{r.verified ? 'Verified Customer' : 'Customer'}</span></span>
+                                {r.verified && <span className='ml-auto inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[9px] font-bold text-emerald-700'><FiCheckCircle className='h-3 w-3' /> Verified</span>}
                             </div>
+                            <span className='mt-3 inline-flex w-fit items-center gap-1 rounded-full border border-[#dfe8f0] bg-[#f7fafd] px-2.5 py-1 text-[9px] font-bold text-[#527292]'><FiTool className='h-3 w-3 text-red-600' /> {r.service || 'General Service'}</span>
                         </motion.article>
                     ))}
                 </div>

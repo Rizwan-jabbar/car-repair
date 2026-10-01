@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { FiCalendar, FiClock, FiMapPin, FiPhone, FiTool, FiUser, FiMail, FiCheckCircle } from 'react-icons/fi'
+import { FiCalendar, FiClock, FiMapPin, FiPhone, FiTool, FiUser, FiMail, FiCheckCircle, FiShield, FiZap, FiAward, FiArrowRight } from 'react-icons/fi'
 import { motion } from 'framer-motion'
 import { NavLink, useSearchParams } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { bookRepair } from '../../rtk/thunks/bookingThunk/bookingThunk'
 import { resetBooking } from '../../rtk/slices/bookRepair/bookRepair'
+import bookingImage from '../../pictures/banner2.jpg'
 
 function BookRepair () {
     const dispatch = useDispatch()
@@ -123,6 +124,7 @@ function BookRepair () {
         <motion.section
             id='book-repair'
             className='cr-section cr-section-muted'
+            style={{ backgroundImage: `linear-gradient(90deg, rgba(248,250,252,.98) 0%, rgba(248,250,252,.92) 48%, rgba(248,250,252,.35) 100%), url(${bookingImage})`, backgroundSize: 'cover', backgroundPosition: 'right top' }}
             initial='hidden'
             whileInView='show'
             viewport={viewportOnce}
@@ -141,14 +143,19 @@ function BookRepair () {
                             Book Repair
                             <span className='h-px w-9 bg-red-500' />
                         </p>
-                        <h2 className='mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
-                            Get a quick booking in minutes
+                        <h2 className='mt-3 max-w-md text-3xl font-extrabold leading-tight tracking-tight text-[#102957] sm:text-4xl'>
+                            Get a quick booking <span className='text-red-600'>in minutes</span>
                         </h2>
                         <p className='mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-relaxed'>
                             Share your details and we’ll confirm the schedule and estimate. No hidden charges—ever.
                         </p>
                     </motion.div>
 
+                    <div className='flex flex-wrap items-center gap-3 text-[10px] font-bold text-[#17345c]'>
+                        <span className='flex items-center gap-2 rounded-full border border-[#dfe8f0] bg-white px-3 py-2'><FiShield className='h-5 w-5 text-red-600' />Trusted</span>
+                        <span className='flex items-center gap-2 rounded-full border border-[#dfe8f0] bg-white px-3 py-2'><FiZap className='h-5 w-5 text-red-600' />Fast Service</span>
+                        <span className='flex items-center gap-2 rounded-full border border-[#dfe8f0] bg-white px-3 py-2'><FiAward className='h-5 w-5 text-red-600' />Quality Parts</span>
+                    </div>
                     <motion.a
                         href='tel:+923001234567'
                         className='cr-btn-primary'
@@ -162,9 +169,13 @@ function BookRepair () {
 
                 <div className='mt-10 grid gap-6 lg:grid-cols-5'>
                     <div className='lg:col-span-3'>
-                        <motion.div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8' variants={cardIn}>
+                        <motion.div className='overflow-hidden rounded-xl border border-[#dfe8f0] bg-white shadow-sm' variants={cardIn}>
+                            <div className='flex items-center justify-between border-b border-[#e5edf4] bg-white px-5 py-4 sm:px-7'>
+                                <div className='flex items-center gap-3'><span className='flex h-10 w-10 items-center justify-center rounded-full bg-red-50 text-red-600'><FiCalendar className='h-5 w-5' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Booking Details</p><p className='text-[10px] text-[#6d86a0]'>Fill in the information below to schedule your car repair service.</p></div></div>
+                                <span className='hidden items-center gap-1 rounded-full bg-red-50 px-3 py-2 text-[10px] font-bold text-red-600 sm:flex'><FiTool /> Quick & Easy</span>
+                            </div>
                             {!booking ? (
-                                <form onSubmit={onSubmit} className='space-y-6'>
+                                <form onSubmit={onSubmit} className='booking-form space-y-4 p-5 sm:p-7'>
                                     <div className='grid gap-4 sm:grid-cols-2'>
                                         <label className='block'>
                                             <span className='flex items-center gap-2 text-sm font-semibold text-gray-900'>
@@ -403,36 +414,27 @@ function BookRepair () {
 
                     <aside className='lg:col-span-2'>
                         <div className='sticky top-24 space-y-4'>
-                            <motion.div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm' variants={fadeUp}>
-                                <p className='text-sm font-extrabold text-gray-900'>What happens next?</p>
-                                <ol className='mt-3 space-y-3 text-sm text-gray-700'>
-                                    <li className='flex gap-3'>
-                                        <span className='mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-50 text-xs font-extrabold text-red-600 ring-1 ring-red-100'>1</span>
-                                        <span>We review your request and confirm the appointment.</span>
-                                    </li>
-                                    <li className='flex gap-3'>
-                                        <span className='mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-50 text-xs font-extrabold text-red-600 ring-1 ring-red-100'>2</span>
-                                        <span>We share an estimate before starting any repair.</span>
-                                    </li>
-                                    <li className='flex gap-3'>
-                                        <span className='mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-50 text-xs font-extrabold text-red-600 ring-1 ring-red-100'>3</span>
-                                        <span>Service is completed and backed with warranty.</span>
-                                    </li>
-                                </ol>
+                            <motion.div className='relative min-h-[250px] overflow-hidden rounded-xl border border-[#1d3448] bg-[#101f33] p-6 text-white shadow-sm' variants={fadeUp}>
+                                <img src={bookingImage} alt='' className='absolute inset-0 h-full w-full object-cover object-right opacity-55' />
+                                <div className='absolute inset-0 bg-gradient-to-r from-[#101f33] via-[#101f33]/90 to-[#101f33]/35' />
+                                <div className='relative border-l-4 border-red-600 pl-4'><p className='text-[10px] font-bold uppercase tracking-[0.18em] text-red-400'>Why choose us</p><h3 className='mt-2 text-3xl font-extrabold leading-tight'>Your Car, Our <span className='text-red-500'>Priority</span></h3></div>
+                                <ul className='relative mt-6 space-y-3 text-xs text-gray-100'>
+                                    <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Expert & certified mechanics</li>
+                                    <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Modern diagnostic tools</li>
+                                    <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Fast and reliable service</li>
+                                    <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Affordable and transparent pricing</li>
+                                </ul>
                             </motion.div>
 
-                            <motion.div className='rounded-2xl border border-gray-200 bg-gradient-to-br from-white to-red-50 p-6 shadow-sm' variants={fadeUp}>
-                                <p className='text-sm font-extrabold text-gray-900'>Need help choosing a service?</p>
-                                <p className='mt-1 text-sm leading-6 text-gray-600'>Call us and we’ll guide you based on the symptoms.</p>
-                                <motion.a
-                                    href='tel:+923001234567'
-                                    className='mt-4 inline-flex w-full items-center justify-center rounded-md bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 active:translate-y-0'
-                                    whileHover={{ y: -2 }}
-                                    whileTap={{ scale: 0.98 }}
-                                >
-                                    Call: +92 300 1234567
-                                </motion.a>
+                            <motion.div className='rounded-xl border border-[#dfe8f0] bg-white p-5 shadow-sm' variants={fadeUp}>
+                                <div className='flex items-center gap-3'><span className='flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600'><FiPhone className='h-5 w-5' /></span><div><p className='text-xs font-extrabold text-[#17345c]'>Need help choosing a service?</p><p className='mt-1 text-[10px] text-[#6d86a0]'>Call us and we’ll guide you based on the symptoms.</p></div></div>
+                                <motion.a href='tel:+923001234567' className='mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-red-700' whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>Call: +92 300 1234567 <FiArrowRight /></motion.a>
                             </motion.div>
+
+                            <motion.div className='rounded-xl border border-red-100 bg-white p-5 shadow-sm' variants={fadeUp}>
+                                <div className='flex items-start gap-3 border-l-2 border-red-600 pl-4'><FiTool className='mt-1 h-6 w-6 text-red-600' /><div><p className='text-xs font-extrabold text-[#17345c]'>Quick Service. Better Performance.</p><p className='mt-1 text-[10px] leading-5 text-[#6d86a0]'>Keep your car in top condition with our professional repair services.</p></div></div>
+                            </motion.div>
+
                         </div>
                     </aside>
                 </div>

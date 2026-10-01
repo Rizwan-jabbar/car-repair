@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { FiEye, FiEyeOff, FiLock, FiMail } from 'react-icons/fi'
+import { FiEye, FiEyeOff, FiLock, FiMail, FiUser, FiZap, FiHeadphones, FiArrowRight, FiShield } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import { loginUser } from '../../rtk/thunks/userThunk/userThunk'
+import logo from '../../pictures/mainLogo.png'
+import { getMediaUrl } from '../../rtk/utils/apiUrl'
 
 function Login () {
     const dispatch = useDispatch()
@@ -11,6 +13,7 @@ function Login () {
     const [showPassword, setShowPassword] = useState(false)
     const [submitted, setSubmitted] = useState(false)
     const [form, setForm] = useState({ email: '', password: '', remember: true })
+    const loginBackground = getMediaUrl('/uploads/login-picture.png')
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -27,74 +30,58 @@ function Login () {
     }
 
     return (
-        <section className='cr-section cr-section-muted overflow-hidden'>
+        <section className='cr-section cr-section-muted overflow-hidden' style={{ backgroundImage: `linear-gradient(90deg, rgba(248,250,252,.95), rgba(248,250,252,.82)), url(${loginBackground})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <div className='pointer-events-none absolute inset-0 -z-10'>
                 <div className='absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-red-500/10 blur-3xl' />
                 <div className='absolute -bottom-40 right-0 h-96 w-96 rounded-full bg-gray-900/5 blur-3xl' />
             </div>
 
             <div className='cr-container cr-section-pad'>
-                <div className='mx-auto grid max-w-5xl items-center gap-8 lg:grid-cols-2'>
-                    <div className='space-y-4'>
-                        <p className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-semibold text-red-700'>
-                            <span className='h-2 w-2 rounded-full bg-red-600' />
-                            Account
-                        </p>
-                        <h1 className='text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl'>
-                            Welcome back
+                <div className='mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_0.95fr]'>
+                    <div className='space-y-5'>
+                        <Link to='/' className='inline-flex items-center gap-3'><img src={logo} alt='AutoSphere logo' className='h-14 w-auto object-contain' /></Link>
+                        <p className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-extrabold text-red-600'><FiUser className='h-4 w-4' /> Account <span className='h-px w-8 bg-red-500' /></p>
+                        <h1 className='max-w-lg text-4xl font-extrabold leading-tight tracking-tight text-[#102957] sm:text-5xl'>
+                            Welcome <span className='text-red-600'>Back</span>
                         </h1>
-                        <p className='max-w-md text-sm leading-6 text-gray-600 sm:text-base'>
-                            Login to manage bookings and get faster support.
+                        <p className='max-w-md text-base leading-7 text-[#526b84] sm:text-lg'>
+                            Login to manage your bookings, track your repairs and get faster support.
                         </p>
 
                         <div className='grid gap-3 sm:grid-cols-2'>
-                            <div className='cr-card p-4'>
-                                <p className='text-xs font-semibold text-gray-500'>Fast booking</p>
-                                <p className='mt-1 text-sm font-extrabold text-gray-900'>Save your details</p>
+                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'>
+                                <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiZap className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Fast Booking</p><p className='mt-1 text-xs text-[#6d86a0]'>Save your time with quick and easy booking.</p></div><FiArrowRight className='ml-auto text-[#17345c]' />
                             </div>
-                            <div className='cr-card p-4'>
-                                <p className='text-xs font-semibold text-gray-500'>Support</p>
-                                <p className='mt-1 text-sm font-extrabold text-gray-900'>Priority assistance</p>
+                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'>
+                                <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiHeadphones className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>24/7 Support</p><p className='mt-1 text-xs text-[#6d86a0]'>We’re always here to help you.</p></div><FiArrowRight className='ml-auto text-[#17345c]' />
                             </div>
                         </div>
+                        <div className='hidden items-center gap-8 pt-10 text-xs text-[#526b84] sm:flex'><span className='flex items-center gap-2'><FiShield className='h-5 w-5 text-red-600' />Secure Login</span><span className='flex items-center gap-2'><FiLock className='h-5 w-5 text-red-600' />Trusted Platform</span><span className='flex items-center gap-2'><FiHeadphones className='h-5 w-5 text-red-600' />24/7 Support</span></div>
                     </div>
 
                     <div className='mx-auto w-full max-w-xl'>
-                        <div className='overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5'>
-                            <div className='border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white px-6 py-5 sm:px-8'>
-                                <p className='text-sm font-extrabold text-gray-900'>Login</p>
-                                <p className='mt-1 text-sm text-gray-600'>Use your email and password.</p>
+                        <div className='overflow-hidden rounded-2xl border border-[#dfe8f0] bg-white/95 shadow-xl ring-1 ring-black/5'>
+                            <div className='border-b border-[#edf1f5] px-6 py-6 sm:px-8'>
+                                <div className='flex items-center gap-4'><span className='flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600'><FiUser className='h-7 w-7' /></span><div><p className='text-2xl font-extrabold text-[#102957]'>Login</p><p className='mt-1 text-sm text-[#6d86a0]'>Use your email and password.</p></div></div>
                             </div>
 
                             {!submitted ? (
                                 <form onSubmit={onSubmit} className='space-y-5 px-6 py-6 sm:px-8 sm:py-8'>
                                     <label className='block'>
-                                        <span className='flex items-center gap-2 text-sm font-semibold text-gray-900'>
-                                            <FiMail className='h-4 w-4 text-gray-500' aria-hidden='true' />
-                                            Email
-                                        </span>
-                                        <input
-                                            type='email'
-                                            value={form.email}
-                                            onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-                                            placeholder='you@email.com'
-                                            className='cr-input'
-                                            required
-                                        />
+                                        <span className='text-sm font-bold text-[#17345c]'>Email</span>
+                                        <span className='relative mt-1 block'><FiMail className='pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#17345c]' /><input type='email' value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} placeholder='you@email.com' className='w-full rounded-md border border-[#d8e3ed] bg-white py-3 pl-11 pr-3 text-sm text-gray-900 outline-none transition placeholder:text-[#8ca3ba] focus:border-red-300 focus:ring-4 focus:ring-red-100' required /></span>
                                     </label>
 
                                     <label className='block'>
-                                        <span className='flex items-center gap-2 text-sm font-semibold text-gray-900'>
-                                            <FiLock className='h-4 w-4 text-gray-500' aria-hidden='true' />
-                                            Password
-                                        </span>
+                                        <span className='text-sm font-bold text-[#17345c]'>Password</span>
                                         <div className='relative'>
+                                            <FiLock className='pointer-events-none absolute left-3 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-[#17345c]' />
                                             <input
                                                 type={showPassword ? 'text' : 'password'}
                                                 value={form.password}
                                                 onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
                                                 placeholder='••••••••'
-                                                className='cr-input pr-12'
+                                                className='mt-1 w-full rounded-md border border-[#d8e3ed] bg-white py-3 pl-11 pr-12 text-sm text-gray-900 outline-none transition placeholder:text-[#8ca3ba] focus:border-red-300 focus:ring-4 focus:ring-red-100'
                                                 required
                                             />
                                             <button
@@ -136,8 +123,8 @@ function Login () {
                                         </div>
                                     )}
 
-                                    <button type='submit' className='cr-btn-primary w-full' disabled={loading}>
-                                        {loading ? 'Signing in…' : 'Continue'}
+                                    <button type='submit' className='inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700' disabled={loading}>
+                                        {loading ? 'Signing in…' : 'Continue'} <FiArrowRight />
                                     </button>
 
                                     <p className='text-center text-sm text-gray-600'>

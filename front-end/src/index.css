@@ -106,4 +106,16 @@
 	.cr-textarea {
 		@apply mt-2 w-full resize-none rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100;
 	}
+
+	.booking-form .cr-input {
+		@apply mt-1 rounded-md border-[#d8e3ed] px-3 py-2.5 text-xs shadow-none placeholder:text-[#8ca3ba] focus:border-red-300 focus:ring-4 focus:ring-red-100;
+	}
+
+	.booking-form .cr-textarea {
+		@apply mt-1 rounded-md border-[#d8e3ed] px-3 py-2.5 text-xs shadow-none placeholder:text-[#8ca3ba] focus:border-red-300 focus:ring-4 focus:ring-red-100;
+	}
+
+	.booking-form label > span {
+		@apply text-xs font-bold text-[#17345c];
+	}
 }

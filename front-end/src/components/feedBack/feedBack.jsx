@@ -94,39 +94,41 @@ function FeedBack () {
             </div>
 
             <div className='cr-container cr-section-pad'>
-                <div className='grid items-start gap-8 lg:grid-cols-5'>
-                    <motion.div className='space-y-3 lg:col-span-2' variants={fadeUp}>
-                        <p className='inline-flex items-center gap-4 text-xs font-bold uppercase tracking-[0.16em] text-red-600'>
+                <div className='overflow-hidden rounded-xl border border-[#dfe8f0] bg-white shadow-sm lg:grid lg:grid-cols-5'>
+                    <motion.div className='relative space-y-3 overflow-hidden p-6 sm:p-8 lg:col-span-2 lg:p-10' variants={fadeUp}>
+                        <div className='pointer-events-none absolute -left-14 bottom-0 h-48 w-48 rounded-full border-[18px] border-[#edf3f8]' />
+                        <p className='relative inline-flex items-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-red-600'>
                             <span className='h-px w-9 bg-red-500' />
-                            Feedback
+                            Share Your Experience
                             <span className='h-px w-9 bg-red-500' />
                         </p>
-                        <h3 className='mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
-                            Share your experience
+                        <h3 className='relative mt-3 max-w-sm text-3xl font-extrabold leading-tight tracking-tight text-[#102957] sm:text-4xl'>
+                            Your feedback helps us improve
                         </h3>
-                        <p className='max-w-sm text-sm leading-6 text-gray-600'>
-                            A quick rating + short message helps us improve.
+                        <p className='relative max-w-sm text-sm leading-6 text-[#31557d]'>
+                            Tell us about your experience with our auto service. Your review helps us serve you and others better.
                         </p>
+                        <div className='relative mt-8 grid grid-cols-3 gap-3 border-t border-[#e4ebf2] pt-5'>
+                            <div className='text-center'><FiTool className='mx-auto h-6 w-6 text-red-600' /><p className='mt-2 text-[10px] font-bold leading-3 text-[#17345c]'>Better<br />Service</p></div>
+                            <div className='border-x border-[#e4ebf2] text-center'><FiCheckCircle className='mx-auto h-6 w-6 text-red-600' /><p className='mt-2 text-[10px] font-bold leading-3 text-[#17345c]'>Higher<br />Standards</p></div>
+                            <div className='text-center'><FiStar className='mx-auto h-6 w-6 text-red-600' /><p className='mt-2 text-[10px] font-bold leading-3 text-[#17345c]'>A Stronger<br />Community</p></div>
+                        </div>
                     </motion.div>
 
-                    <motion.div className='lg:col-span-3' variants={cardIn}>
-                        <div className='overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5'>
-                            <div className='border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white px-6 py-5 sm:px-8'>
-                                <p className='text-sm font-extrabold text-gray-900'>Leave feedback</p>
-                                <p className='mt-1 text-sm text-gray-600'>No long forms—just the essentials.</p>
-                            </div>
+                    <motion.div className='border-l border-[#e4ebf2] lg:col-span-3' variants={cardIn}>
+                        <div className='overflow-hidden bg-white'>
 
                             {!created ? (
-                                <form onSubmit={onSubmit} className='space-y-6 px-6 py-6 sm:px-8 sm:py-8'>
+                                <form onSubmit={onSubmit} className='space-y-3 px-5 py-4 sm:px-7 sm:py-5'>
                                     <div>
                                         <div className='flex items-center justify-between gap-3'>
-                                            <p className='text-sm font-semibold text-gray-900'>Rating</p>
+                                            <p className='text-[11px] font-bold text-[#17345c]'>Your Rating <span className='text-red-600'>*</span></p>
                                             {touched.rating && errors.rating && (
                                                 <p className='text-xs font-semibold text-red-600'>{errors.rating}</p>
                                             )}
                                         </div>
 
-                                        <div className='mt-2 flex flex-wrap items-center gap-1.5'>
+                                        <div className='mt-1 flex flex-wrap items-center gap-1'>
                                             {Array.from({ length: 5 }).map((_, i) => {
                                                 const v = i + 1
                                                 const filled = v <= active
@@ -138,16 +140,16 @@ function FeedBack () {
                                                         onMouseLeave={() => setHoverRating(null)}
                                                         onClick={() => setRating(v)}
                                                         aria-label={`${v} star`}
-                                                        className='rounded-lg border border-transparent p-1.5 transition hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
+                                                        className='rounded-md border border-transparent p-1 transition hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
                                                     >
                                                         <FiStar
-                                                            className={filled ? 'h-5 w-5 text-amber-500' : 'h-5 w-5 text-gray-300'}
+                                                            className={filled ? 'h-6 w-6 text-amber-500' : 'h-6 w-6 text-gray-300'}
                                                             aria-hidden='true'
                                                         />
                                                     </button>
                                                 )
                                             })}
-                                            <span className='ml-2 rounded-full bg-gray-50 px-2.5 py-1 text-xs font-semibold text-gray-600 ring-1 ring-gray-200'>
+                                            <span className='ml-2 text-xs font-semibold text-[#527292]'>
                                                 {rating}/5
                                             </span>
                                         </div>
@@ -242,14 +244,14 @@ function FeedBack () {
                                     </div>
 
                                     <label className='block'>
-                                        <span className='text-sm font-semibold text-gray-900'>Review</span>
+                                        <span className='text-[11px] font-bold text-[#17345c]'>Your Review <span className='text-red-600'>*</span></span>
                                         <textarea
                                             value={form.body}
                                             onChange={(e) => setField('body', e.target.value)}
                                             onBlur={() => markTouched('body')}
                                             rows={4}
                                             placeholder='Write your review…'
-                                            className='mt-2 w-full resize-none rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                                            className='mt-1 w-full resize-none rounded-md border border-[#d8e3ed] bg-white px-3 py-2 text-xs text-gray-900 outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
                                         />
                                         {touched.body && errors.body && (
                                             <p className='mt-1 text-xs font-semibold text-red-600'>{errors.body}</p>
@@ -264,7 +266,7 @@ function FeedBack () {
 
                                     <button
                                         type='submit'
-                                        className='inline-flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 active:translate-y-0'
+                                        className='inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-6 py-2.5 text-xs font-bold text-white shadow-sm transition-all duration-200 ease-out hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 active:translate-y-0'
                                         disabled={loading}
                                     >
                                         <FiSend className='h-4 w-4' aria-hidden='true' />

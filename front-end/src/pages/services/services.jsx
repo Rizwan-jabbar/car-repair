@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { FiTool } from 'react-icons/fi'
+import { FiTool, FiShield, FiSettings, FiAward, FiArrowRight, FiGrid } from 'react-icons/fi'
 import { NavLink, useNavigate } from 'react-router-dom'
 
 import { cardIn, fadeUp, sectionStagger } from '../../utils/motion'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchServices } from '../../rtk/thunks/serviceThunk/serviceThunk'
 import { getMediaUrl } from '../../rtk/utils/apiUrl'
+import servicesBackground from '../../pictures/banner1.jpg'
 
 function Services () {
     const navigate = useNavigate()
@@ -32,6 +33,7 @@ function Services () {
         <motion.section
             id='services'
             className='cr-section cr-section-light overflow-hidden'
+            style={{ backgroundImage: `linear-gradient(90deg, rgba(248,250,252,.97), rgba(248,250,252,.9)), url(${servicesBackground})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
             initial='hidden'
             animate='show'
             variants={sectionStagger}
@@ -44,13 +46,11 @@ function Services () {
             <div className='cr-container cr-section-pad'>
                 <div className='flex flex-col items-center gap-5 text-center'>
                     <motion.div className='max-w-3xl' variants={fadeUp}>
-                        <p className='inline-flex items-center gap-4 text-xs font-bold uppercase tracking-[0.16em] text-red-600'>
-                            <span className='h-px w-9 bg-red-500' />
-                            Our Services
-                            <span className='h-px w-9 bg-red-500' />
+                        <p className='inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-red-600'>
+                            <FiTool className='h-4 w-4' /> Our Services <span className='h-px w-9 bg-red-500' />
                         </p>
-                        <h2 className='mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
-                            Everything your car needs—under one roof
+                        <h2 className='mt-3 text-3xl font-extrabold leading-tight tracking-tight text-[#102957] sm:text-4xl lg:text-[2.7rem]'>
+                            Everything your car needs—<br /><span className='text-red-600 block mt-3'>under one roof</span>
                         </h2>
                         <p className='mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-relaxed'>
                             Choose a service below. We’ll share a clear estimate before starting any work and back repairs with warranty.
@@ -58,24 +58,27 @@ function Services () {
                     </motion.div>
 
                     <motion.div variants={fadeUp} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-                        <NavLink to={user ? '/book-repair' : '/login'} className='cr-btn-primary'>
-                            Book a Service
+                        <NavLink to={user ? '/book-repair' : '/login'} className='inline-flex items-center gap-2 rounded-md bg-red-600 px-6 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-red-700'>
+                            <FiTool /> Book a Service <FiArrowRight />
                         </NavLink>
                     </motion.div>
                 </div>
 
                 <motion.div className='mt-8 grid gap-4 sm:grid-cols-3' variants={fadeUp}>
-                    <div className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-black/5'>
-                        <p className='text-sm font-extrabold text-gray-900'>Transparent pricing</p>
+                    <div className='flex items-center gap-3 rounded-xl border border-red-100 bg-red-50/80 p-4 shadow-sm'>
+                        <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600'><FiShield className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Transparent Pricing</p>
                         <p className='mt-1 text-sm text-gray-600'>Estimate first—no surprise bills.</p>
+                        </div>
                     </div>
-                    <div className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-black/5'>
-                        <p className='text-sm font-extrabold text-gray-900'>Quality parts</p>
+                    <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'>
+                        <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiSettings className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Quality Parts</p>
                         <p className='mt-1 text-sm text-gray-600'>We use reliable parts for long life.</p>
+                        </div>
                     </div>
-                    <div className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm ring-1 ring-black/5'>
-                        <p className='text-sm font-extrabold text-gray-900'>Warranty support</p>
+                    <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'>
+                        <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiAward className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Warranty Support</p>
                         <p className='mt-1 text-sm text-gray-600'>Repairs backed for peace of mind.</p>
+                        </div>
                     </div>
                 </motion.div>
 
@@ -101,7 +104,7 @@ function Services () {
                     {previewServices.map((service) => (
                         <motion.article
                             key={service._id ?? service.id ?? service.title}
-                            className='group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5 transition-shadow duration-200 hover:shadow-lg focus-within:ring-2 focus-within:ring-red-600/30'
+                            className='group relative overflow-hidden rounded-xl border border-[#dfe8f0] bg-white shadow-sm transition-shadow duration-200 hover:shadow-lg focus-within:ring-2 focus-within:ring-red-600/30'
                             variants={cardIn}
                             whileHover={{ y: -5 }}
                         >
@@ -127,7 +130,7 @@ function Services () {
 
                             <div className='flex min-h-[205px] flex-col p-5'>
                                 <div className='pl-1'>
-                                    <p className='text-[11px] font-semibold uppercase tracking-wide text-gray-500'>Service</p>
+                                    <p className='inline-flex items-center gap-1 rounded bg-red-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-red-600'><FiTool className='h-3 w-3' /> Service</p>
                                     <h3 className='mt-1 line-clamp-2 text-base font-extrabold tracking-tight text-gray-900 sm:text-lg'>
                                         {service.title}
                                     </h3>
@@ -149,7 +152,7 @@ function Services () {
                                             className='inline-flex items-center gap-2 rounded-full bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
                                         >
                                             Book Now
-                                            <span className='text-red-300' aria-hidden='true'>→</span>
+                                            <FiArrowRight className='h-3.5 w-3.5 text-red-300' aria-hidden='true' />
                                         </NavLink>
                                     ) : (
                                         <span className='rounded-full bg-red-50 px-3 py-2 text-xs font-bold text-red-700'>Unavailable</span>
@@ -166,7 +169,7 @@ function Services () {
                         onClick={() => navigate('/services')}
                         className='cr-btn-outline'
                     >
-                        Explore services
+                        <FiGrid className='h-4 w-4' /> Explore All Services <FiArrowRight className='h-4 w-4' />
                     </button>
                 </motion.div>
 
