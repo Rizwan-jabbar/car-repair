@@ -6,6 +6,7 @@ import { cardIn, fadeUp, sectionStagger } from '../../utils/motion'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchServices } from '../../rtk/thunks/serviceThunk/serviceThunk'
+import { getMediaUrl } from '../../rtk/utils/apiUrl'
 
 
 
@@ -94,7 +95,7 @@ function AllServices () {
 								<div className='absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.35),transparent_55%)]' />
 								{service.image && (
 									<img
-										src={service.image}
+										src={getMediaUrl(service.image)}
 										alt={service.title}
 										className='absolute inset-0 h-full w-full object-cover object-center transition duration-500 ease-out group-hover:scale-105'
 										onError={(event) => { event.currentTarget.style.display = 'none' }}

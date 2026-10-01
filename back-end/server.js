@@ -6,6 +6,7 @@ import connectDB from './db/db.js'
 import router from './routes/routes.js'
 const app = express()
 dotenv.config()
+app.set('trust proxy', 1)
 
 const PORT = process.env.PORT || 3000
 const API_BASE_PATH = new URL(process.env.BASE_URL || `http://localhost:${PORT}/api`).pathname.replace(/\/$/, '')

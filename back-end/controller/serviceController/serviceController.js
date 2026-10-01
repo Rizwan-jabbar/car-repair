@@ -1,5 +1,10 @@
 import Service from "../../models/servicesModel/servicesModel.js";
 
+const toPublicImagePath = (req, file) => {
+    if (!file?.filename) return ''
+    return `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+}
+
 const addService = async (req, res) => {
     try {
         const { title, description, price, isAvailable } = req.body;
@@ -11,7 +16,7 @@ const addService = async (req, res) => {
             description,
             price,
             isAvailable: isAvailable !== 'false',
-            image: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`,
+            image: toPublicImagePath(req, req.file),
         });
         return res.status(201).json({ message: 'Service added successfully', service });
     } catch (error) {
