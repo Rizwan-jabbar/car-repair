@@ -30,7 +30,10 @@ function Login () {
     }
 
     return (
-        <section className='cr-section cr-section-muted overflow-hidden' style={{ backgroundImage: `linear-gradient(90deg, rgba(248,250,252,.95), rgba(248,250,252,.82)), url(${loginBackground})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+        <section className='login-reference cr-section cr-section-muted relative min-h-screen overflow-hidden' style={{ backgroundImage: `linear-gradient(90deg, rgba(248,250,252,.78), rgba(248,250,252,.48)), url(${loginBackground})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+            <div className='pointer-events-none absolute -left-12 -top-20 h-48 w-48 rotate-45 bg-red-600/95' />
+            <div className='pointer-events-none absolute -bottom-20 -left-20 h-24 w-[34rem] -rotate-[28deg] bg-red-600/90' />
+            <div className='pointer-events-none absolute -right-24 top-40 h-20 w-80 rotate-[42deg] bg-red-500/25' />
             <div className='pointer-events-none absolute inset-0 -z-10'>
                 <div className='absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-red-500/10 blur-3xl' />
                 <div className='absolute -bottom-40 right-0 h-96 w-96 rounded-full bg-gray-900/5 blur-3xl' />
@@ -49,14 +52,13 @@ function Login () {
                         </p>
 
                         <div className='grid gap-3 sm:grid-cols-2'>
-                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'>
-                                <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiZap className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Fast Booking</p><p className='mt-1 text-xs text-[#6d86a0]'>Save your time with quick and easy booking.</p></div><FiArrowRight className='ml-auto text-[#17345c]' />
+                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-3 shadow-sm'>
+                                <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiZap className='h-5 w-5' /></span><div><p className='text-xs font-extrabold text-[#17345c]'>Fast Booking</p><p className='mt-1 text-[10px] leading-4 text-[#6d86a0]'>Save time with quick booking.</p></div><FiArrowRight className='ml-auto h-4 w-4 text-[#17345c]' />
                             </div>
-                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'>
-                                <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiHeadphones className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>24/7 Support</p><p className='mt-1 text-xs text-[#6d86a0]'>We’re always here to help you.</p></div><FiArrowRight className='ml-auto text-[#17345c]' />
+                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-3 shadow-sm'>
+                                <span className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiHeadphones className='h-5 w-5' /></span><div><p className='text-xs font-extrabold text-[#17345c]'>24/7 Support</p><p className='mt-1 text-[10px] leading-4 text-[#6d86a0]'>We’re always here to help.</p></div><FiArrowRight className='ml-auto h-4 w-4 text-[#17345c]' />
                             </div>
                         </div>
-                        <div className='hidden items-center gap-8 pt-10 text-xs text-[#526b84] sm:flex'><span className='flex items-center gap-2'><FiShield className='h-5 w-5 text-red-600' />Secure Login</span><span className='flex items-center gap-2'><FiLock className='h-5 w-5 text-red-600' />Trusted Platform</span><span className='flex items-center gap-2'><FiHeadphones className='h-5 w-5 text-red-600' />24/7 Support</span></div>
                     </div>
 
                     <div className='mx-auto w-full max-w-xl'>
@@ -66,14 +68,14 @@ function Login () {
                             </div>
 
                             {!submitted ? (
-                                <form onSubmit={onSubmit} className='space-y-5 px-6 py-6 sm:px-8 sm:py-8'>
+                                <form onSubmit={onSubmit} className='space-y-4 px-6 py-6 sm:px-8 sm:py-7'>
                                     <label className='block'>
-                                        <span className='text-sm font-bold text-[#17345c]'>Email</span>
+                                        <span className='text-xs font-bold text-[#17345c]'>Email</span>
                                         <span className='relative mt-1 block'><FiMail className='pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#17345c]' /><input type='email' value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} placeholder='you@email.com' className='w-full rounded-md border border-[#d8e3ed] bg-white py-3 pl-11 pr-3 text-sm text-gray-900 outline-none transition placeholder:text-[#8ca3ba] focus:border-red-300 focus:ring-4 focus:ring-red-100' required /></span>
                                     </label>
 
                                     <label className='block'>
-                                        <span className='text-sm font-bold text-[#17345c]'>Password</span>
+                                        <span className='text-xs font-bold text-[#17345c]'>Password</span>
                                         <div className='relative'>
                                             <FiLock className='pointer-events-none absolute left-3 top-1/2 z-10 h-5 w-5 -translate-y-1/2 text-[#17345c]' />
                                             <input
@@ -155,6 +157,7 @@ function Login () {
                         </div>
                     </div>
                 </div>
+                    <div className='mx-auto mt-8 hidden max-w-xl items-center justify-between gap-8 rounded-xl border border-[#dfe8f0] bg-white/80 px-5 py-4 text-xs text-[#526b84] shadow-sm sm:flex lg:ml-auto lg:mr-0'><span className='flex items-center gap-3'><span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiShield className='h-4 w-4' /></span><span><b className='block text-[10px] text-[#17345c]'>Secure Login</b><small className='text-[9px]'>Your data is safe</small></span></span><span className='h-9 w-px shrink-0 bg-[#d8e3ed]' /><span className='flex items-center gap-3'><span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiLock className='h-4 w-4' /></span><span><b className='block text-[10px] text-[#17345c]'>Trusted Platform</b><small className='text-[9px]'>Used by 10K+ customers</small></span></span><span className='h-9 w-px shrink-0 bg-[#d8e3ed]' /><span className='flex items-center gap-3'><span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiHeadphones className='h-4 w-4' /></span><span><b className='block text-[10px] text-[#17345c]'>24/7 Support</b><small className='text-[9px]'>Always here for you</small></span></span></div>
             </div>
         </section>
     )

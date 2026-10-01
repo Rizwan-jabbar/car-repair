@@ -118,4 +118,12 @@
 	.booking-form label > span {
 		@apply text-xs font-bold text-[#17345c];
 	}
+
+	.register-form .cr-input {
+		@apply mt-1 rounded-md border-[#d8e3ed] px-3 py-2.5 text-xs shadow-none placeholder:text-[#8ca3ba] focus:border-red-300 focus:ring-4 focus:ring-red-100;
+	}
+
+	.register-form label > span {
+		@apply text-xs font-bold text-[#17345c];
+	}
 }

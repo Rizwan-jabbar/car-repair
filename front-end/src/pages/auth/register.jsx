@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 
-import { FiEye, FiEyeOff, FiLock, FiMail, FiPhone, FiUser } from 'react-icons/fi'
+import { FiEye, FiEyeOff, FiLock, FiMail, FiPhone, FiUser, FiZap, FiShield, FiHeadphones, FiArrowRight } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import { registerUser } from '../../rtk/thunks/userThunk/userThunk'
+import { getMediaUrl } from '../../rtk/utils/apiUrl'
+import logo from '../../pictures/mainLogo.png'
 
 function Register() {
     const dispatch = useDispatch()
@@ -12,6 +14,7 @@ function Register() {
     const [showPassword, setShowPassword] = useState(false)
     const [submitted, setSubmitted] = useState(false)
     const [form, setForm] = useState({ name: '', email: '', contact: '', password: '', confirm: '', consent: true })
+    const registrationBackground = getMediaUrl('/uploads/registraion-picture.png')
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -31,22 +34,35 @@ function Register() {
     }
 
     return (
-        <section className='cr-section cr-section-muted overflow-hidden'>
+        <section className='cr-section cr-section-muted relative min-h-screen overflow-hidden' style={{ backgroundImage: `linear-gradient(90deg, rgba(248,250,252,.84), rgba(248,250,252,.62)), url(${registrationBackground})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+            <div className='pointer-events-none absolute -left-12 -top-20 h-48 w-48 rotate-45 bg-red-600/95' />
+            <div className='pointer-events-none absolute -bottom-20 -left-20 h-24 w-[34rem] -rotate-[28deg] bg-red-600/90' />
             <div className='pointer-events-none absolute inset-0 -z-10'>
                 <div className='absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-red-500/10 blur-3xl' />
                 <div className='absolute -bottom-40 left-0 h-96 w-96 rounded-full bg-gray-900/5 blur-3xl' />
             </div>
 
             <div className='cr-container cr-section-pad'>
-                <div className='mx-auto max-w-xl'>
+                <div className='mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_0.95fr]'>
+                    <div className='space-y-5'>
+                        <Link to='/' className='inline-flex items-center'><img src={logo} alt='AutoSphere logo' className='h-14 w-auto object-contain' /></Link>
+                        <p className='inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-extrabold text-red-600'><FiUser className='h-4 w-4' /> Account <span className='h-px w-8 bg-red-500' /></p>
+                        <h1 className='max-w-lg text-4xl font-extrabold leading-tight tracking-tight text-[#102957] sm:text-5xl'>Create Your <span className='text-red-600'>Account</span></h1>
+                        <p className='max-w-md text-base leading-7 text-[#526b84] sm:text-lg'>Register to manage your bookings, track repairs and get faster support.</p>
+                        <div className='grid gap-3 sm:grid-cols-2'>
+                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'><span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiZap className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Easy Booking</p><p className='mt-1 text-xs text-[#6d86a0]'>Book your service in minutes.</p></div><FiArrowRight className='ml-auto text-[#17345c]' /></div>
+                            <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'><span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600'><FiHeadphones className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>24/7 Support</p><p className='mt-1 text-xs text-[#6d86a0]'>We’re always here to help.</p></div><FiArrowRight className='ml-auto text-[#17345c]' /></div>
+                        </div>
+                    </div>
+
+                    <div className='mx-auto w-full max-w-xl'>
                     <div className='overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5'>
-                        <div className='border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white px-6 py-5 sm:px-8'>
-                            <p className='text-sm font-extrabold text-gray-900'>Create account</p>
-                            <p className='mt-1 text-sm text-gray-600'>Register to manage bookings.</p>
+                        <div className='border-b border-[#edf1f5] px-6 py-6 sm:px-8'>
+                            <div className='flex items-center gap-4'><span className='flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 text-red-600'><FiUser className='h-7 w-7' /></span><div><p className='text-2xl font-extrabold text-[#102957]'>Create Account</p><p className='mt-1 text-sm text-[#6d86a0]'>Join us for better car care.</p></div></div>
                         </div>
 
                         {!submitted ? (
-                            <form onSubmit={onSubmit} className='space-y-5 px-6 py-6 sm:px-8 sm:py-8'>
+                            <form onSubmit={onSubmit} className='register-form space-y-4 px-6 py-6 sm:px-8 sm:py-7'>
                                 <label className='block'>
                                     <span className='flex items-center gap-2 text-sm font-semibold text-gray-900'>
                                         <FiUser className='h-4 w-4 text-gray-500' aria-hidden='true' />
@@ -184,6 +200,7 @@ function Register() {
                         )}
                     </div>
                 </div>
+            </div>
             </div>
         </section>
     )
