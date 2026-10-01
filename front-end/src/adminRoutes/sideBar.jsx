@@ -223,7 +223,7 @@ function SideBar () {
     )
 
     return (
-        <div className='w-full'>
+        <div className='w-full lg:h-full lg:min-h-0'>
             <div className='mb-3 flex lg:hidden'>
                 <button
                     type='button'
@@ -261,7 +261,7 @@ function SideBar () {
                 </div>
             )}
 
-            <aside className='hidden w-full max-w-sm rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 shadow-sm lg:sticky lg:top-4 lg:block lg:max-h-[calc(100dvh-2rem)] lg:overflow-y-auto'>
+            <aside className='hidden h-full w-full max-w-sm min-h-0 rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 shadow-sm lg:sticky lg:top-0 lg:block lg:overflow-y-auto'>
                 {menuContent}
             </aside>
         </div>

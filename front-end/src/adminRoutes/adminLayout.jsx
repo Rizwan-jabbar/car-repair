@@ -10,7 +10,7 @@ function AdminLayout(){
                 <AdminHeader />
 
                 <div className='mt-3 grid gap-3 lg:h-[calc(100%-3.75rem)] lg:min-h-0 lg:grid-cols-[22rem,1fr]'>
-                    <div className='lg:min-h-0'>
+                    <div className='lg:h-full lg:min-h-0'>
                         <SideBar />
                     </div>
 

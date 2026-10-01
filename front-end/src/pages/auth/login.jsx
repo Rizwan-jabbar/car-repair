@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { FiEye, FiEyeOff, FiLock, FiMail, FiUser, FiZap, FiHeadphones, FiArrowRight, FiShield } from 'react-icons/fi'
@@ -14,6 +14,13 @@ function Login () {
     const [submitted, setSubmitted] = useState(false)
     const [form, setForm] = useState({ email: '', password: '', remember: true })
     const loginBackground = getMediaUrl('/uploads/login-picture.png')
+
+    useEffect(() => {
+        if (!submitted) return undefined
+
+        const timerId = setTimeout(() => setSubmitted(false), 3000)
+        return () => clearTimeout(timerId)
+    }, [submitted])
 
     const onSubmit = (e) => {
         e.preventDefault()
@@ -126,7 +133,7 @@ function Login () {
                                     )}
 
                                     <button type='submit' className='inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700' disabled={loading}>
-                                        {loading ? 'Signing in…' : 'Continue'} <FiArrowRight />
+                                        {loading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Signing in' /> : 'Continue'} {!loading && <FiArrowRight />}
                                     </button>
 
                                     <p className='text-center text-sm text-gray-600'>

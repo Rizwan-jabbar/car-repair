@@ -136,6 +136,16 @@ function UpdateBanner () {
         }
     }
 
+    useEffect(() => {
+        if (!successModal.open) return undefined
+
+        const timerId = setTimeout(() => {
+            setSuccessModal({ open: false, message: '' })
+            navigate('/admin/banner/view')
+        }, 3000)
+        return () => clearTimeout(timerId)
+    }, [navigate, successModal.open])
+
     const errorMessage = typeof error === 'string' ? error : (error?.message || 'Failed to save banner')
 
     return (
@@ -266,7 +276,7 @@ function UpdateBanner () {
                             disabled={loading}
                         >
                             <FiUpload className='h-4 w-4' />
-                            {loading ? 'Saving...' : latestBanner?._id ? 'Update Banner' : 'Create Banner'}
+                            {loading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Saving banner' /> : latestBanner?._id ? 'Update Banner' : 'Create Banner'}
                         </button>
 
                         {(submitError || error) && (

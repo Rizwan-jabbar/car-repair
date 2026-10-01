@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -36,6 +36,20 @@ import ViewContacts from './adminRoutes/viewContacts/viewContacts'
 import ViewBanner from './adminRoutes/viewBanner/viewBanner'
 import UpdateBanner from './adminRoutes/viewBanner/updateBanner'
 import Loading from './components/loading/loading'
+
+function ScrollToTop () {
+    const { pathname, search } = useLocation()
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+
+        document.querySelectorAll('main').forEach((container) => {
+            container.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+    }, [pathname, search])
+
+    return null
+}
 
 function App () {
     const [appLoading, setAppLoading] = useState(true)
@@ -83,7 +97,9 @@ function App () {
     return appLoading ? (
         <Loading />
     ) : (
-        <Routes>
+        <>
+            <ScrollToTop />
+            <Routes>
             <Route element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path='services' element={<AllServices />} />
@@ -147,7 +163,8 @@ function App () {
                     <Route path='*' element={<Navigate to='/admin' replace />} />
                 </Route>
             </Route>
-        </Routes>
+            </Routes>
+        </>
     )
 }
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiCheckCircle, FiPlusCircle } from 'react-icons/fi'
 
@@ -15,6 +15,13 @@ function AddFaq () {
     })
     const [submitted, setSubmitted] = useState(false)
     const [touched, setTouched] = useState({})
+
+    useEffect(() => {
+        if (!submitted) return undefined
+
+        const timerId = setTimeout(() => setSubmitted(false), 3000)
+        return () => clearTimeout(timerId)
+    }, [submitted])
 
     const errors = useMemo(() => {
         const e = {}
@@ -119,7 +126,7 @@ function AddFaq () {
                         disabled={loading}
                     >
                         <FiPlusCircle className='h-4 w-4' />
-                        {loading ? 'Adding...' : 'Add FAQ'}
+                        {loading ? <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white' aria-label='Adding FAQ' /> : 'Add FAQ'}
                     </button>
                 </form>
             </div>
