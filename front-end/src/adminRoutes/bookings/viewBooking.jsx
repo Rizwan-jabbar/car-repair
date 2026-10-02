@@ -314,7 +314,7 @@ function ViewBookings () {
                 <>
                     <div className='hidden w-full overflow-x-auto md:block'>
                         <table className='w-full min-w-[860px] text-left whitespace-nowrap'>
-                            <thead className='bg-gradient-to-r from-[#1d2d48] to-[#536780] text-white'>
+                            <thead className='bg-black text-white'>
                                 <tr>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Customer</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Phone</th>

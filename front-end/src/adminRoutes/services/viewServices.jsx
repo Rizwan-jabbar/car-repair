@@ -155,7 +155,7 @@ function ViewServices () {
                 <>
                     <div className='hidden w-full max-w-full overflow-x-auto md:block'>
                         <table className='w-full min-w-[760px] text-left'>
-                            <thead className='overflow-hidden rounded-2xl bg-gradient-to-r from-[#1d2d48] to-[#536780] text-white'>
+                            <thead className='overflow-hidden rounded-2xl bg-black text-white'>
                                 <tr>
                                     <th className='rounded-l-2xl px-4 py-4 text-xs font-bold'><span className='inline-flex items-center gap-2'><FiImage className='h-4 w-4' /> Image</span></th>
                                     <th className='px-4 py-4 text-xs font-bold'>Title</th>

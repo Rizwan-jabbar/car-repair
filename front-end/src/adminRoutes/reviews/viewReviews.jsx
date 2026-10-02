@@ -100,7 +100,7 @@ function ViewReviews () {
                 <>
                     <div className='hidden overflow-x-auto md:block'>
                         <table className='min-w-full text-left'>
-                            <thead className='bg-gradient-to-r from-[#1d2d48] to-[#536780] text-white'>
+                            <thead className='bg-black text-white'>
                                 <tr>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Customer</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Service</th>
