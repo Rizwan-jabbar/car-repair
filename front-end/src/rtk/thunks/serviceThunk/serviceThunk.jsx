@@ -25,6 +25,19 @@ export const fetchServices = createAsyncThunk(
     'service/fetchServices',
     async (_, { rejectWithValue }) => { 
         try {   
+            const token = getVerifiedToken()
+
+            if (token) {
+                try {
+                    const response = await axios.get(`${API_BASE_URL}/admin/services`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    })
+                    return response.data.services || []
+                } catch {
+                    // Public visitors and non-admin users can still use the public services endpoint.
+                }
+            }
+
             const response = await axios.get(`${API_BASE_URL}/getServices`);
             return response.data.services || [];
         } catch (error) {

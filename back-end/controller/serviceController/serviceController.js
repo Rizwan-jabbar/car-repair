@@ -40,6 +40,17 @@ const parseList = (value) => {
         .filter(Boolean)
 }
 
+const parseAvailability = (value, fallback = true) => {
+    if (typeof value === 'undefined') return fallback
+    if (typeof value === 'boolean') return value
+
+    const normalized = String(value).trim().toLowerCase()
+    if (['false', '0', 'no', 'unavailable', 'inactive', 'disabled'].includes(normalized)) return false
+    if (['true', '1', 'yes', 'available', 'active', 'enabled'].includes(normalized)) return true
+
+    return fallback
+}
+
 const addService = async (req, res) => {
     try {
         const { title, description, isAvailable, commonSymptoms, inspectionPoints } = req.body;
@@ -49,7 +60,7 @@ const addService = async (req, res) => {
         const service = await Service.create({
             title,
             description,
-            isAvailable: isAvailable !== 'false',
+            isAvailable: parseAvailability(isAvailable, true),
             image: toPersistentImage(req.file),
             commonSymptoms: parseList(commonSymptoms),
             inspectionPoints: parseList(inspectionPoints),
@@ -66,7 +77,7 @@ const addService = async (req, res) => {
 
 const getServices = async (req, res) => {
     try {
-        const services = await Service.find({ isAvailable: { $ne: false } });
+        const services = await Service.find();
         await Promise.all(services.map(async (service) => {
             if (migrateLegacyImage(service)) await service.save()
         }))
@@ -91,14 +102,14 @@ const getAdminServices = async (req, res) => {
 const getServiceById = async (req, res) => {
     try {
         const { serviceId } = req.params;
-        const service = await Service.findOne({ _id: serviceId, isAvailable: { $ne: false } });
+        const service = await Service.findById(serviceId);
         if (!service) {
-            return res.status(404).json({ message: 'Service not found or currently unavailable' });
+            return res.status(404).json({ message: 'Service not found' });
         }
         if (migrateLegacyImage(service)) await service.save()
         return res.status(200).json({ service });
     } catch (error) {
-        return res.status(404).json({ message: 'Service not found or currently unavailable' });
+        return res.status(404).json({ message: 'Service not found' });
     }
 };
 
@@ -125,7 +136,7 @@ const updateService = async (req, res) => {
         const { title, description, isAvailable, commonSymptoms, inspectionPoints } = req.body;
         const updates = { title, description };
 
-        if (typeof isAvailable !== 'undefined') updates.isAvailable = isAvailable !== 'false';
+        if (typeof isAvailable !== 'undefined') updates.isAvailable = parseAvailability(isAvailable, true);
         if (typeof commonSymptoms !== 'undefined') updates.commonSymptoms = parseList(commonSymptoms);
         if (typeof inspectionPoints !== 'undefined') updates.inspectionPoints = parseList(inspectionPoints);
         if (req.file) updates.image = toPersistentImage(req.file);

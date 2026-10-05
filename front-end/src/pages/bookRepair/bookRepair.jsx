@@ -12,6 +12,11 @@ import bookingImage from '../../pictures/banner2.jpg'
 import { getVerifiedToken } from '../../rtk/utils/authToken'
 import { fetchServices } from '../../rtk/thunks/serviceThunk/serviceThunk'
 
+const isServiceAvailable = (service) => {
+    const value = String(service?.isAvailable ?? service?.availability ?? service?.status ?? '').trim().toLowerCase()
+    return service?.isAvailable !== false && !['false', '0', 'no', 'unavailable', 'inactive', 'disabled'].includes(value)
+}
+
 function BookRepair () {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -20,7 +25,7 @@ function BookRepair () {
     const { items: serviceItems = [] } = useSelector((state) => state.service)
     const serviceOptions = useMemo(() => serviceItems
         .map((item) => item?.service ?? item)
-        .filter((service) => service?.isAvailable !== false && service?.title)
+        .filter((service) => isServiceAvailable(service) && service?.title)
         .map((service) => ({ id: service._id, title: service.title })), [serviceItems])
     const requestedServiceId = (searchParams.get('serviceId') || '').trim()
     const requestedService = (searchParams.get('service') || '').trim()

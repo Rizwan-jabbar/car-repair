@@ -2,6 +2,11 @@ import Booking from "../../models/bookingModel/bookingModel.js";
 import EmergencyBooking from "../../models/emergencyBookingModel/emergencyBookingModel.js";
 import Service from "../../models/servicesModel/servicesModel.js";
 
+const isServiceAvailable = (service) => {
+    const value = String(service?.isAvailable ?? service?.availability ?? service?.status ?? '').trim().toLowerCase();
+    return service?.isAvailable !== false && !['false', '0', 'no', 'unavailable', 'inactive', 'disabled'].includes(value);
+};
+
 
 
 const createBooking = async (req, res) => {
@@ -41,8 +46,8 @@ const createBooking = async (req, res) => {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        const selectedService = await Service.findOne({ _id: serviceId, isAvailable: { $ne: false } });
-        if (!selectedService) {
+        const selectedService = await Service.findById(serviceId);
+        if (!selectedService || !isServiceAvailable(selectedService)) {
             return res.status(400).json({ message: 'Selected service is not available' });
         }
         const serviceName = selectedService.title;

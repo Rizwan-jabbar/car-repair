@@ -11,6 +11,11 @@ import {
     updateService,
 } from '../../rtk/thunks/serviceThunk/serviceThunk'
 
+const isServiceAvailable = (service) => {
+    const value = String(service?.isAvailable ?? service?.availability ?? service?.status ?? '').trim().toLowerCase()
+    return service?.isAvailable !== false && !['false', '0', 'no', 'unavailable', 'inactive', 'disabled'].includes(value)
+}
+
 function ViewServices () {
     const dispatch = useDispatch()
     const { items = [], loading, error } = useSelector((state) => state.service)
@@ -36,6 +41,17 @@ function ViewServices () {
             .map((item) => item?.service ?? item)
             .filter((service) => service && typeof service === 'object')
     }, [items])
+
+    const serviceCounts = useMemo(() => {
+        const active = services.filter((service) => isServiceAvailable(service)).length
+        const inactive = services.length - active
+
+        return {
+            active,
+            inactive,
+            total: services.length,
+        }
+    }, [services])
 
     const errorMessage = typeof error === 'string' ? error : (error?.message || 'Failed to load services')
 
@@ -76,7 +92,7 @@ function ViewServices () {
             title: service?.title || '',
             description: service?.description || '',
             image: null,
-            isAvailable: service?.isAvailable !== false,
+            isAvailable: isServiceAvailable(service),
             commonSymptoms: Array.isArray(service?.commonSymptoms) ? service.commonSymptoms.join('\n') : '',
             inspectionPoints: Array.isArray(service?.inspectionPoints) ? service.inspectionPoints.join('\n') : '',
         })
@@ -141,10 +157,19 @@ function ViewServices () {
                         <div className='mt-3 h-0.5 w-8 bg-red-500' />
                     </div>
 
-                    <div className='relative inline-flex min-w-[220px] items-center justify-between gap-4 rounded-2xl border border-red-100 bg-white/80 px-4 py-3 shadow-sm'>
-                        <span className='flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600'><FiTool className='h-5 w-5' /></span>
-                        <div className='mr-auto'><p className='text-xs font-semibold text-[#6c83a2]'>Total Services</p><p className='mt-1 text-2xl font-extrabold text-[#102441]'>{services.length}</p><p className='text-[10px] text-[#6c83a2]'>Active Services</p></div>
-                        <span className='flex h-9 w-9 items-center justify-center rounded-full bg-red-50 text-red-600'>›</span>
+                    <div className='grid w-full gap-2 sm:w-auto sm:grid-cols-3'>
+                        <div className='rounded-xl border border-slate-200 bg-white/85 px-4 py-3 shadow-sm'>
+                            <p className='text-[10px] font-bold uppercase tracking-wide text-[#6c83a2]'>Total</p>
+                            <p className='mt-1 text-2xl font-extrabold text-[#102441]'>{serviceCounts.total}</p>
+                        </div>
+                        <div className='rounded-xl border border-emerald-100 bg-emerald-50/80 px-4 py-3 shadow-sm'>
+                            <p className='text-[10px] font-bold uppercase tracking-wide text-emerald-700'>Active</p>
+                            <p className='mt-1 text-2xl font-extrabold text-emerald-700'>{serviceCounts.active}</p>
+                        </div>
+                        <div className='rounded-xl border border-red-100 bg-red-50/80 px-4 py-3 shadow-sm'>
+                            <p className='text-[10px] font-bold uppercase tracking-wide text-red-700'>Inactive</p>
+                            <p className='mt-1 text-2xl font-extrabold text-red-700'>{serviceCounts.inactive}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -184,7 +209,7 @@ function ViewServices () {
                                 ) : (
                                     services.map((service, idx) => {
                                         const key = service?._id ?? service?.id ?? idx
-                                        const isAvailable = service?.isAvailable !== false
+                                        const isAvailable = isServiceAvailable(service)
 
                                         return (
                                             <tr
@@ -256,7 +281,7 @@ function ViewServices () {
                         ) : (
                             services.map((service, idx) => {
                                 const key = service?._id ?? service?.id ?? idx
-                                const isAvailable = service?.isAvailable !== false
+                                const isAvailable = isServiceAvailable(service)
 
                                 return (
                                     <motion.article
@@ -362,7 +387,7 @@ function ViewServices () {
                                 <div className='rounded-xl border border-gray-200 bg-gray-50 p-3'>
                                     <p className='text-xs font-semibold text-gray-500'>Availability</p>
                                     <p className='mt-1 text-sm font-semibold text-gray-900'>
-                                        {selectedService?.isAvailable === false ? 'Unavailable' : 'Available'}
+                                        {isServiceAvailable(selectedService) ? 'Available' : 'Unavailable'}
                                     </p>
                                 </div>
                                 <div className='rounded-xl border border-gray-200 bg-gray-50 p-3 sm:col-span-2'>

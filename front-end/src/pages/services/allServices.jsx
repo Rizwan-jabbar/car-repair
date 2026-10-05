@@ -10,6 +10,11 @@ import { getMediaUrl } from '../../rtk/utils/apiUrl'
 
 
 
+const isServiceAvailable = (service) => {
+	const value = String(service?.isAvailable ?? service?.availability ?? service?.status ?? '').trim().toLowerCase()
+	return service?.isAvailable !== false && !['false', '0', 'no', 'unavailable', 'inactive', 'disabled'].includes(value)
+}
+
 function AllServices () {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
@@ -23,7 +28,7 @@ function AllServices () {
 		const list = Array.isArray(items) ? items : []
 		return list
 			.map((item) => item?.service ?? item)
-			.filter((service) => service && typeof service === 'object' && service.isAvailable !== false)
+			.filter((service) => service && typeof service === 'object')
 	}, [items])
 
 	return (
@@ -80,11 +85,14 @@ function AllServices () {
 
 					{!loading && !error && services.length === 0 && (
 						<motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card sm:col-span-2 lg:col-span-4' variants={fadeUp}>
-							No services available right now.
+							No services found right now.
 						</motion.div>
 					)}
 
-					{!loading && !error && services.map((service) => (
+					{!loading && !error && services.map((service) => {
+						const available = isServiceAvailable(service)
+
+						return (
 						<motion.article
 							key={service._id ?? service.id ?? service.title}
 							className='group relative cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5 transition-shadow duration-200 hover:shadow-lg focus-within:ring-2 focus-within:ring-red-600/30'
@@ -109,7 +117,7 @@ function AllServices () {
 								<div className='absolute bottom-3 left-5 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border-4 border-white bg-red-600 text-white shadow-md'>
 									<FiTool className='h-5 w-5' aria-hidden='true' />
 								</div>
-								{service.isAvailable === false && (
+								{!available && (
 									<span className='absolute right-4 top-4 rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-[11px] font-bold text-red-700 shadow-sm'>
 										Currently unavailable
 									</span>
@@ -125,7 +133,7 @@ function AllServices () {
 								</div>
 
 								<div className='mt-auto flex items-center justify-end gap-2 border-t border-gray-100 pt-4'>
-									{service.isAvailable !== false ? (
+									{available ? (
 										<>
 										<NavLink
 											to={`/services/${service._id}`}
@@ -148,7 +156,8 @@ function AllServices () {
 								</div>
 							</div>
 						</motion.article>
-					))}
+						)
+					})}
 				</div>
 			</div>
 		</motion.section>

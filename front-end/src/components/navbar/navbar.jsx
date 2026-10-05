@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { logout } from '../../rtk/slices/userSlice/userSlice'
 import { getVerifiedToken } from '../../rtk/utils/authToken'
+import { getMediaUrl } from '../../rtk/utils/apiUrl'
 import logo from '../../pictures/mainLogo.png'
 import { fetchServices } from '../../rtk/thunks/serviceThunk/serviceThunk'
 
@@ -67,18 +68,22 @@ function Navbar () {
         { name: 'Sign Up', to: '/register' },
     ]
 
+    const isServiceAvailable = (service) => {
+        const value = String(service?.isAvailable ?? service?.availability ?? service?.status ?? '').trim().toLowerCase()
+        return service?.isAvailable !== false && !['false', '0', 'no', 'unavailable', 'inactive', 'disabled'].includes(value)
+    }
+
     const serviceItems = useMemo(() => {
         const apiItems = Array.isArray(serviceState?.items) ? serviceState.items : []
         const normalized = apiItems.map((item) => item?.service ?? item).filter(Boolean).map((item) => ({
             id: item._id || item.id,
             title: item.title || item.name || item.serviceName,
-            description: item.description || item.details || 'Professional care for your vehicle',
+            image: item.image,
+            isAvailable: isServiceAvailable(item),
         })).filter((item) => item.title)
 
         return normalized
     }, [serviceState?.items])
-
-    const shortDescription = (text) => String(text || '').split(/\s+/).filter(Boolean).slice(0, 5).join(' ')
 
     const navItemClass = ({ isActive }) => (
         isActive
@@ -118,7 +123,7 @@ function Navbar () {
                     <span className='whitespace-nowrap text-base font-extrabold tracking-tight text-gray-900 sm:text-lg lg:text-xl'>Auto<span className='text-red-600'>Sphere</span></span>
                 </NavLink>
 
-                <ul className='hidden min-w-0 flex-1 items-center justify-center gap-0.5 bg-white p-0 md:flex lg:gap-1'>
+                <ul className='hidden min-w-0 flex-1 items-center justify-center gap-0.5 bg-transparent p-0 md:flex lg:gap-1'>
                     <li
                         className='relative'
                         onMouseEnter={() => { setIsServicesOpen(true); setIsExploreOpen(false) }}
@@ -129,9 +134,34 @@ function Navbar () {
                         </button>
                         <AnimatePresence>
                             {isServicesOpen && (
-                                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.16 }} className='absolute left-1/2 top-full z-20 mt-3 grid w-[780px] -translate-x-1/2 grid-cols-[190px_1fr] overflow-hidden rounded-2xl border border-[#dfe8f0] bg-white p-3 shadow-2xl' role='menu'>
-                                    <div className='rounded-xl bg-red-50 p-5'><span className='flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white'><FiTool /></span><h3 className='mt-4 text-lg font-extrabold text-[#102957]'>Our Services</h3><p className='mt-2 text-xs leading-5 text-[#527292]'>Complete car care under one roof.</p><NavLink to='/services' onClick={() => setIsServicesOpen(false)} className='mt-5 inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700'>View All Services <FiArrowUpRight /></NavLink></div>
-                                    <div className='grid grid-cols-3 gap-x-3 gap-y-1 px-4 py-2'>{serviceItems.slice(0, 9).map((service) => <NavLink key={service.id || service.title} to={`/book-repair?serviceId=${encodeURIComponent(service.id)}`} onClick={() => setIsServicesOpen(false)} className='group flex gap-3 rounded-lg p-3 hover:bg-red-50' role='menuitem'><FiTool className='mt-1 h-5 w-5 shrink-0 text-red-600' /><span><span className='block text-sm font-bold text-[#17345c] group-hover:text-red-600'>{service.title}</span><span className='mt-1 block text-[10px] leading-4 text-[#7890a8]'>{shortDescription(service.description)}</span></span></NavLink>)}</div>
+                                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.16 }} className='absolute left-1/2 top-full z-20 mt-2 grid max-h-[58vh] w-[520px] -translate-x-1/2 grid-cols-[145px_1fr] overflow-hidden rounded-xl border border-[#dfe8f0] bg-white p-2 shadow-2xl' role='menu'>
+                                    <div className='rounded-lg bg-red-50 p-3'>
+                                        <span className='flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white'><FiTool className='h-4 w-4' /></span>
+                                        <h3 className='mt-3 text-sm font-extrabold text-[#102957]'>Our Services</h3>
+                                        <p className='mt-1 text-[10px] leading-4 text-[#527292]'>Complete car care under one roof.</p>
+                                        <NavLink to='/services' onClick={() => setIsServicesOpen(false)} className='mt-3 inline-flex w-full items-center justify-center gap-1 rounded-md bg-red-600 px-2.5 py-2 text-[10px] font-bold text-white transition hover:bg-red-700'>All Services <FiArrowUpRight className='h-3.5 w-3.5' /></NavLink>
+                                    </div>
+                                    <div className='grid max-h-[calc(58vh-1rem)] grid-cols-2 gap-0.5 overflow-y-auto px-2 py-0.5'>
+                                        {serviceItems.map((service) => (
+                                            <NavLink
+                                                key={service.id || service.title}
+                                                to={service.id ? `/services/${service.id}` : '/services'}
+                                                onClick={() => setIsServicesOpen(false)}
+                                                className='group flex min-w-0 items-center gap-1.5 rounded-md px-1.5 py-1 hover:bg-red-50'
+                                                role='menuitem'
+                                            >
+                                                <span className='h-7 w-7 shrink-0 overflow-hidden rounded bg-slate-100'>
+                                                    {service.image ? (
+                                                        <img src={getMediaUrl(service.image)} alt={service.title} className='h-full w-full object-cover' />
+                                                    ) : (
+                                                        <span className='flex h-full w-full items-center justify-center text-red-600'><FiTool className='h-3.5 w-3.5' /></span>
+                                                    )}
+                                                </span>
+                                                <span className='min-w-0 flex-1 truncate text-[10px] font-semibold leading-3 text-[#17345c] group-hover:text-red-600'>{service.title}</span>
+                                                {!service.isAvailable && <span className='shrink-0 rounded-full bg-red-100 px-1 py-0.5 text-[8px] font-bold text-red-700'>Off</span>}
+                                            </NavLink>
+                                        ))}
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -317,21 +347,36 @@ function Navbar () {
                                         to={link.to}
                                         className={({ isActive }) => (
                                             isActive
-                                                ? 'block rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-700'
-                                                : 'block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-red-600'
+                                                ? 'flex items-center gap-2 rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-700'
+                                                : 'flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-red-600'
                                         )}
                                         onClick={() => setIsOpen(false)}
                                     >
-                                        {link.name}
+                                        <link.Icon className='h-4 w-4 shrink-0' />{link.name}
                                     </NavLink>
                                 </li>
                             ))}
 
-                            <li className='rounded-xl border border-[#dfe8f0] bg-red-50/50 p-2'>
-                                <div className='flex items-center justify-between px-2 py-1'><p className='flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-[#17345c]'><FiTool className='text-red-600' />Services</p><NavLink to='/services' className='text-xs font-bold text-red-600' onClick={() => setIsOpen(false)}>View all</NavLink></div>
-                                <div className='mt-1 grid grid-cols-2 gap-1'>
-                                    {serviceItems.slice(0, 8).map((service) => (
-                                        <NavLink key={service.id || service.title} to={`/book-repair?serviceId=${encodeURIComponent(service.id)}`} className='rounded-md px-2 py-2 text-xs font-semibold text-gray-700 hover:bg-white hover:text-red-600' onClick={() => setIsOpen(false)}>{service.title}</NavLink>
+                            <li className='rounded-lg border border-[#dfe8f0] bg-red-50/50 p-2'>
+                                <div className='flex items-center justify-between px-1.5 py-0.5'><p className='flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wide text-[#17345c]'><FiTool className='text-red-600' />Services</p><NavLink to='/services' className='rounded-md bg-red-600 px-2 py-1 text-[10px] font-bold text-white' onClick={() => setIsOpen(false)}>All</NavLink></div>
+                                <div className='mt-1 grid grid-cols-1 gap-0.5 sm:grid-cols-2'>
+                                    {serviceItems.map((service) => (
+                                        <NavLink
+                                            key={service.id || service.title}
+                                            to={service.id ? `/services/${service.id}` : '/services'}
+                                            className='flex min-w-0 items-center gap-1.5 rounded-md px-1.5 py-1 text-[10px] font-semibold text-gray-700 hover:bg-white hover:text-red-600'
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            <span className='h-7 w-7 shrink-0 overflow-hidden rounded bg-white'>
+                                                {service.image ? (
+                                                    <img src={getMediaUrl(service.image)} alt={service.title} className='h-full w-full object-cover' />
+                                                ) : (
+                                                    <span className='flex h-full w-full items-center justify-center text-red-600'><FiTool className='h-3.5 w-3.5' /></span>
+                                                )}
+                                            </span>
+                                            <span className='min-w-0 flex-1 truncate'>{service.title}</span>
+                                            {!service.isAvailable && <span className='shrink-0 rounded-full bg-red-100 px-1 py-0.5 text-[8px] font-bold text-red-700'>Off</span>}
+                                        </NavLink>
                                     ))}
                                 </div>
                             </li>
@@ -350,7 +395,7 @@ function Navbar () {
                                             )}
                                             onClick={() => setIsOpen(false)}
                                         >
-                                            {link.name}
+                                            <span className='inline-flex items-center gap-2'><link.Icon className='h-4 w-4 shrink-0' />{link.name}</span>
                                         </NavLink>
                                     ))}
                                 </div>

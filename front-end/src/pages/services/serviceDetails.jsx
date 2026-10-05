@@ -8,6 +8,11 @@ import { fetchServiceById } from '../../rtk/thunks/serviceThunk/serviceThunk'
 import { getMediaUrl } from '../../rtk/utils/apiUrl'
 import { fadeUp, sectionStagger } from '../../utils/motion'
 
+const isServiceAvailable = (service) => {
+    const value = String(service?.isAvailable ?? service?.availability ?? service?.status ?? '').trim().toLowerCase()
+    return service?.isAvailable !== false && !['false', '0', 'no', 'unavailable', 'inactive', 'disabled'].includes(value)
+}
+
 function ServiceDetails () {
     const { serviceId } = useParams()
     const dispatch = useDispatch()
@@ -22,6 +27,7 @@ function ServiceDetails () {
     const errorMessage = typeof selectedError === 'string'
         ? selectedError
         : (selectedError?.message || 'Unable to load service details.')
+    const available = isServiceAvailable(service)
 
     return (
         <motion.section className='cr-section cr-section-light overflow-hidden' initial='hidden' animate='show' variants={sectionStagger}>
@@ -74,10 +80,10 @@ function ServiceDetails () {
                                 <div>
                                     <p className='text-xs font-bold uppercase tracking-wide text-gray-500'>Availability</p>
                                     <p className='mt-1 text-sm font-extrabold text-gray-900'>
-                                        {service.isAvailable === false ? 'Currently unavailable' : 'Available now'}
+                                        {available ? 'Available now' : 'Currently unavailable'}
                                     </p>
                                 </div>
-                                <span className={`h-3 w-3 rounded-full ${service.isAvailable === false ? 'bg-gray-400' : 'bg-emerald-500'}`} />
+                                <span className={`h-3 w-3 rounded-full ${available ? 'bg-emerald-500' : 'bg-gray-400'}`} />
                             </div>
 
                             <div className='mt-4 rounded-xl border border-red-100 bg-red-50 p-4'>
@@ -87,12 +93,18 @@ function ServiceDetails () {
                                 </p>
                             </div>
 
-                            <NavLink
-                                to={`/book-repair?serviceId=${encodeURIComponent(service._id)}`}
-                                className='mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700'
-                            >
-                                Book This Service <FiArrowRight className='h-4 w-4' />
-                            </NavLink>
+                            {available ? (
+                                <NavLink
+                                    to={`/book-repair?serviceId=${encodeURIComponent(service._id)}`}
+                                    className='mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700'
+                                >
+                                    Book This Service <FiArrowRight className='h-4 w-4' />
+                                </NavLink>
+                            ) : (
+                                <div className='mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-bold text-red-700'>
+                                    Booking is currently unavailable
+                                </div>
+                            )}
 
                             <div className='mt-4 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3'>
                                 <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-red-600 shadow-sm'>
