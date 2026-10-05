@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { fetchCurrentUser } from './rtk/thunks/userThunk/userThunk'
@@ -51,50 +51,40 @@ function ScrollToTop () {
     return null
 }
 
-function App () {
-    const [appLoading, setAppLoading] = useState(true)
-    const dispatch = useDispatch()
-    const { user, loading } = useSelector((state) => state.user)
-
-    useEffect(() => {
-        const token = getVerifiedToken()
-        if (token) {
-            dispatch(fetchCurrentUser())
-        }
-    }, [dispatch])
-
-    useEffect(() => {
-        const timerId = setTimeout(() => {
-            setAppLoading(false)
-        }, 2000)
-
-        return () => clearTimeout(timerId)
-    }, [])
-
-    const hasToken = Boolean(getVerifiedToken())
-    const isAuthed = Boolean(user) || hasToken
-
-    const AdminRouteGuard = ({ children }) => {
-        if (!isAuthed) {
-            return <Navigate to='/login' replace />
-        }
-
-        if (hasToken && loading) {
-            return null
-        }
-
-        if (!user) {
-            return <Navigate to='/login' replace />
-        }
-
-        if (user.role !== 'admin') {
-            return <Navigate to='/' replace />
-        }
-
-        return children
+function AdminRouteGuard ({ children, user, isAuthed, hasToken, loading }) {
+    if (!user) {
+        return <Navigate to='/login' replace />
     }
 
-    return appLoading ? (
+    if (user.role !== 'admin') {
+        return <Navigate to='/' replace />
+    }
+
+    if (hasToken && loading) {
+        return null
+    }
+
+    if (!isAuthed) {
+        return <Navigate to='/login' replace />
+    }
+
+    return children
+}
+
+function App () {
+    const dispatch = useDispatch()
+    const { user, loading } = useSelector((state) => state.user)
+    const hasToken = Boolean(getVerifiedToken())
+
+    useEffect(() => {
+        if (hasToken) {
+            dispatch(fetchCurrentUser())
+        }
+    }, [dispatch, hasToken])
+
+    const isAuthed = Boolean(user) || hasToken
+
+    return hasToken && loading ? (
         <Loading />
     ) : (
         <>
@@ -138,7 +128,7 @@ function App () {
             <Route
                 path='admin'
                 element={
-                    <AdminRouteGuard>
+                    <AdminRouteGuard user={user} isAuthed={isAuthed} hasToken={hasToken} loading={loading}>
                         <AdminLayout />
                     </AdminRouteGuard>
                 }

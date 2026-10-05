@@ -65,21 +65,21 @@ function AllServices () {
 					</motion.a>
 				</div>
 
-				<div className='mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'>
+				<div className='mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4'>
 					{loading && (
-						<motion.div className='flex min-h-40 items-center justify-center p-6 cr-card sm:col-span-2 lg:col-span-3' variants={fadeUp} role='status' aria-label='Loading services'>
+						<motion.div className='flex min-h-40 items-center justify-center p-6 cr-card sm:col-span-2 lg:col-span-4' variants={fadeUp} role='status' aria-label='Loading services'>
 										<span className='h-8 w-8 animate-spin rounded-full border-4 border-red-100 border-t-red-600' />
 						</motion.div>
 					)}
 
 					{!loading && error && (
-						<motion.div className='p-6 text-sm font-semibold text-red-700 cr-card sm:col-span-2 lg:col-span-3' variants={fadeUp}>
+						<motion.div className='p-6 text-sm font-semibold text-red-700 cr-card sm:col-span-2 lg:col-span-4' variants={fadeUp}>
 							{typeof error === 'string' ? error : (error?.message || 'Failed to load services')}
 						</motion.div>
 					)}
 
 					{!loading && !error && services.length === 0 && (
-						<motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card sm:col-span-2 lg:col-span-3' variants={fadeUp}>
+						<motion.div className='p-6 text-sm font-semibold text-gray-600 cr-card sm:col-span-2 lg:col-span-4' variants={fadeUp}>
 							No services available right now.
 						</motion.div>
 					)}
