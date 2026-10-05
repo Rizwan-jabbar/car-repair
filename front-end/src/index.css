@@ -27,7 +27,7 @@
 	h1,
 	h2,
 	h3 {
-		font-family: 'Sora', 'Inter', system-ui, sans-serif;
+		font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 	}
 
 	img,
@@ -41,6 +41,11 @@
 	/* Avoid long strings (emails/URLs) breaking layout on small screens */
 	* {
 		overflow-wrap: break-word;
+	}
+
+	button,
+	a {
+		white-space: nowrap;
 	}
 
 	*::selection {

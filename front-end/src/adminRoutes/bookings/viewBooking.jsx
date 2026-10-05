@@ -5,6 +5,41 @@ import { FiCalendar, FiClock, FiFilter, FiMail, FiMapPin, FiPhone, FiUser, FiX }
 
 import { getAllBookings, updateBookingArrival, updateBookingStatus } from '../../rtk/thunks/bookingThunk/bookingThunk'
 
+const progressSteps = ['Pending', 'Confirmed', 'Mechanic Assigned', 'In Progress', 'Completed']
+const progressLabels = {
+    Pending: 'Request Sent',
+    Confirmed: 'Confirmed',
+    'Mechanic Assigned': 'Mechanic Assigned',
+    'In Progress': 'In Progress',
+    Completed: 'Completed',
+}
+
+function StatusTracker ({ status, compact = false }) {
+    if (status === 'Cancelled') {
+        return (
+            <div className='rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700'>
+                Cancelled
+            </div>
+        )
+    }
+
+    const currentIndex = Math.max(0, progressSteps.indexOf(status || 'Pending'))
+
+    return (
+        <div className={compact ? 'min-w-[170px]' : 'min-w-[230px]'}>
+            <div className='flex items-center gap-1'>
+                {progressSteps.map((step, index) => {
+                    const done = index <= currentIndex
+                    return (
+                        <span key={step} className={`h-2 flex-1 rounded-full ${done ? 'bg-red-600' : 'bg-gray-200'}`} />
+                    )
+                })}
+            </div>
+            <p className='mt-2 text-[11px] font-semibold text-gray-600'>{progressLabels[progressSteps[currentIndex]]}</p>
+        </div>
+    )
+}
+
 function ViewBookings () {
     const dispatch = useDispatch()
     const { booking, loading, error } = useSelector((state) => state.booking)
@@ -85,8 +120,9 @@ function ViewBookings () {
     const getStatusTone = (status) => {
         const normalized = String(status || 'Pending').toLowerCase()
         if (normalized === 'confirmed') return 'border border-emerald-200 bg-emerald-50 text-emerald-700'
+        if (normalized === 'mechanic assigned') return 'border border-purple-200 bg-purple-50 text-purple-700'
         if (normalized === 'in progress') return 'border border-blue-200 bg-blue-50 text-blue-700'
-        if (normalized === 'completed') return 'border border-blue-200 bg-blue-50 text-blue-700'
+        if (normalized === 'completed') return 'border border-emerald-200 bg-emerald-50 text-emerald-700'
         if (normalized === 'cancelled') return 'border border-red-200 bg-red-50 text-red-700'
         return 'border border-amber-200 bg-amber-50 text-amber-700'
     }
@@ -317,15 +353,15 @@ function ViewBookings () {
             {!loading && !error && (
                 <>
                     <div className='hidden w-full overflow-x-auto md:block'>
-                        <table className='w-full min-w-[860px] text-left whitespace-nowrap'>
-                            <thead className='bg-black text-white'>
+                        <table className='w-full min-w-[1040px] text-left whitespace-nowrap'>
+                            <thead className='bg-[#102441] text-white'>
                                 <tr>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Customer</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Phone</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Service</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Date</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Status</th>
-                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Actions</th>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-white'>Reference</th>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-white'>Customer</th>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-white'>Service</th>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-white'>Date</th>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-white'>Progress</th>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-white'>Actions</th>
                                 </tr>
                             </thead>
 
@@ -340,22 +376,33 @@ function ViewBookings () {
                                     filteredBookings.map((item, idx) => {
                                         const id = item?._id ?? idx
                                         const status = item?.status || 'Pending'
+                                        const isEmergency = item?.bookingType === 'Emergency'
                                         return (
                                             <tr
                                                 key={id}
                                                 onClick={() => setSelectedBooking(item)}
                                                 className='cursor-pointer border-b border-gray-100 transition duration-200 hover:bg-red-50/40'
                                             >
-                                                <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{item?.fullName || '-'}</td>
-                                                <td className='px-4 py-3 text-sm text-gray-700'>{item?.phone || '-'}</td>
-                                                <td className='px-4 py-3 text-sm text-gray-700 max-w-[220px] overflow-hidden text-ellipsis'>
+                                                <td className='px-4 py-3'>
+                                                    <p className='text-sm font-extrabold text-gray-900'>{item?.referenceNumber || '-'}</p>
+                                                    <p className='mt-1 text-[11px] font-semibold text-gray-500'>{item?.bookingType || 'Regular'}</p>
+                                                </td>
+                                                <td className='px-4 py-3'>
+                                                    <p className='text-sm font-semibold text-gray-900'>{item?.fullName || '-'}</p>
+                                                    <p className='mt-1 text-xs text-gray-500'>{item?.phone || '-'}</p>
+                                                </td>
+                                                <td className='max-w-[240px] overflow-hidden text-ellipsis px-4 py-3 text-sm text-gray-700'>
                                                     {getServiceLabel(item)}
+                                                    {isEmergency && <span className='ml-2 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700'>Emergency</span>}
                                                 </td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>{formatDate(item?.preferredDate)}</td>
                                                 <td className='px-4 py-3'>
-                                                    <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusTone(status)}`}>
-                                                        {status}
-                                                    </span>
+                                                    <div className='flex flex-col gap-2'>
+                                                        <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusTone(status)}`}>
+                                                            {status}
+                                                        </span>
+                                                        <StatusTracker status={status} compact />
+                                                    </div>
                                                 </td>
                                                 <td className='px-4 py-3'>
                                                     <div className='flex items-center gap-2' onClick={(e) => e.stopPropagation()}>
@@ -386,6 +433,7 @@ function ViewBookings () {
                             filteredBookings.map((item, idx) => {
                                 const id = item?._id ?? idx
                                 const status = item?.status || 'Pending'
+                                const isEmergency = item?.bookingType === 'Emergency'
 
                                 return (
                                     <motion.article
@@ -396,6 +444,7 @@ function ViewBookings () {
                                     >
                                         <div className='flex items-start justify-between gap-3'>
                                             <div>
+                                                <p className='text-[11px] font-bold uppercase tracking-wide text-gray-500'>{item?.referenceNumber || '-'}</p>
                                                 <p className='text-sm font-bold text-gray-900'>{item?.fullName || '-'}</p>
                                                 <p className='mt-0.5 text-xs text-gray-500'>{item?.phone || '-'}</p>
                                             </div>
@@ -409,6 +458,14 @@ function ViewBookings () {
                                             <p><span className='font-semibold text-gray-800'>Service:</span> {getServiceLabel(item)}</p>
                                             <p><span className='font-semibold text-gray-800'>Date:</span> {formatDate(item?.preferredDate)}</p>
                                             <p><span className='font-semibold text-gray-800'>Time:</span> {formatTime(item?.preferredTime)}</p>
+                                            <p className='col-span-2'>
+                                                <span className='font-semibold text-gray-800'>Type:</span> {item?.bookingType || 'Regular'}
+                                                {isEmergency && <span className='ml-2 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700'>Emergency</span>}
+                                            </p>
+                                        </div>
+
+                                        <div className='mt-3 rounded-lg border border-gray-200 bg-white p-3'>
+                                            <StatusTracker status={status} />
                                         </div>
 
                                         <div className='mt-3 flex gap-2' onClick={(e) => e.stopPropagation()}>
@@ -451,6 +508,14 @@ function ViewBookings () {
                                 <div>
                                     <p className='text-xs font-semibold uppercase tracking-wide text-red-600'>Booking Details</p>
                                     <h3 className='mt-1 text-xl font-extrabold text-gray-900'>{selectedBooking?.fullName || 'Customer'}</h3>
+                                    <div className='mt-2 flex flex-wrap items-center gap-2'>
+                                        <span className='rounded-full border border-gray-200 bg-white px-2.5 py-1 text-[11px] font-bold text-gray-700'>
+                                            {selectedBooking?.referenceNumber || '-'}
+                                        </span>
+                                        <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${selectedBooking?.bookingType === 'Emergency' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>
+                                            {selectedBooking?.bookingType || 'Regular'}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <button
@@ -507,6 +572,13 @@ function ViewBookings () {
                                             {selectedBooking?.status || 'Pending'}
                                         </span>
                                     </p>
+                                </div>
+
+                                <div className='rounded-xl border border-red-100 bg-red-50/70 p-3 sm:col-span-2'>
+                                    <p className='text-xs font-semibold uppercase tracking-wide text-red-700'>Booking Progress</p>
+                                    <div className='mt-3'>
+                                        <StatusTracker status={selectedBooking?.status || 'Pending'} />
+                                    </div>
                                 </div>
 
                                 <div className='rounded-xl border border-gray-200 bg-white p-3'>

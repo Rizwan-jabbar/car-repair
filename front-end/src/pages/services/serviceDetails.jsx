@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { NavLink, useParams } from 'react-router-dom'
-import { FiArrowRight, FiCheckCircle, FiTool } from 'react-icons/fi'
+import { FiArrowRight, FiCheckCircle, FiInfo, FiShield, FiTool } from 'react-icons/fi'
 
 import { fetchServiceById } from '../../rtk/thunks/serviceThunk/serviceThunk'
 import { getMediaUrl } from '../../rtk/utils/apiUrl'
@@ -45,44 +45,66 @@ function ServiceDetails () {
                 )}
 
                 {!selectedLoading && !selectedError && service && (
-                    <div className='grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start'>
-                        <motion.div variants={fadeUp}>
-                            <p className='inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-red-600'>
-                                <FiTool className='h-4 w-4' /> Service Details
-                            </p>
-                            <h1 className='mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl'>
-                                {service.title}
-                            </h1>
-                            <p className='mt-4 text-sm leading-7 text-gray-600 sm:text-base'>
-                                {service.description}
-                            </p>
-                            <div className='mt-5 flex flex-wrap items-center gap-2'>
-                                <span className='rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700'>
-                                    {service.isAvailable === false ? 'Currently unavailable' : 'Available'}
-                                </span>
-                                <span className='rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-600'>
-                                    Final cost will be confirmed after vehicle inspection.
-                                </span>
-                            </div>
-                            <NavLink
-                                to={`/book-repair?serviceId=${encodeURIComponent(service._id)}`}
-                                className='mt-6 inline-flex items-center gap-2 rounded-md bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700'
-                            >
-                                Book This Service <FiArrowRight className='h-4 w-4' />
-                            </NavLink>
-                        </motion.div>
-
+                    <div className='grid gap-6 lg:grid-cols-[1fr_360px] lg:items-start'>
                         <motion.div className='overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm ring-1 ring-black/5' variants={fadeUp}>
-                            <div className='aspect-[16/10] bg-gradient-to-br from-slate-100 to-slate-300'>
+                            <div className='relative aspect-[16/8] bg-gradient-to-br from-slate-100 to-slate-300'>
                                 {service.image && (
                                     <img src={getMediaUrl(service.image)} alt={service.title} className='h-full w-full object-cover' />
                                 )}
+                                <div className='absolute bottom-4 left-4 inline-flex h-12 w-12 items-center justify-center rounded-full border-4 border-white bg-red-600 text-white shadow-md'>
+                                    <FiTool className='h-5 w-5' />
+                                </div>
+                            </div>
+
+                            <div className='p-5 sm:p-7'>
+                                <p className='inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-red-600'>
+                                    <FiTool className='h-3.5 w-3.5' /> Service Details
+                                </p>
+                                <h1 className='mt-4 text-3xl font-extrabold tracking-tight text-[#102441] sm:text-4xl'>
+                                    {service.title}
+                                </h1>
+                                <p className='mt-4 text-sm leading-7 text-gray-600 sm:text-base'>
+                                    {service.description}
+                                </p>
                             </div>
                         </motion.div>
 
-                        <motion.div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2' variants={fadeUp}>
-                            <div className='grid gap-5 md:grid-cols-2'>
+                        <motion.aside className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm ring-1 ring-black/5' variants={fadeUp}>
+                            <div className='flex items-center justify-between gap-3 border-b border-gray-100 pb-4'>
                                 <div>
+                                    <p className='text-xs font-bold uppercase tracking-wide text-gray-500'>Availability</p>
+                                    <p className='mt-1 text-sm font-extrabold text-gray-900'>
+                                        {service.isAvailable === false ? 'Currently unavailable' : 'Available now'}
+                                    </p>
+                                </div>
+                                <span className={`h-3 w-3 rounded-full ${service.isAvailable === false ? 'bg-gray-400' : 'bg-emerald-500'}`} />
+                            </div>
+
+                            <div className='mt-4 rounded-xl border border-red-100 bg-red-50 p-4'>
+                                <p className='flex items-start gap-2 text-sm font-semibold leading-6 text-red-800'>
+                                    <FiInfo className='mt-0.5 h-4 w-4 shrink-0' />
+                                    Final cost will be confirmed after vehicle inspection.
+                                </p>
+                            </div>
+
+                            <NavLink
+                                to={`/book-repair?serviceId=${encodeURIComponent(service._id)}`}
+                                className='mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-red-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-red-700'
+                            >
+                                Book This Service <FiArrowRight className='h-4 w-4' />
+                            </NavLink>
+
+                            <div className='mt-4 flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3'>
+                                <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-red-600 shadow-sm'>
+                                    <FiShield className='h-4 w-4' />
+                                </span>
+                                <p className='text-xs font-semibold leading-5 text-gray-600'>Inspection first, repair after approval.</p>
+                            </div>
+                        </motion.aside>
+
+                        <motion.div className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm lg:col-span-2 sm:p-6' variants={fadeUp}>
+                            <div className='grid gap-5 md:grid-cols-2'>
+                                <div className='rounded-xl border border-gray-200 bg-gray-50 p-4'>
                                     <h2 className='text-lg font-extrabold text-gray-900'>When You May Need This Service</h2>
                                     {symptoms.length > 0 ? (
                                         <ul className='mt-3 space-y-2'>
@@ -98,7 +120,7 @@ function ServiceDetails () {
                                     )}
                                 </div>
 
-                                <div>
+                                <div className='rounded-xl border border-gray-200 bg-gray-50 p-4'>
                                     <h2 className='text-lg font-extrabold text-gray-900'>What We Inspect</h2>
                                     {inspectionPoints.length > 0 ? (
                                         <ul className='mt-3 space-y-2'>
