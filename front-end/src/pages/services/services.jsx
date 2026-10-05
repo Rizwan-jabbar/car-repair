@@ -139,18 +139,13 @@ function Services () {
                                 </div>
 
                                 <div className='mt-auto flex items-end justify-between gap-3 border-t border-gray-100 pt-4'>
-                                    <div>
-                                        <p className='text-[11px] font-medium text-gray-500'>From</p>
-                                        <p className='text-sm font-extrabold text-red-600'>
-                                            {service.price ? `Rs. ${Number(service.price).toLocaleString()}` : 'Get a quote'}
-                                        </p>
-                                    </div>
+                                    <p className='text-[11px] font-medium text-gray-500'>Clear estimate after inspection</p>
                                     {service.isAvailable !== false ? (
                                         <NavLink
-                                            to={user ? `/book-repair?service=${encodeURIComponent(service.title)}` : '/login'}
+                                            to={`/book-repair?service=${encodeURIComponent(service.title)}`}
                                             className='inline-flex items-center gap-2 rounded-full bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
                                         >
-                                            Book Now
+                                            Book This Service
                                             <FiArrowRight className='h-3.5 w-3.5 text-red-300' aria-hidden='true' />
                                         </NavLink>
                                     ) : (

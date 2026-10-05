@@ -15,21 +15,38 @@ const createBooking = async (req, res) => {
             phone,
             email,
             carModel,
+            vehicleBrand,
+            manufacturingYear,
+            registrationNumber,
+            fuelType,
+            transmission,
             service,
             otherService,
+            problemDescription,
+            locationType,
             cityArea,
+            completeAddress,
             preferredDate,
             preferredTime,
             notes,
             consent,
+            bookingType,
+            emergencyType,
         } = req.body;
 
-        if (!fullName || !phone || !carModel || !cityArea || !preferredDate || !preferredTime || !service) {
+        const isEmergency = bookingType === 'Emergency';
+        if (!fullName || !phone || !carModel || !service || (!isEmergency && (!preferredDate || !preferredTime))) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
         if (service === 'Others' && !otherService) {
             return res.status(400).json({ message: 'Please describe the service' });
+        }
+        if (locationType === 'Mechanic at My Location' && (!cityArea || !completeAddress)) {
+            return res.status(400).json({ message: 'City/area and complete address are required for a mechanic visit' });
+        }
+        if (bookingType === 'Emergency' && (!cityArea || !completeAddress || !emergencyType || !problemDescription)) {
+            return res.status(400).json({ message: 'Emergency location and breakdown details are required' });
         }
 
         const booking = await Booking.create({
@@ -38,18 +55,76 @@ const createBooking = async (req, res) => {
             phone,
             email,
             carModel,
+            vehicleBrand,
+            manufacturingYear,
+            registrationNumber,
+            fuelType,
+            transmission,
             service,
             otherService,
+            problemDescription,
+            locationType,
             cityArea,
-            preferredDate,
-            preferredTime,
+            completeAddress,
+            preferredDate: preferredDate || new Date(),
+            preferredTime: preferredTime || 'ASAP',
             notes,
             consent,
+            bookingType: isEmergency ? 'Emergency' : 'Regular',
+            emergencyType,
         });
 
         res.status(201).json({ message: 'Booking created', booking });
     } catch (error) {
         res.status(500).json({ message: error.message || 'Internal server error' });
+    }
+};
+
+const createEmergencyBooking = async (req, res) => {
+    try {
+        const userId = req.user?.userId;
+        if (!userId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const {
+            fullName,
+            phone,
+            vehicleBrand,
+            carModel,
+            registrationNumber,
+            cityArea,
+            completeAddress,
+            emergencyType,
+            problemDescription,
+        } = req.body;
+
+        if (!fullName || !phone || !vehicleBrand || !carModel || !cityArea || !completeAddress || !emergencyType || !problemDescription) {
+            return res.status(400).json({ message: 'Please provide all emergency request details' });
+        }
+
+        const booking = await Booking.create({
+            user: userId,
+            fullName,
+            phone,
+            vehicleBrand,
+            carModel,
+            registrationNumber,
+            service: 'Emergency Mechanic',
+            problemDescription,
+            locationType: 'Mechanic at My Location',
+            cityArea,
+            completeAddress,
+            preferredDate: new Date(),
+            preferredTime: 'ASAP',
+            consent: true,
+            bookingType: 'Emergency',
+            emergencyType,
+        });
+
+        return res.status(201).json({ message: 'Emergency request created', booking });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || 'Internal server error' });
     }
 };
 
@@ -94,7 +169,7 @@ const updateBookingStatus  = async (req , res) => {
             const { bookingId } = req.params;
             const { status } = req.body;
 
-            if (!['Pending', 'Confirmed', 'In Progress', 'Completed', 'Cancelled'].includes(status)) {
+            if (!['Pending', 'Confirmed', 'Mechanic Assigned', 'In Progress', 'Completed', 'Cancelled'].includes(status)) {
                 return res.status(400).json({ message: 'Invalid status value' });
             }
 
@@ -153,6 +228,7 @@ const updateBookingArrival = async (req, res) => {
 
 const bookingController = {
     createBooking,
+    createEmergencyBooking,
     getUserBooking,
     getAllBookings,
     updateBookingStatus,

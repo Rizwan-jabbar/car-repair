@@ -19,7 +19,6 @@ function ViewServices () {
     const [editForm, setEditForm] = useState({
         title: '',
         description: '',
-        price: '',
     })
 
     useEffect(() => {
@@ -72,14 +71,13 @@ function ViewServices () {
         setEditForm({
             title: service?.title || '',
             description: service?.description || '',
-            price: String(service?.price ?? ''),
         })
         setEditingService(service)
     }
 
     const closeEditModal = () => {
         setEditingService(null)
-        setEditForm({ title: '', description: '', price: '' })
+        setEditForm({ title: '', description: '' })
     }
 
     const submitEditForm = async (e) => {
@@ -90,9 +88,7 @@ function ViewServices () {
 
         const title = editForm.title.trim()
         const description = editForm.description.trim()
-        const parsedPrice = Number(editForm.price)
-
-        if (!title || !description || Number.isNaN(parsedPrice) || parsedPrice < 0) {
+        if (!title || !description) {
             return
         }
 
@@ -102,7 +98,6 @@ function ViewServices () {
                 serviceData: {
                     title,
                     description,
-                    price: parsedPrice,
                 },
             }),
         )
@@ -112,7 +107,6 @@ function ViewServices () {
                 ...selectedService,
                 title,
                 description,
-                price: parsedPrice,
             })
         }
 
@@ -159,7 +153,6 @@ function ViewServices () {
                                 <tr>
                                     <th className='rounded-l-2xl px-4 py-4 text-xs font-bold'><span className='inline-flex items-center gap-2'><FiImage className='h-4 w-4' /> Image</span></th>
                                     <th className='px-4 py-4 text-xs font-bold'>Title</th>
-                                    <th className='px-4 py-4 text-xs font-bold'>Price</th>
                                     <th className='px-4 py-4 text-xs font-bold'>Availability</th>
                                     <th className='px-4 py-4 text-xs font-bold'><span className='inline-flex items-center gap-2'><FiCalendar className='h-4 w-4' /> Created</span></th>
                                     <th className='rounded-r-2xl px-4 py-4 text-xs font-bold'>Actions</th>
@@ -196,9 +189,6 @@ function ViewServices () {
                                                     </div>
                                                 </td>
                                                 <td className='px-4 py-3 text-sm font-extrabold text-[#102441]'>{service?.title || '-'}</td>
-                                                <td className='px-4 py-3 text-lg font-extrabold text-[#102441]'>
-                                                    Rs. {Number(service?.price || 0).toLocaleString()}
-                                                </td>
                                                 <td className='px-4 py-3'>
                                                     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${isAvailable ? 'border border-emerald-200 bg-emerald-50 text-emerald-700' : 'border border-gray-300 bg-gray-100 text-gray-700'}`}>
                                                         {isAvailable ? <FiCheckCircle className='h-3.5 w-3.5' /> : <FiXCircle className='h-3.5 w-3.5' />}
@@ -280,7 +270,7 @@ function ViewServices () {
                                         </div>
 
                                         <div className='mt-3 flex items-center justify-between'>
-                                            <p className='text-sm font-semibold text-gray-900'>Rs. {Number(service?.price || 0).toLocaleString()}</p>
+                                            <p className='text-sm font-semibold text-gray-900'>Estimate after inspection</p>
                                             <p className='text-xs font-medium text-gray-500'>{formatDate(service?.createdAt)}</p>
                                         </div>
 
@@ -350,8 +340,8 @@ function ViewServices () {
 
                             <div className='mt-4 grid gap-3 sm:grid-cols-2'>
                                 <div className='rounded-xl border border-gray-200 bg-gray-50 p-3'>
-                                    <p className='text-xs font-semibold text-gray-500'>Price</p>
-                                    <p className='mt-1 text-sm font-semibold text-gray-900'>Rs. {Number(selectedService?.price || 0).toLocaleString()}</p>
+                                    <p className='text-xs font-semibold text-gray-500'>Estimate</p>
+                                    <p className='mt-1 text-sm font-semibold text-gray-900'>Confirmed after inspection</p>
                                 </div>
                                 <div className='rounded-xl border border-gray-200 bg-gray-50 p-3'>
                                     <p className='text-xs font-semibold text-gray-500'>Availability</p>
@@ -426,16 +416,6 @@ function ViewServices () {
                                     />
                                 </label>
 
-                                <label className='block'>
-                                    <span className='text-sm font-semibold text-gray-900'>Price</span>
-                                    <input
-                                        type='number'
-                                        min='0'
-                                        value={editForm.price}
-                                        onChange={(e) => setEditForm((prev) => ({ ...prev, price: e.target.value }))}
-                                        className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
-                                    />
-                                </label>
 
                                 <div className='flex items-center justify-end gap-2 pt-2'>
                                     <button

@@ -13,6 +13,8 @@ import WhyUs from './pages/whyUs/whyUs'
 import AllServices from './pages/services/allServices'
 import AllCustomerReviews from './pages/customerReviews/allCustomerReviews'
 import BookRepair from './pages/bookRepair/bookRepair'
+import EmergencyBooking from './pages/bookRepair/emergencyBooking'
+import HowItWorks from './components/howItWorks/howItWorks'
 import ContactUs from './pages/contactUs/contactUs'
 import Faq from './pages/faq/faq'
 import TipsForCar from './pages/tipsForCar/tipsForCar'
@@ -93,6 +95,8 @@ function App () {
             <Route element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path='services' element={<AllServices />} />
+                <Route path='emergency-booking' element={<EmergencyBooking />} />
+                <Route path='how-it-works' element={<HowItWorks />} />
                 <Route path='why-us' element={<WhyUs />} />
                 <Route path='reviews' element={<AllCustomerReviews />} />
                 <Route path='faq' element={<Faq />} />
@@ -100,7 +104,7 @@ function App () {
                 <Route path='feedback' element={<FeedBack />} />
                 <Route
                     path='book-repair'
-                    element={isAuthed ? <BookRepair /> : <Navigate to='/login' replace />}
+                    element={<BookRepair />}
                 />
                 <Route
                     path='profile'

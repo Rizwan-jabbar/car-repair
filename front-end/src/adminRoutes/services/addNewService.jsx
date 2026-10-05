@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FiCheckCircle, FiDollarSign, FiFileText, FiImage, FiPlusCircle, FiTool, FiUpload } from 'react-icons/fi'
+import { FiCheckCircle, FiFileText, FiImage, FiPlusCircle, FiTool, FiUpload } from 'react-icons/fi'
 
 import { createService } from '../../rtk/thunks/serviceThunk/serviceThunk'
 
@@ -11,7 +11,6 @@ function AddNewService () {
     const [form, setForm] = useState({
         title: '',
         description: '',
-        price: '',
         image: null,
         isAvailable: true,
     })
@@ -32,12 +31,6 @@ function AddNewService () {
         if (!form.title.trim()) e.title = 'Title is required'
         if (!form.description.trim()) e.description = 'Description is required'
 
-        if (form.price === '' || form.price === null || form.price === undefined) {
-            e.price = 'Price is required'
-        } else if (Number(form.price) < 0 || Number.isNaN(Number(form.price))) {
-            e.price = 'Price must be 0 or greater'
-        }
-
         if (!form.image) e.image = 'Service image is required'
 
         return e
@@ -52,7 +45,6 @@ function AddNewService () {
         setTouched({
             title: true,
             description: true,
-            price: true,
             image: true,
             isAvailable: true,
         })
@@ -63,7 +55,6 @@ function AddNewService () {
             const serviceData = new FormData()
             serviceData.append('title', form.title.trim())
             serviceData.append('description', form.description.trim())
-            serviceData.append('price', String(Number(form.price)))
             serviceData.append('isAvailable', String(Boolean(form.isAvailable)))
             serviceData.append('image', form.image)
 
@@ -74,7 +65,6 @@ function AddNewService () {
             setForm({
                 title: '',
                 description: '',
-                price: '',
                 image: null,
                 isAvailable: true,
             })
@@ -143,23 +133,6 @@ function AddNewService () {
                     </div>
 
                     <div className='grid gap-4 sm:grid-cols-2 sm:pl-[52px]'>
-                        <div className='flex gap-3'>
-                            <span className='mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600'><FiDollarSign className='h-4 w-4' /></span>
-                            <label className='block min-w-0 flex-1'>
-                                <span className='text-sm font-bold text-[#203653]'>Price (PKR) <b className='text-red-600'>*</b></span>
-                            <input
-                                type='number'
-                                min='0'
-                                value={form.price}
-                                onChange={(e) => setField('price', e.target.value)}
-                                onBlur={() => markTouched('price')}
-                                placeholder='e.g. 2500'
-                                className='mt-2 w-full rounded-lg border border-[#d8e5f2] bg-white px-3 py-3 text-sm text-[#314b6d] shadow-sm outline-none transition placeholder:text-[#8da2bf] focus:border-red-300 focus:ring-4 focus:ring-red-100'
-                            />
-                                {touched.price && errors.price && <p className='mt-1 text-xs font-semibold text-red-600'>{errors.price}</p>}
-                            </label>
-                        </div>
-
                         <div className='flex gap-3'>
                             <span className='mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600'><FiCheckCircle className='h-4 w-4' /></span>
                             <label className='block min-w-0 flex-1'>

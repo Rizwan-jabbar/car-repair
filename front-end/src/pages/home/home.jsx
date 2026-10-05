@@ -6,6 +6,7 @@ import WhyUs from '../whyUs/whyUs'
 import CustomerReviews from '../customerReviews/customerReviews'
 import BookRepair from '../bookRepair/bookRepair'
 import ContactUs from '../contactUs/contactUs'
+import HowItWorks from '../../components/howItWorks/howItWorks'
 import { useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { getVerifiedToken } from '../../rtk/utils/authToken'
@@ -18,6 +19,7 @@ function Home () {
         <>
              <Banner />
              <Services />
+            <HowItWorks />
             <WhyUs />
             <CustomerReviews />
             <FeedBack />    

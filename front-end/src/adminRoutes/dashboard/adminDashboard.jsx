@@ -77,16 +77,22 @@ function AdminDashboard () {
         const summary = {
             pending: 0,
             inProgress: 0,
+            confirmed: 0,
+            mechanicAssigned: 0,
             completed: 0,
             cancelled: 0,
+            emergency: 0,
         }
 
         bookings.forEach((item) => {
             const status = String(item?.status || 'Pending').toLowerCase()
             if (status === 'pending') summary.pending += 1
+            else if (status === 'confirmed') summary.confirmed += 1
+            else if (status === 'mechanic assigned') summary.mechanicAssigned += 1
             else if (status === 'in progress') summary.inProgress += 1
             else if (status === 'completed') summary.completed += 1
             else if (status === 'cancelled') summary.cancelled += 1
+            if (item?.bookingType === 'Emergency') summary.emergency += 1
         })
 
         return summary
@@ -150,9 +156,12 @@ function AdminDashboard () {
             tone: 'text-red-600 bg-red-50 border-red-100',
             stats: [
                 { label: 'Pending', value: bookingSummary.pending, color: 'text-amber-700', bg: 'bg-amber-500' },
+                { label: 'Confirmed', value: bookingSummary.confirmed, color: 'text-blue-700', bg: 'bg-blue-500' },
+                { label: 'Mechanic Assigned', value: bookingSummary.mechanicAssigned, color: 'text-indigo-700', bg: 'bg-indigo-500' },
                 { label: 'In Progress', value: bookingSummary.inProgress, color: 'text-blue-700', bg: 'bg-blue-500' },
                 { label: 'Completed', value: bookingSummary.completed, color: 'text-emerald-700', bg: 'bg-emerald-500' },
                 { label: 'Cancelled', value: bookingSummary.cancelled, color: 'text-red-700', bg: 'bg-red-500' },
+                { label: 'Emergency', value: bookingSummary.emergency, color: 'text-red-700', bg: 'bg-red-600' },
             ],
         },
         {

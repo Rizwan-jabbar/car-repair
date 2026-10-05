@@ -34,14 +34,13 @@ const migrateLegacyImage = (service) => {
 
 const addService = async (req, res) => {
     try {
-        const { title, description, price, isAvailable } = req.body;
-        if (!title || !description || price === undefined || !req.file) {
+        const { title, description, isAvailable } = req.body;
+        if (!title || !description || !req.file) {
             return res.status(400).json({ message: 'Please fill in all fields and upload an image' });
         }
         const service = await Service.create({
             title,
             description,
-            price,
             isAvailable: isAvailable !== 'false',
             image: toPersistentImage(req.file),
         });
@@ -87,10 +86,10 @@ const deleteService = async (req, res) => {
 const updateService = async (req, res) => {
     try {
         const { serviceId } = req.params;
-        const { title, description, price } = req.body;
+        const { title, description } = req.body;
         const service = await Service.findByIdAndUpdate(
             serviceId,
-            { title, description, price },
+            { title, description },
             { new: true }
         );
         if (!service) {

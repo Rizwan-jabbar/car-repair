@@ -40,6 +40,7 @@ router.get('/currentUser', authMiddleWare, userController.getCurrentUser);
 
 // booking routes
 router.post('/bookings', authMiddleWare, roleAuthMiddleWare(['user']), bookingController.createBooking);
+router.post('/emergency-bookings', authMiddleWare, roleAuthMiddleWare(['user']), bookingController.createEmergencyBooking);
 router.get('/bookings', authMiddleWare, roleAuthMiddleWare(['user']), bookingController.getUserBooking);
 router.get('/allBookings', authMiddleWare, roleAuthMiddleWare(['admin']), bookingController.getAllBookings);
 router.patch('/bookings/:bookingId/status', authMiddleWare, roleAuthMiddleWare(['admin', 'user']), bookingController.updateBookingStatus);

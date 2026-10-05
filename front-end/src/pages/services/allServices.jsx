@@ -25,7 +25,6 @@ function AllServices () {
 			.filter((service) => service && typeof service === 'object')
 	}, [items])
 
-	const {user} = useSelector((state) => state.user)
 	return (
 		<motion.section
 			className='cr-section cr-section-light overflow-hidden'
@@ -50,7 +49,7 @@ function AllServices () {
 							Explore all services
 						</h1>
 						<p className='mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-relaxed'>
-							Browse our complete service list. We share an estimate before starting any work and back repairs with warranty.
+								Browse our complete service list. Get a clear estimate after inspection before repair work begins.
 						</p>
 					</motion.div>
 
@@ -122,18 +121,13 @@ function AllServices () {
 								</div>
 
 								<div className='mt-auto flex items-end justify-between gap-3 border-t border-gray-100 pt-4'>
-									<div>
-										<p className='text-[11px] font-medium text-gray-500'>From</p>
-										<p className='text-sm font-extrabold text-red-600'>
-											{service.price ? `Rs. ${Number(service.price).toLocaleString()}` : 'Get a quote'}
-										</p>
-									</div>
+									<p className='max-w-[9rem] text-[11px] font-medium leading-4 text-gray-500'>Final cost confirmed after inspection.</p>
 									{service.isAvailable !== false ? (
 										<NavLink
-											to={user ? `/book-repair?service=${encodeURIComponent(service.title)}` : '/login'}
+											to={`/book-repair?service=${encodeURIComponent(service.title)}`}
 											className='inline-flex items-center gap-2 rounded-full bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
 										>
-											Book Now
+											Book This Service
 											<span className='text-red-300' aria-hidden='true'>→</span>
 										</NavLink>
 									) : (

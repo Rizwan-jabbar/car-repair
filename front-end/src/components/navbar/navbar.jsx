@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { FiChevronDown, FiMenu, FiPhoneCall, FiUser, FiX, FiTool, FiArrowUpRight, FiHelpCircle, FiStar, FiInfo, FiHome, FiBookOpen, FiCalendar, FiHeadphones, FiGrid, FiSearch, FiMapPin, FiShield, FiClock } from 'react-icons/fi'
+import { FiChevronDown, FiMenu, FiPhoneCall, FiUser, FiX, FiTool, FiArrowUpRight, FiHelpCircle, FiStar, FiInfo, FiHome, FiBookOpen, FiCalendar, FiHeadphones, FiGrid, FiSearch, FiMapPin, FiShield, FiClock, FiZap } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -50,6 +50,7 @@ function Navbar () {
         { name: 'Home', to: '/', Icon: FiHome },
         { name: 'Car Tips', to: '/tips-for-car', Icon: FiBookOpen },
         { name: 'Book Repair', to: isAuthed ? '/book-repair' : '/login', Icon: FiCalendar },
+        { name: 'Emergency Mechanic', to: '/emergency-booking', Icon: FiZap },
         { name: 'Contact', to: '/contact', Icon: FiHeadphones },
     ]
 
@@ -57,6 +58,7 @@ function Navbar () {
         { name: 'Why Us', to: '/why-us', Icon: FiInfo, description: 'Why drivers choose us' },
         { name: 'Reviews', to: '/reviews', Icon: FiStar, description: 'Real customer feedback' },
         { name: 'FAQ', to: '/faq', Icon: FiHelpCircle, description: 'Common questions answered' },
+        { name: 'How It Works', to: '/how-it-works', Icon: FiClock, description: 'How your booking works' },
     ]
 
     const authLinks = [

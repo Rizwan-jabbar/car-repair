@@ -77,6 +77,7 @@ function UserBooking () {
                         <table className='w-full min-w-[780px] text-left whitespace-nowrap'>
                             <thead className='border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white'>
                                 <tr>
+                                    <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Reference</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Service</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Date</th>
                                     <th className='px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-600'>Time</th>
@@ -89,7 +90,7 @@ function UserBooking () {
                             <tbody className='[&>tr:nth-child(even)]:bg-gray-50/40'>
                                 {bookings.length === 0 ? (
                                     <tr>
-                                        <td colSpan={6} className='px-4 py-6 text-center text-sm font-semibold text-gray-500'>
+                                        <td colSpan={7} className='px-4 py-6 text-center text-sm font-semibold text-gray-500'>
                                             No appointments found.
                                         </td>
                                     </tr>
@@ -101,7 +102,8 @@ function UserBooking () {
 
                                         return (
                                             <tr key={id} className='border-b border-gray-100'>
-                                                <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{service}</td>
+                                                <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{item?.referenceNumber || '-'}</td>
+                                                <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{service} {item?.bookingType === 'Emergency' && <span className='ml-1 rounded-full bg-red-100 px-2 py-0.5 text-[10px] text-red-700'>Emergency</span>}</td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>{formatDate(item?.preferredDate)}</td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>{item?.preferredTime || '-'}</td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>{item?.carModel || '-'}</td>

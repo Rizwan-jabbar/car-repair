@@ -26,6 +26,27 @@ export const bookRepair = createAsyncThunk(
     }
 );
 
+export const createEmergencyBooking = createAsyncThunk(
+    'booking/createEmergencyBooking',
+    async (bookingData, { rejectWithValue }) => {
+        try {
+            const token = getVerifiedToken();
+            if (!token) {
+                return rejectWithValue('No token found');
+            }
+
+            const response = await axios.post(`${API_BASE_URL}/emergency-bookings`, bookingData, {
+                headers: {
+                    Authorization: `******`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || 'Emergency request failed');
+        }
+    }
+);
+
 
 export const getUserBookings = createAsyncThunk(
     'booking/getUserBookings',

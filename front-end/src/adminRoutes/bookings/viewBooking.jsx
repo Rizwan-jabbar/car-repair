@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { FiCalendar, FiClock, FiFilter, FiMail, FiMapPin, FiPhone, FiUser, FiX } from 'react-icons/fi'
 
 import { getAllBookings, updateBookingArrival, updateBookingStatus } from '../../rtk/thunks/bookingThunk/bookingThunk'
@@ -58,11 +58,13 @@ function ViewBookings () {
             const matchesSearch = !q || [
                 item?.fullName,
                 item?.phone,
+                item?.referenceNumber,
                 service,
                 item?.carModel,
             ].some((v) => String(v || '').toLowerCase().includes(q))
 
-            const matchesStatus = statusFilter === 'All' || status === statusFilter
+            const matchesStatus = statusFilter === 'All'
+                || (statusFilter === 'Emergency' ? item?.bookingType === 'Emergency' : status === statusFilter)
             const matchesService = serviceFilter === 'All' || service === serviceFilter
 
             const bookingDate = item?.preferredDate ? new Date(item.preferredDate) : null
@@ -75,7 +77,7 @@ function ViewBookings () {
         })
     }, [bookings, searchQuery, statusFilter, serviceFilter, dateFilter])
 
-    const statusOptions = ['All', 'Pending', 'In Progress', 'Completed', 'Cancelled']
+    const statusOptions = ['All', 'Pending', 'Confirmed', 'Mechanic Assigned', 'In Progress', 'Completed', 'Cancelled', 'Emergency']
     const hasActiveFilters = Boolean(searchQuery.trim() || dateFilter || statusFilter !== 'All' || serviceFilter !== 'All')
 
     const getStatusTone = (status) => {

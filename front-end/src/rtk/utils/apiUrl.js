@@ -1,10 +1,9 @@
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
-// Keep local development on the Vite proxy so the browser talks to the
-// backend running on the developer's machine instead of the deployed API.
-export const API_BASE_URL = import.meta.env.DEV
-	? '/api/auth'
-	: configuredApiBaseUrl
+// Use the configured API in local development when one is provided. This
+// keeps local Vite sessions connected to a deployed backend while preserving
+// the localhost proxy fallback for projects without an environment value.
+export const API_BASE_URL = configuredApiBaseUrl || (import.meta.env.DEV ? '/api/auth' : '')
 
 export const getMediaUrl = (mediaPath) => {
 	if (!mediaPath) return ''

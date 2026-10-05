@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { FiCalendar, FiClock, FiMapPin, FiPhone, FiTool, FiUser, FiMail, FiCheckCircle, FiShield, FiZap, FiAward, FiArrowRight } from 'react-icons/fi'
 import { motion } from 'framer-motion'
-import { NavLink, useSearchParams } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { serviceTitles } from '../../data/servicesCatalog'
 import { cardIn, fadeUp, sectionStagger, viewportOnce } from '../../utils/motion'
@@ -10,9 +10,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { bookRepair } from '../../rtk/thunks/bookingThunk/bookingThunk'
 import { resetBooking } from '../../rtk/slices/bookRepair/bookRepair'
 import bookingImage from '../../pictures/banner2.jpg'
+import { getVerifiedToken } from '../../rtk/utils/authToken'
 
 function BookRepair () {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const { booking, loading, error } = useSelector((state) => state.booking)
     const serviceOptions = useMemo(() => ([...serviceTitles, 'Others']), [])
@@ -37,9 +39,17 @@ function BookRepair () {
         phone: '',
         email: '',
         carModel: '',
+        vehicleBrand: '',
+        manufacturingYear: '',
+        registrationNumber: '',
+        fuelType: 'Petrol',
+        transmission: 'Manual',
         service: initialService,
         otherService: initialOtherService,
         cityArea: '',
+        completeAddress: '',
+        locationType: 'Visit Workshop',
+        problemDescription: '',
         preferredDate: '',
         preferredTime: '',
         notes: '',
@@ -75,7 +85,8 @@ function BookRepair () {
         if (!form.fullName.trim()) e.fullName = 'Full name is required'
         if (!form.phone.trim()) e.phone = 'Phone number is required'
         if (!form.carModel.trim()) e.carModel = 'Car model is required'
-        if (!form.cityArea.trim()) e.cityArea = 'City / Area is required'
+        if (form.locationType === 'Mechanic at My Location' && !form.cityArea.trim()) e.cityArea = 'City / Area is required'
+        if (form.locationType === 'Mechanic at My Location' && !form.completeAddress.trim()) e.completeAddress = 'Complete address is required'
         if (!form.preferredDate) e.preferredDate = 'Preferred date is required'
         if (!form.preferredTime) e.preferredTime = 'Preferred time is required'
         if (!form.service) e.service = 'Please select a service'
@@ -109,6 +120,7 @@ function BookRepair () {
             service: true,
             otherService: true,
             cityArea: true,
+            completeAddress: true,
             preferredDate: true,
             preferredTime: true,
             consent: true,
@@ -117,6 +129,10 @@ function BookRepair () {
         if (Object.keys(errors).length > 0) return
 
         // Uses your existing RTK thunk (adds token automatically and calls the backend controller)
+        if (!getVerifiedToken()) {
+            navigate(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`)
+            return
+        }
         dispatch(bookRepair(form))
     }
 
@@ -215,6 +231,14 @@ function BookRepair () {
                                     </div>
 
                                     <div className='grid gap-4 sm:grid-cols-2'>
+                                        <label className='block'><span className='text-sm font-semibold text-gray-900'>Vehicle brand / make</span><input className='cr-input' value={form.vehicleBrand} onChange={(e) => setField('vehicleBrand', e.target.value)} placeholder='e.g. Toyota' /></label>
+                                        <label className='block'><span className='text-sm font-semibold text-gray-900'>Manufacturing year</span><input className='cr-input' value={form.manufacturingYear} onChange={(e) => setField('manufacturingYear', e.target.value)} placeholder='e.g. 2020' /></label>
+                                        <label className='block'><span className='text-sm font-semibold text-gray-900'>Registration number (optional)</span><input className='cr-input' value={form.registrationNumber} onChange={(e) => setField('registrationNumber', e.target.value)} placeholder='e.g. ABC-123' /></label>
+                                        <label className='block'><span className='text-sm font-semibold text-gray-900'>Fuel type</span><select className='cr-input' value={form.fuelType} onChange={(e) => setField('fuelType', e.target.value)}><option>Petrol</option><option>Diesel</option><option>Hybrid</option><option>Electric</option></select></label>
+                                        <label className='block'><span className='text-sm font-semibold text-gray-900'>Transmission</span><select className='cr-input' value={form.transmission} onChange={(e) => setField('transmission', e.target.value)}><option>Manual</option><option>Automatic</option></select></label>
+                                    </div>
+
+                                    <div className='grid gap-4 sm:grid-cols-2'>
                                         <label className='block'>
                                             <span className='flex items-center gap-2 text-sm font-semibold text-gray-900'>
                                                 <FiMail className='h-4 w-4 text-gray-500' aria-hidden='true' />
@@ -276,21 +300,18 @@ function BookRepair () {
                                         <label className='block'>
                                             <span className='flex items-center gap-2 text-sm font-semibold text-gray-900'>
                                                 <FiMapPin className='h-4 w-4 text-gray-500' aria-hidden='true' />
-                                                City / Area
+                                                Service location
                                             </span>
-                                            <input
-                                                type='text'
-                                                value={form.cityArea}
-                                                onChange={(e) => setField('cityArea', e.target.value)}
-                                                onBlur={() => markTouched('cityArea')}
-                                                placeholder='e.g. Lahore, Johar Town'
-                                                className='cr-input'
-                                            />
+                                            <select className='cr-input' value={form.locationType} onChange={(e) => setField('locationType', e.target.value)}><option>Visit Workshop</option><option>Mechanic at My Location</option></select>
+                                            {form.locationType === 'Mechanic at My Location' && <input type='text' value={form.cityArea} onChange={(e) => setField('cityArea', e.target.value)} onBlur={() => markTouched('cityArea')} placeholder='City / Area' className='cr-input mt-2' />}
                                             {touched.cityArea && errors.cityArea && (
                                                 <p className='mt-1 text-xs font-semibold text-red-600'>{errors.cityArea}</p>
                                             )}
                                         </label>
                                     </div>
+
+                                    {form.locationType === 'Mechanic at My Location' && <label className='block'><span className='text-sm font-semibold text-gray-900'>Complete address</span><textarea className='cr-input mt-2' value={form.completeAddress} onChange={(e) => setField('completeAddress', e.target.value)} onBlur={() => markTouched('completeAddress')} rows={2} placeholder='Enter the complete location address' />{touched.completeAddress && errors.completeAddress && <p className='mt-1 text-xs font-semibold text-red-600'>{errors.completeAddress}</p>}</label>}
+                                    <label className='block'><span className='text-sm font-semibold text-gray-900'>Problem / symptoms</span><textarea className='cr-input mt-2' value={form.problemDescription} onChange={(e) => setField('problemDescription', e.target.value)} rows={3} placeholder='Tell us what you noticed' /></label>
 
                                     {form.service === 'Others' && (
                                         <label className='block'>
