@@ -1,4 +1,5 @@
 import Booking from "../../models/bookingModel/bookingModel.js";
+import EmergencyBooking from "../../models/emergencyBookingModel/emergencyBookingModel.js";
 
 
 
@@ -80,56 +81,6 @@ const createBooking = async (req, res) => {
     }
 };
 
-const createEmergencyBooking = async (req, res) => {
-    try {
-        const userId = req.user?.userId;
-        if (!userId) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
-        const {
-            fullName,
-            phone,
-            vehicleBrand,
-            carModel,
-            registrationNumber,
-            cityArea,
-            completeAddress,
-            emergencyType,
-            problemDescription,
-        } = req.body;
-
-        if (!fullName || !phone || !vehicleBrand || !carModel || !cityArea || !completeAddress || !emergencyType || !problemDescription) {
-            return res.status(400).json({ message: 'Please provide all emergency request details' });
-        }
-
-        const booking = await Booking.create({
-            user: userId,
-            fullName,
-            phone,
-            vehicleBrand,
-            carModel,
-            registrationNumber,
-            service: 'Emergency Mechanic',
-            problemDescription,
-            locationType: 'Mechanic at My Location',
-            cityArea,
-            completeAddress,
-            preferredDate: new Date(),
-            preferredTime: 'ASAP',
-            consent: true,
-            bookingType: 'Emergency',
-            emergencyType,
-        });
-
-        return res.status(201).json({ message: 'Emergency request created', booking });
-    } catch (error) {
-        return res.status(500).json({ message: error.message || 'Internal server error' });
-    }
-};
-
-
-
 const getUserBooking = async (req, res) => {
     try {
         const userId = req.user?.userId;
@@ -137,7 +88,11 @@ const getUserBooking = async (req, res) => {
         if (!userId) {
             return res.status(401).json({ message: 'Unauthorized' });
         }
-      const bookings = await Booking.find({ user: userId }).sort({ createdAt: -1 });
+      const [regularBookings, emergencyBookings] = await Promise.all([
+          Booking.find({ user: userId }),
+          EmergencyBooking.find({ user: userId }),
+      ]);
+      const bookings = [...regularBookings, ...emergencyBookings].sort((a, b) => b.createdAt - a.createdAt);
       res.status(200).json({ bookings });
     } catch (error) {
         res.status(500).json({ message: error.message || 'Internal server error' });
@@ -148,7 +103,11 @@ const getUserBooking = async (req, res) => {
 
 const getAllBookings = async (req, res) => {
     try {
-        const bookings = await Booking.find().sort({ createdAt: -1 });
+        const [regularBookings, emergencyBookings] = await Promise.all([
+            Booking.find(),
+            EmergencyBooking.find(),
+        ]);
+        const bookings = [...regularBookings, ...emergencyBookings].sort((a, b) => b.createdAt - a.createdAt);
         res.status(200).json({ bookings });
     } catch (error) {
         res.status(500).json({ message: error.message || 'Internal server error' });
@@ -173,7 +132,7 @@ const updateBookingStatus  = async (req , res) => {
                 return res.status(400).json({ message: 'Invalid status value' });
             }
 
-            const booking = await Booking.findById(bookingId);
+            const booking = await Booking.findById(bookingId) || await EmergencyBooking.findById(bookingId);
 
             if (!booking) {
                 return res.status(404).json({ message: 'Booking not found' });
@@ -210,7 +169,7 @@ const updateBookingArrival = async (req, res) => {
             return res.status(400).json({ message: 'Invalid arrival date' });
         }
 
-        const booking = await Booking.findById(bookingId);
+        const booking = await Booking.findById(bookingId) || await EmergencyBooking.findById(bookingId);
 
         if (!booking) {
             return res.status(404).json({ message: 'Booking not found' });
@@ -228,7 +187,6 @@ const updateBookingArrival = async (req, res) => {
 
 const bookingController = {
     createBooking,
-    createEmergencyBooking,
     getUserBooking,
     getAllBookings,
     updateBookingStatus,
