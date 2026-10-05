@@ -2,7 +2,9 @@
 import jwt from "jsonwebtoken";
 
 const authMiddleWare = (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const authorization = req.header('Authorization') || '';
+    const [scheme, value] = authorization.trim().split(/\s+/);
+    const token = scheme?.toLowerCase() === 'bearer' ? value : '';
 
     if (!token) {
         return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -13,7 +15,7 @@ const authMiddleWare = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(400).json({ message: 'Invalid token.' });
+        return res.status(401).json({ message: 'Invalid token.' });
     }
 };
 

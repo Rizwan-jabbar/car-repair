@@ -21,6 +21,9 @@ export const bookRepair = createAsyncThunk(
             });
             return response.data;
         } catch (error) {
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token');
+            }
             return rejectWithValue(error.response?.data || 'Booking failed');
         }
     }
@@ -30,11 +33,6 @@ export const createEmergencyBooking = createAsyncThunk(
     'booking/createEmergencyBooking',
     async (bookingData, { rejectWithValue }) => {
         try {
-            const token = getVerifiedToken();
-            if (!token) {
-                return rejectWithValue('No token found');
-            }
-
             const emergencyPayload = {
                 ...bookingData,
                 service: 'Emergency Mechanic',
@@ -45,12 +43,12 @@ export const createEmergencyBooking = createAsyncThunk(
                 consent: true,
             };
             const response = await axios.post(`${API_BASE_URL}/emergency-bookings`, emergencyPayload, {
-                headers: {
-                    Authorization: `******`
-                }
             });
             return response.data;
         } catch (error) {
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token');
+            }
             return rejectWithValue(error.response?.data || 'Emergency request failed');
         }
     }

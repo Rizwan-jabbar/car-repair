@@ -12,7 +12,9 @@ import jwt from 'jsonwebtoken';
     * Note: req.user will contain the decoded token payload, which should include the user's role(s) */
 const roleAuthMiddleWare = (allowedRoles = []) => {
     return (req, res, next) => {
-        const token = req.header('Authorization')?.replace('Bearer ', '');
+        const authorization = req.header('Authorization') || '';
+        const [scheme, value] = authorization.trim().split(/\s+/);
+        const token = scheme?.toLowerCase() === 'bearer' ? value : '';
         if (!token) {
             return res.status(401).json({ message: 'Authentication required' });
         }

@@ -2,8 +2,7 @@ import EmergencyBooking from '../../models/emergencyBookingModel/emergencyBookin
 
 const createEmergencyBooking = async (req, res) => {
     try {
-        const userId = req.user?.userId
-        if (!userId) return res.status(401).json({ message: 'Unauthorized' })
+        const userId = req.user?.userId || null
 
         const {
             fullName,
@@ -22,7 +21,7 @@ const createEmergencyBooking = async (req, res) => {
         }
 
         const booking = await EmergencyBooking.create({
-            user: userId,
+            user: userId || undefined,
             fullName,
             phone,
             vehicleBrand,

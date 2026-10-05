@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import Booking from '../bookingModel/bookingModel.js'
 
 const emergencyBookingSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     fullName: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true },
     vehicleBrand: { type: String, required: true, trim: true },

@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { FiAlertTriangle, FiMapPin, FiPhone, FiTool, FiUser } from 'react-icons/fi'
 
 import { createEmergencyBooking } from '../../rtk/thunks/bookingThunk/bookingThunk'
 import { resetBooking } from '../../rtk/slices/bookRepair/bookRepair'
-import { getVerifiedToken } from '../../rtk/utils/authToken'
 
 const initialForm = {
     fullName: '',
@@ -33,7 +31,6 @@ const emergencyTypes = [
 
 function EmergencyBooking () {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { loading, booking, error } = useSelector((state) => state.booking)
     const [form, setForm] = useState(initialForm)
 
@@ -45,11 +42,6 @@ function EmergencyBooking () {
 
     const submit = (event) => {
         event.preventDefault()
-
-        if (!getVerifiedToken()) {
-            navigate(`/login?redirect=${encodeURIComponent('/emergency-booking')}`)
-            return
-        }
 
         dispatch(createEmergencyBooking(form))
     }
