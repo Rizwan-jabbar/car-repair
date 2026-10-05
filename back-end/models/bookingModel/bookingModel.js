@@ -31,12 +31,11 @@ const bookingSchema = new mongoose.Schema({
     arrivalDate: { type: Date },
 }, { timestamps: true });
 
-bookingSchema.pre('save', async function (next) {
-    if (this.referenceNumber) return next();
+bookingSchema.pre('save', async function () {
+    if (this.referenceNumber) return;
     const year = new Date().getFullYear();
     const count = await mongoose.model('Booking').countDocuments();
     this.referenceNumber = `CR-${year}-${String(count + 1).padStart(4, '0')}`;
-    next();
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);

@@ -22,15 +22,14 @@ const emergencyBookingSchema = new mongoose.Schema({
     referenceNumber: { type: String, unique: true, index: true },
 }, { timestamps: true })
 
-emergencyBookingSchema.pre('save', async function (next) {
-    if (this.referenceNumber) return next()
+emergencyBookingSchema.pre('save', async function () {
+    if (this.referenceNumber) return
     const year = new Date().getFullYear()
     const [regularCount, emergencyCount] = await Promise.all([
         Booking.countDocuments(),
         mongoose.model('EmergencyBooking').countDocuments(),
     ])
     this.referenceNumber = `CR-${year}-${String(regularCount + emergencyCount + 1).padStart(4, '0')}`
-    next()
 })
 
 const EmergencyBooking = mongoose.model('EmergencyBooking', emergencyBookingSchema)
