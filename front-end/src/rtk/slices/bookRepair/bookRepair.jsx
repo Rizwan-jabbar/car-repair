@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
     bookRepair,
+    createEmergencyBooking,
     getUserBookings,
     getAllBookings,
     updateBookingStatus,
@@ -34,6 +35,16 @@ const bookRepairSlice = createSlice({
                 state.booking = action.payload;
             })
             .addCase(bookRepair.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            }).addCase(createEmergencyBooking.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.booking = null;
+            }).addCase(createEmergencyBooking.fulfilled, (state, action) => {
+                state.loading = false;
+                state.booking = action.payload;
+            }).addCase(createEmergencyBooking.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             }).addCase(getAllBookings.pending, (state) => {

@@ -35,7 +35,16 @@ export const createEmergencyBooking = createAsyncThunk(
                 return rejectWithValue('No token found');
             }
 
-            const response = await axios.post(`${API_BASE_URL}/emergency-bookings`, bookingData, {
+            const emergencyPayload = {
+                ...bookingData,
+                service: 'Emergency Mechanic',
+                bookingType: 'Emergency',
+                locationType: 'Mechanic at My Location',
+                preferredDate: new Date().toISOString(),
+                preferredTime: 'ASAP',
+                consent: true,
+            };
+            const response = await axios.post(`${API_BASE_URL}/emergency-bookings`, emergencyPayload, {
                 headers: {
                     Authorization: `******`
                 }

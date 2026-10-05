@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { FiAlertTriangle, FiMapPin, FiPhone, FiTool, FiUser } from 'react-icons/fi'
 
 import { createEmergencyBooking } from '../../rtk/thunks/bookingThunk/bookingThunk'
+import { resetBooking } from '../../rtk/slices/bookRepair/bookRepair'
 import { getVerifiedToken } from '../../rtk/utils/authToken'
 
 const initialForm = {
@@ -35,6 +36,10 @@ function EmergencyBooking () {
     const navigate = useNavigate()
     const { loading, booking, error } = useSelector((state) => state.booking)
     const [form, setForm] = useState(initialForm)
+
+    useEffect(() => {
+        dispatch(resetBooking())
+    }, [dispatch])
 
     const setField = (key, value) => setForm((previous) => ({ ...previous, [key]: value }))
 

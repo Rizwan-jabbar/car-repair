@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AnimatePresence } from 'framer-motion'
+// motion is used by the responsive booking cards and detail panels below.
+// eslint-disable-next-line no-unused-vars
+import { AnimatePresence, motion } from 'framer-motion'
 import { FiCalendar, FiClock, FiFilter, FiMail, FiMapPin, FiPhone, FiUser, FiX } from 'react-icons/fi'
 
 import { getAllBookings, updateBookingArrival, updateBookingStatus } from '../../rtk/thunks/bookingThunk/bookingThunk'
