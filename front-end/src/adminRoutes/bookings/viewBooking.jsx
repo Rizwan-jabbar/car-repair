@@ -37,6 +37,8 @@ function ViewBookings () {
 
     const getServiceLabel = (item) => {
         if (!item) return '-'
+        if (item?.serviceName) return item.serviceName
+        if (item?.serviceId?.title) return item.serviceId.title
         return item?.service === 'Others' ? (item?.otherService || 'Others') : (item?.service || '-')
     }
 

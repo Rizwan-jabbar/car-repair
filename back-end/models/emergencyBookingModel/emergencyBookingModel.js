@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import Booking from '../bookingModel/bookingModel.js'
+import Counter from '../counterModel/counterModel.js'
 
 const emergencyBookingSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
@@ -25,11 +25,12 @@ const emergencyBookingSchema = new mongoose.Schema({
 emergencyBookingSchema.pre('save', async function () {
     if (this.referenceNumber) return
     const year = new Date().getFullYear()
-    const [regularCount, emergencyCount] = await Promise.all([
-        Booking.countDocuments(),
-        mongoose.model('EmergencyBooking').countDocuments(),
-    ])
-    this.referenceNumber = `CR-${year}-${String(regularCount + emergencyCount + 1).padStart(4, '0')}`
+    const counter = await Counter.findOneAndUpdate(
+        { name: 'bookingReference' },
+        { $inc: { sequence: 1 } },
+        { new: true, upsert: true },
+    )
+    this.referenceNumber = `CR-${year}-${String(counter.sequence).padStart(4, '0')}`
 })
 
 const EmergencyBooking = mongoose.model('EmergencyBooking', emergencyBookingSchema)

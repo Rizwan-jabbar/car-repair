@@ -13,6 +13,8 @@ function AddNewService () {
         description: '',
         image: null,
         isAvailable: true,
+        commonSymptoms: '',
+        inspectionPoints: '',
     })
 
     const [submitted, setSubmitted] = useState(false)
@@ -56,6 +58,8 @@ function AddNewService () {
             serviceData.append('title', form.title.trim())
             serviceData.append('description', form.description.trim())
             serviceData.append('isAvailable', String(Boolean(form.isAvailable)))
+            serviceData.append('commonSymptoms', form.commonSymptoms.trim())
+            serviceData.append('inspectionPoints', form.inspectionPoints.trim())
             serviceData.append('image', form.image)
 
             await dispatch(createService(serviceData)).unwrap()
@@ -67,6 +71,8 @@ function AddNewService () {
                 description: '',
                 image: null,
                 isAvailable: true,
+                commonSymptoms: '',
+                inspectionPoints: '',
             })
         } catch {
             setSubmitted(false)
@@ -151,6 +157,30 @@ function AddNewService () {
                             </div>
                             </label>
                         </div>
+                    </div>
+
+                    <div className='grid gap-4 sm:grid-cols-2 sm:pl-[52px]'>
+                        <label className='block'>
+                            <span className='text-sm font-bold text-[#203653]'>Common Symptoms</span>
+                            <textarea
+                                value={form.commonSymptoms}
+                                onChange={(e) => setField('commonSymptoms', e.target.value)}
+                                rows={3}
+                                placeholder='One symptom per line'
+                                className='mt-2 w-full resize-none rounded-lg border border-[#d8e5f2] bg-white px-3 py-3 text-sm text-[#314b6d] shadow-sm outline-none transition placeholder:text-[#8da2bf] focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                            />
+                        </label>
+
+                        <label className='block'>
+                            <span className='text-sm font-bold text-[#203653]'>Inspection Points</span>
+                            <textarea
+                                value={form.inspectionPoints}
+                                onChange={(e) => setField('inspectionPoints', e.target.value)}
+                                rows={3}
+                                placeholder='One inspection point per line'
+                                className='mt-2 w-full resize-none rounded-lg border border-[#d8e5f2] bg-white px-3 py-3 text-sm text-[#314b6d] shadow-sm outline-none transition placeholder:text-[#8da2bf] focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                            />
+                        </label>
                     </div>
 
                     <div className='flex gap-4'>

@@ -6,7 +6,7 @@ import { FiX } from 'react-icons/fi'
 
 import {
     deleteService,
-    fetchServices,
+    fetchAdminServices,
     toggleServiceAvailability,
     updateService,
 } from '../../rtk/thunks/serviceThunk/serviceThunk'
@@ -19,10 +19,14 @@ function ViewServices () {
     const [editForm, setEditForm] = useState({
         title: '',
         description: '',
+        image: null,
+        isAvailable: true,
+        commonSymptoms: '',
+        inspectionPoints: '',
     })
 
     useEffect(() => {
-        dispatch(fetchServices())
+        dispatch(fetchAdminServices())
     }, [dispatch])
 
     const services = useMemo(() => {
@@ -71,13 +75,17 @@ function ViewServices () {
         setEditForm({
             title: service?.title || '',
             description: service?.description || '',
+            image: null,
+            isAvailable: service?.isAvailable !== false,
+            commonSymptoms: Array.isArray(service?.commonSymptoms) ? service.commonSymptoms.join('\n') : '',
+            inspectionPoints: Array.isArray(service?.inspectionPoints) ? service.inspectionPoints.join('\n') : '',
         })
         setEditingService(service)
     }
 
     const closeEditModal = () => {
         setEditingService(null)
-        setEditForm({ title: '', description: '' })
+        setEditForm({ title: '', description: '', image: null, isAvailable: true, commonSymptoms: '', inspectionPoints: '' })
     }
 
     const submitEditForm = async (e) => {
@@ -92,13 +100,18 @@ function ViewServices () {
             return
         }
 
+        const serviceData = new FormData()
+        serviceData.append('title', title)
+        serviceData.append('description', description)
+        serviceData.append('isAvailable', String(Boolean(editForm.isAvailable)))
+        serviceData.append('commonSymptoms', editForm.commonSymptoms.trim())
+        serviceData.append('inspectionPoints', editForm.inspectionPoints.trim())
+        if (editForm.image) serviceData.append('image', editForm.image)
+
         await dispatch(
             updateService({
                 serviceId,
-                serviceData: {
-                    title,
-                    description,
-                },
+                serviceData,
             }),
         )
 
@@ -107,6 +120,9 @@ function ViewServices () {
                 ...selectedService,
                 title,
                 description,
+                isAvailable: editForm.isAvailable,
+                commonSymptoms: editForm.commonSymptoms.split(/\r?\n|,/).map((item) => item.trim()).filter(Boolean),
+                inspectionPoints: editForm.inspectionPoints.split(/\r?\n|,/).map((item) => item.trim()).filter(Boolean),
             })
         }
 
@@ -415,6 +431,49 @@ function ViewServices () {
                                         className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
                                     />
                                 </label>
+
+                                <label className='flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2'>
+                                    <input
+                                        type='checkbox'
+                                        checked={editForm.isAvailable}
+                                        onChange={(e) => setEditForm((prev) => ({ ...prev, isAvailable: e.target.checked }))}
+                                        className='h-4 w-4 accent-red-600'
+                                    />
+                                    <span className='text-sm font-semibold text-gray-900'>Service is available</span>
+                                </label>
+
+                                <label className='block'>
+                                    <span className='text-sm font-semibold text-gray-900'>Service Image</span>
+                                    <input
+                                        type='file'
+                                        accept='image/jpeg,image/png,image/gif,image/webp'
+                                        onChange={(e) => setEditForm((prev) => ({ ...prev, image: e.target.files?.[0] || null }))}
+                                        className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition file:mr-3 file:rounded-md file:border-0 file:bg-red-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-red-600 focus:border-red-300 focus:ring-2 focus:ring-red-100'
+                                    />
+                                    <p className='mt-1 text-xs text-gray-500'>Leave empty to keep the current image.</p>
+                                </label>
+
+                                <div className='grid gap-4 sm:grid-cols-2'>
+                                    <label className='block'>
+                                        <span className='text-sm font-semibold text-gray-900'>Common Symptoms</span>
+                                        <textarea
+                                            rows={3}
+                                            value={editForm.commonSymptoms}
+                                            onChange={(e) => setEditForm((prev) => ({ ...prev, commonSymptoms: e.target.value }))}
+                                            className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
+                                        />
+                                    </label>
+
+                                    <label className='block'>
+                                        <span className='text-sm font-semibold text-gray-900'>Inspection Points</span>
+                                        <textarea
+                                            rows={3}
+                                            value={editForm.inspectionPoints}
+                                            onChange={(e) => setEditForm((prev) => ({ ...prev, inspectionPoints: e.target.value }))}
+                                            className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
+                                        />
+                                    </label>
+                                </div>
 
 
                                 <div className='flex items-center justify-end gap-2 pt-2'>

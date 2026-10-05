@@ -123,13 +123,21 @@ function AllServices () {
 								<div className='mt-auto flex items-end justify-between gap-3 border-t border-gray-100 pt-4'>
 									<p className='max-w-[9rem] text-[11px] font-medium leading-4 text-gray-500'>Final cost confirmed after inspection.</p>
 									{service.isAvailable !== false ? (
+										<>
 										<NavLink
-											to={`/book-repair?service=${encodeURIComponent(service.title)}`}
+											to={`/services/${service._id}`}
+											className='inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-2 text-xs font-bold text-gray-700 shadow-sm transition hover:bg-red-50 hover:text-red-600'
+										>
+											View Details
+										</NavLink>
+										<NavLink
+											to={`/book-repair?serviceId=${encodeURIComponent(service._id)}`}
 											className='inline-flex items-center gap-2 rounded-full bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2'
 										>
 											Book This Service
 											<span className='text-red-300' aria-hidden='true'>→</span>
 										</NavLink>
+										</>
 									) : (
 										<span className='rounded-full bg-red-50 px-3 py-2 text-xs font-bold text-red-700'>Unavailable</span>
 									)}

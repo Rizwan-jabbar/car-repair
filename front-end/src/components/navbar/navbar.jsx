@@ -70,6 +70,7 @@ function Navbar () {
     const serviceItems = useMemo(() => {
         const apiItems = Array.isArray(serviceState?.items) ? serviceState.items : []
         const normalized = apiItems.map((item) => item?.service ?? item).filter(Boolean).map((item) => ({
+            id: item._id || item.id,
             title: item.title || item.name || item.serviceName,
             description: item.description || item.details || 'Professional care for your vehicle',
         })).filter((item) => item.title)
@@ -130,7 +131,7 @@ function Navbar () {
                             {isServicesOpen && (
                                 <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.16 }} className='absolute left-1/2 top-full z-20 mt-3 grid w-[780px] -translate-x-1/2 grid-cols-[190px_1fr] overflow-hidden rounded-2xl border border-[#dfe8f0] bg-white p-3 shadow-2xl' role='menu'>
                                     <div className='rounded-xl bg-red-50 p-5'><span className='flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white'><FiTool /></span><h3 className='mt-4 text-lg font-extrabold text-[#102957]'>Our Services</h3><p className='mt-2 text-xs leading-5 text-[#527292]'>Complete car care under one roof.</p><NavLink to='/services' onClick={() => setIsServicesOpen(false)} className='mt-5 inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700'>View All Services <FiArrowUpRight /></NavLink></div>
-                                    <div className='grid grid-cols-3 gap-x-3 gap-y-1 px-4 py-2'>{serviceItems.slice(0, 9).map((service) => <NavLink key={service.title} to={`/book-repair?service=${encodeURIComponent(service.title)}`} onClick={() => setIsServicesOpen(false)} className='group flex gap-3 rounded-lg p-3 hover:bg-red-50' role='menuitem'><FiTool className='mt-1 h-5 w-5 shrink-0 text-red-600' /><span><span className='block text-sm font-bold text-[#17345c] group-hover:text-red-600'>{service.title}</span><span className='mt-1 block text-[10px] leading-4 text-[#7890a8]'>{shortDescription(service.description)}</span></span></NavLink>)}</div>
+                                    <div className='grid grid-cols-3 gap-x-3 gap-y-1 px-4 py-2'>{serviceItems.slice(0, 9).map((service) => <NavLink key={service.id || service.title} to={`/book-repair?serviceId=${encodeURIComponent(service.id)}`} onClick={() => setIsServicesOpen(false)} className='group flex gap-3 rounded-lg p-3 hover:bg-red-50' role='menuitem'><FiTool className='mt-1 h-5 w-5 shrink-0 text-red-600' /><span><span className='block text-sm font-bold text-[#17345c] group-hover:text-red-600'>{service.title}</span><span className='mt-1 block text-[10px] leading-4 text-[#7890a8]'>{shortDescription(service.description)}</span></span></NavLink>)}</div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -330,7 +331,7 @@ function Navbar () {
                                 <div className='flex items-center justify-between px-2 py-1'><p className='flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-[#17345c]'><FiTool className='text-red-600' />Services</p><NavLink to='/services' className='text-xs font-bold text-red-600' onClick={() => setIsOpen(false)}>View all</NavLink></div>
                                 <div className='mt-1 grid grid-cols-2 gap-1'>
                                     {serviceItems.slice(0, 8).map((service) => (
-                                        <NavLink key={service.title} to={`/book-repair?service=${encodeURIComponent(service.title)}`} className='rounded-md px-2 py-2 text-xs font-semibold text-gray-700 hover:bg-white hover:text-red-600' onClick={() => setIsOpen(false)}>{service.title}</NavLink>
+                                        <NavLink key={service.id || service.title} to={`/book-repair?serviceId=${encodeURIComponent(service.id)}`} className='rounded-md px-2 py-2 text-xs font-semibold text-gray-700 hover:bg-white hover:text-red-600' onClick={() => setIsOpen(false)}>{service.title}</NavLink>
                                     ))}
                                 </div>
                             </li>

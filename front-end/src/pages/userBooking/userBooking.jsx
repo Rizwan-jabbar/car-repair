@@ -3,6 +3,45 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { getUserBookings, updateBookingStatus } from '../../rtk/thunks/bookingThunk/bookingThunk'
 
+const progressSteps = ['Pending', 'Confirmed', 'Mechanic Assigned', 'In Progress', 'Completed']
+const progressLabels = {
+    Pending: 'Request Sent',
+    Confirmed: 'Confirmed',
+    'Mechanic Assigned': 'Mechanic Assigned',
+    'In Progress': 'In Progress',
+    Completed: 'Completed',
+}
+
+const getServiceLabel = (item) => {
+    if (!item) return 'Service unavailable'
+    if (item?.serviceName) return item.serviceName
+    if (item?.serviceId?.title) return item.serviceId.title
+    if (item?.service === 'Others') return item?.otherService || 'Others'
+    return item?.service || 'Service unavailable'
+}
+
+function StatusTracker ({ status }) {
+    if (status === 'Cancelled') {
+        return <div className='rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700'>Cancelled</div>
+    }
+
+    const currentIndex = Math.max(0, progressSteps.indexOf(status || 'Pending'))
+
+    return (
+        <div className='min-w-[240px]'>
+            <div className='flex items-center gap-1'>
+                {progressSteps.map((step, index) => {
+                    const done = index <= currentIndex
+                    return (
+                        <span key={step} className={`h-2 flex-1 rounded-full ${done ? 'bg-red-600' : 'bg-gray-200'}`} />
+                    )
+                })}
+            </div>
+            <p className='mt-2 text-[11px] font-semibold text-gray-600'>{progressLabels[progressSteps[currentIndex]]}</p>
+        </div>
+    )
+}
+
 function UserBooking () {
     const dispatch = useDispatch()
     const { booking, loading, error } = useSelector((state) => state.booking)
@@ -101,12 +140,13 @@ function UserBooking () {
                                     bookings.map((item, idx) => {
                                         const id = item?._id ?? idx
                                         const status = item?.status || 'Pending'
-                                        const service = item?.service === 'Others' ? (item?.otherService || 'Others') : (item?.service || '-')
+                                        const service = getServiceLabel(item)
+                                        const isEmergency = item?.bookingType === 'Emergency'
 
                                         return (
                                             <tr key={id} className='border-b border-gray-100'>
                                                 <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{item?.referenceNumber || '-'}</td>
-                                                <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{service} {item?.bookingType === 'Emergency' && <span className='ml-1 rounded-full bg-red-100 px-2 py-0.5 text-[10px] text-red-700'>Emergency</span>}</td>
+                                                <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{service} {isEmergency && <span className='ml-1 rounded-full bg-red-100 px-2 py-0.5 text-[10px] text-red-700'>Emergency</span>}</td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>{formatDate(item?.preferredDate)}</td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>{item?.preferredTime || '-'}</td>
                                                 <td className='px-4 py-3 text-sm text-gray-700'>{item?.carModel || '-'}</td>
@@ -114,6 +154,7 @@ function UserBooking () {
                                                     <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusTone(status)}`}>
                                                         {status}
                                                     </span>
+                                                    <div className='mt-2'><StatusTracker status={status} /></div>
                                                 </td>
                                                 <td className='px-4 py-3'>
                                                     {status === 'Pending' ? (
@@ -145,7 +186,8 @@ function UserBooking () {
                             bookings.map((item, idx) => {
                                 const id = item?._id ?? idx
                                 const status = item?.status || 'Pending'
-                                const service = item?.service === 'Others' ? (item?.otherService || 'Others') : (item?.service || '-')
+                                const service = getServiceLabel(item)
+                                const isEmergency = item?.bookingType === 'Emergency'
 
                                 return (
                                     <article
@@ -153,7 +195,11 @@ function UserBooking () {
                                         className='rounded-xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 shadow-sm ring-1 ring-black/5'
                                     >
                                         <div className='flex items-start justify-between gap-3'>
-                                            <h3 className='text-sm font-bold text-gray-900'>{service}</h3>
+                                            <div>
+                                                <p className='text-[11px] font-bold uppercase tracking-wide text-gray-500'>{item?.referenceNumber || '-'}</p>
+                                                <h3 className='mt-1 text-sm font-bold text-gray-900'>{service}</h3>
+                                                {isEmergency && <span className='mt-1 inline-flex rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700'>Emergency</span>}
+                                            </div>
                                             <span className={`rounded-full px-2 py-1 text-[11px] font-semibold ${getStatusTone(status)}`}>
                                                 {status}
                                             </span>
@@ -163,7 +209,9 @@ function UserBooking () {
                                             <p><span className='font-semibold text-gray-800'>Date:</span> {formatDate(item?.preferredDate)}</p>
                                             <p><span className='font-semibold text-gray-800'>Time:</span> {item?.preferredTime || '-'}</p>
                                             <p className='col-span-2'><span className='font-semibold text-gray-800'>Car:</span> {item?.carModel || '-'}</p>
+                                            <p className='col-span-2'><span className='font-semibold text-gray-800'>Booking Type:</span> {item?.bookingType || 'Regular'}</p>
                                         </div>
+                                        <div className='mt-3'><StatusTracker status={status} /></div>
 
                                         <div className='mt-3'>
                                             {status === 'Pending' ? (

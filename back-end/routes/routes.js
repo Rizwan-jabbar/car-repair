@@ -60,8 +60,10 @@ router.delete('/reviews/:reviewId', authMiddleWare, roleAuthMiddleWare(['admin']
 // services routes
 router.post('/addServices', authMiddleWare, roleAuthMiddleWare(['admin']), serviceUpload, serviceController.addService);
 router.get('/getServices', serviceController.getServices);
+router.get('/admin/services', authMiddleWare, roleAuthMiddleWare(['admin']), serviceController.getAdminServices);
+router.get('/services/:serviceId', serviceController.getServiceById);
 router.delete('/deleteService/:serviceId', authMiddleWare, roleAuthMiddleWare(['admin']), serviceController.deleteService);
-router.put('/updateService/:serviceId', authMiddleWare, roleAuthMiddleWare(['admin']), serviceController.updateService);
+router.put('/updateService/:serviceId', authMiddleWare, roleAuthMiddleWare(['admin']), serviceUpload, serviceController.updateService);
 router.patch('/toggleServiceAvailability/:serviceId', authMiddleWare, roleAuthMiddleWare(['admin']), serviceController.toggleServiceAvailability);
 
 

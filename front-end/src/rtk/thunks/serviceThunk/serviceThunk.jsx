@@ -33,6 +33,33 @@ export const fetchServices = createAsyncThunk(
     }
 );
 
+export const fetchAdminServices = createAsyncThunk(
+    'service/fetchAdminServices',
+    async (_, { rejectWithValue }) => {
+        try {
+            const token = getVerifiedToken()
+            if (!token) throw new Error('Authentication required')
+            const headers = { Authorization: `Bearer ${token}` }
+            const response = await axios.get(`${API_BASE_URL}/admin/services`, { headers })
+            return response.data.services || []
+        } catch (error) {
+            return rejectWithValue(error.response?.data || 'Failed to fetch services')
+        }
+    },
+)
+
+export const fetchServiceById = createAsyncThunk(
+    'service/fetchServiceById',
+    async (serviceId, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/services/${serviceId}`)
+            return response.data.service
+        } catch (error) {
+            return rejectWithValue(error.response?.data || 'Unable to load service details.')
+        }
+    },
+)
+
 export const updateService = createAsyncThunk(
     'service/updateService',
     async ({ serviceId, serviceData }, { rejectWithValue }) => {

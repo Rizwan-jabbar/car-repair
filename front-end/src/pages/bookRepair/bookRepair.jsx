@@ -22,17 +22,20 @@ function BookRepair () {
         .map((item) => item?.service ?? item)
         .filter((service) => service?.isAvailable !== false && service?.title)
         .map((service) => ({ id: service._id, title: service.title })), [serviceItems])
+    const requestedServiceId = (searchParams.get('serviceId') || '').trim()
     const requestedService = (searchParams.get('service') || '').trim()
-    const defaultService = serviceOptions[0]?.title || ''
+    const defaultServiceId = serviceOptions[0]?.id || ''
 
     const [form, setForm] = useState(() => {
-        let initialService = defaultService
+        let initialServiceId = defaultServiceId
         let initialOtherService = ''
 
-        if (requestedService) {
-            initialService = serviceOptions.some((service) => service.title === requestedService || service.id === requestedService)
-                ? requestedService
+        if (requestedServiceId) {
+            initialServiceId = serviceOptions.some((service) => service.id === requestedServiceId)
+                ? requestedServiceId
                 : ''
+        } else if (requestedService) {
+            initialServiceId = serviceOptions.find((service) => service.title === requestedService)?.id || ''
         }
 
         return {
@@ -45,7 +48,8 @@ function BookRepair () {
         registrationNumber: '',
         fuelType: 'Petrol',
         transmission: 'Manual',
-        service: initialService,
+        serviceId: initialServiceId,
+        service: '',
         otherService: initialOtherService,
         cityArea: '',
         completeAddress: '',
@@ -66,17 +70,24 @@ function BookRepair () {
     useEffect(() => {
         if (!requestedService) return
 
-        const nextService = serviceOptions.some((service) => service.title === requestedService || service.id === requestedService)
-            ? requestedService
-            : ''
+        const nextServiceId = requestedServiceId
+            ? (serviceOptions.some((service) => service.id === requestedServiceId) ? requestedServiceId : '')
+            : (serviceOptions.find((service) => service.title === requestedService)?.id || '')
 
         queueMicrotask(() => {
             setForm((prev) => {
-                if (prev.service === nextService && prev.otherService === '') return prev
-                return { ...prev, service: nextService, otherService: '' }
+                if (prev.serviceId === nextServiceId && prev.otherService === '') return prev
+                return { ...prev, serviceId: nextServiceId, service: '', otherService: '' }
             })
         })
-    }, [requestedService, serviceOptions])
+    }, [requestedService, requestedServiceId, serviceOptions])
+
+    useEffect(() => {
+        if (form.serviceId || requestedServiceId || requestedService || serviceOptions.length === 0) return
+        queueMicrotask(() => {
+            setForm((prev) => ({ ...prev, serviceId: serviceOptions[0]?.id || '' }))
+        })
+    }, [form.serviceId, requestedService, requestedServiceId, serviceOptions])
 
     const [touched, setTouched] = useState({})
 
@@ -98,8 +109,7 @@ function BookRepair () {
         if (form.locationType === 'Mechanic at My Location' && !form.completeAddress.trim()) e.completeAddress = 'Complete address is required'
         if (!form.preferredDate) e.preferredDate = 'Preferred date is required'
         if (!form.preferredTime) e.preferredTime = 'Preferred time is required'
-        if (!form.service) e.service = 'Please select a service'
-        if (form.service === 'Others' && !form.otherService.trim()) e.otherService = 'Please describe the service'
+        if (!form.serviceId) e.serviceId = 'Please select a service'
         if (!form.consent) e.consent = 'Please confirm consent'
 
         if (form.email.trim()) {
@@ -126,7 +136,7 @@ function BookRepair () {
             phone: true,
             email: true,
             carModel: true,
-            service: true,
+            serviceId: true,
             otherService: true,
             cityArea: true,
             completeAddress: true,
@@ -292,17 +302,18 @@ function BookRepair () {
                                                 Service
                                             </span>
                                             <select
-                                                value={form.service}
-                                                onChange={(e) => setField('service', e.target.value)}
-                                                onBlur={() => markTouched('service')}
+                                                value={form.serviceId}
+                                                onChange={(e) => setField('serviceId', e.target.value)}
+                                                onBlur={() => markTouched('serviceId')}
                                                 className='cr-input'
                                             >
+                                                <option value=''>Select a service</option>
                                                 {serviceOptions.map((service) => (
-                                                    <option key={service.id || service.title} value={service.title}>{service.title}</option>
+                                                    <option key={service.id || service.title} value={service.id}>{service.title}</option>
                                                 ))}
                                             </select>
-                                            {touched.service && errors.service && (
-                                                <p className='mt-1 text-xs font-semibold text-red-600'>{errors.service}</p>
+                                            {touched.serviceId && errors.serviceId && (
+                                                <p className='mt-1 text-xs font-semibold text-red-600'>{errors.serviceId}</p>
                                             )}
                                         </label>
 
@@ -321,23 +332,6 @@ function BookRepair () {
 
                                     {form.locationType === 'Mechanic at My Location' && <label className='block'><span className='text-sm font-semibold text-gray-900'>Complete address</span><textarea className='cr-input mt-2' value={form.completeAddress} onChange={(e) => setField('completeAddress', e.target.value)} onBlur={() => markTouched('completeAddress')} rows={2} placeholder='Enter the complete location address' />{touched.completeAddress && errors.completeAddress && <p className='mt-1 text-xs font-semibold text-red-600'>{errors.completeAddress}</p>}</label>}
                                     <label className='block'><span className='text-sm font-semibold text-gray-900'>Problem / symptoms</span><textarea className='cr-input mt-2' value={form.problemDescription} onChange={(e) => setField('problemDescription', e.target.value)} rows={3} placeholder='Tell us what you noticed' /></label>
-
-                                    {form.service === 'Others' && (
-                                        <label className='block'>
-                                            <span className='text-sm font-semibold text-gray-900'>Please describe the service</span>
-                                            <input
-                                                type='text'
-                                                value={form.otherService}
-                                                onChange={(e) => setField('otherService', e.target.value)}
-                                                onBlur={() => markTouched('otherService')}
-                                                placeholder='e.g. Suspension noise / steering issue'
-                                                className='cr-input'
-                                            />
-                                            {touched.otherService && errors.otherService && (
-                                                <p className='mt-1 text-xs font-semibold text-red-600'>{errors.otherService}</p>
-                                            )}
-                                        </label>
-                                    )}
 
                                     <div className='grid gap-4 sm:grid-cols-2'>
                                         <label className='block'>

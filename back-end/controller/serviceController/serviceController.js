@@ -32,9 +32,17 @@ const migrateLegacyImage = (service) => {
     return true
 }
 
+const parseList = (value) => {
+    if (Array.isArray(value)) return value.map((item) => String(item).trim()).filter(Boolean)
+    return String(value || '')
+        .split(/\r?\n|,/)
+        .map((item) => item.trim())
+        .filter(Boolean)
+}
+
 const addService = async (req, res) => {
     try {
-        const { title, description, isAvailable } = req.body;
+        const { title, description, isAvailable, commonSymptoms, inspectionPoints } = req.body;
         if (!title || !description || !req.file) {
             return res.status(400).json({ message: 'Please fill in all fields and upload an image' });
         }
@@ -43,6 +51,8 @@ const addService = async (req, res) => {
             description,
             isAvailable: isAvailable !== 'false',
             image: toPersistentImage(req.file),
+            commonSymptoms: parseList(commonSymptoms),
+            inspectionPoints: parseList(inspectionPoints),
         });
         return res.status(201).json({ message: 'Service added successfully', service });
     } catch (error) {
@@ -56,7 +66,7 @@ const addService = async (req, res) => {
 
 const getServices = async (req, res) => {
     try {
-        const services = await Service.find();
+        const services = await Service.find({ isAvailable: { $ne: false } });
         await Promise.all(services.map(async (service) => {
             if (migrateLegacyImage(service)) await service.save()
         }))
@@ -65,6 +75,32 @@ const getServices = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }; 
+
+const getAdminServices = async (req, res) => {
+    try {
+        const services = await Service.find();
+        await Promise.all(services.map(async (service) => {
+            if (migrateLegacyImage(service)) await service.save()
+        }))
+        return res.status(200).json({ services });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+const getServiceById = async (req, res) => {
+    try {
+        const { serviceId } = req.params;
+        const service = await Service.findOne({ _id: serviceId, isAvailable: { $ne: false } });
+        if (!service) {
+            return res.status(404).json({ message: 'Service not found or currently unavailable' });
+        }
+        if (migrateLegacyImage(service)) await service.save()
+        return res.status(200).json({ service });
+    } catch (error) {
+        return res.status(404).json({ message: 'Service not found or currently unavailable' });
+    }
+};
 
 
 
@@ -86,10 +122,17 @@ const deleteService = async (req, res) => {
 const updateService = async (req, res) => {
     try {
         const { serviceId } = req.params;
-        const { title, description } = req.body;
+        const { title, description, isAvailable, commonSymptoms, inspectionPoints } = req.body;
+        const updates = { title, description };
+
+        if (typeof isAvailable !== 'undefined') updates.isAvailable = isAvailable !== 'false';
+        if (typeof commonSymptoms !== 'undefined') updates.commonSymptoms = parseList(commonSymptoms);
+        if (typeof inspectionPoints !== 'undefined') updates.inspectionPoints = parseList(inspectionPoints);
+        if (req.file) updates.image = toPersistentImage(req.file);
+
         const service = await Service.findByIdAndUpdate(
             serviceId,
-            { title, description },
+            updates,
             { new: true }
         );
         if (!service) {
@@ -121,6 +164,8 @@ const toggleServiceAvailability = async (req, res) => {
 const serviceController = {
     addService,
     getServices,
+    getAdminServices,
+    getServiceById,
     deleteService,
     updateService,
     toggleServiceAvailability,

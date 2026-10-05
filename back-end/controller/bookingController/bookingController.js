@@ -1,5 +1,6 @@
 import Booking from "../../models/bookingModel/bookingModel.js";
 import EmergencyBooking from "../../models/emergencyBookingModel/emergencyBookingModel.js";
+import Service from "../../models/servicesModel/servicesModel.js";
 
 
 
@@ -21,7 +22,7 @@ const createBooking = async (req, res) => {
             registrationNumber,
             fuelType,
             transmission,
-            service,
+            serviceId,
             otherService,
             problemDescription,
             locationType,
@@ -36,13 +37,16 @@ const createBooking = async (req, res) => {
         } = req.body;
 
         const isEmergency = bookingType === 'Emergency';
-        if (!fullName || !phone || !carModel || !service || (!isEmergency && (!preferredDate || !preferredTime))) {
+        if (!fullName || !phone || !carModel || !serviceId || (!isEmergency && (!preferredDate || !preferredTime))) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        if (service === 'Others' && !otherService) {
-            return res.status(400).json({ message: 'Please describe the service' });
+        const selectedService = await Service.findOne({ _id: serviceId, isAvailable: { $ne: false } });
+        if (!selectedService) {
+            return res.status(400).json({ message: 'Selected service is not available' });
         }
+        const serviceName = selectedService.title;
+
         if (locationType === 'Mechanic at My Location' && (!cityArea || !completeAddress)) {
             return res.status(400).json({ message: 'City/area and complete address are required for a mechanic visit' });
         }
@@ -61,7 +65,9 @@ const createBooking = async (req, res) => {
             registrationNumber,
             fuelType,
             transmission,
-            service,
+            serviceId: selectedService._id,
+            serviceName,
+            service: serviceName,
             otherService,
             problemDescription,
             locationType,
@@ -89,7 +95,7 @@ const getUserBooking = async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized' });
         }
       const [regularBookings, emergencyBookings] = await Promise.all([
-          Booking.find({ user: userId }),
+          Booking.find({ user: userId }).populate('serviceId', 'title'),
           EmergencyBooking.find({ user: userId }),
       ]);
       const bookings = [...regularBookings, ...emergencyBookings].sort((a, b) => b.createdAt - a.createdAt);
@@ -104,7 +110,7 @@ const getUserBooking = async (req, res) => {
 const getAllBookings = async (req, res) => {
     try {
         const [regularBookings, emergencyBookings] = await Promise.all([
-            Booking.find(),
+            Booking.find().populate('serviceId', 'title'),
             EmergencyBooking.find(),
         ]);
         const bookings = [...regularBookings, ...emergencyBookings].sort((a, b) => b.createdAt - a.createdAt);

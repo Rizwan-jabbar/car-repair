@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import Counter from '../counterModel/counterModel.js';
 
 
 const bookingSchema = new mongoose.Schema({
@@ -13,7 +13,9 @@ const bookingSchema = new mongoose.Schema({
     registrationNumber: { type: String, trim: true, default: '' },
     fuelType: { type: String, trim: true, default: '' },
     transmission: { type: String, trim: true, default: '' },
-    service: { type: String, required: true },
+    serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: false },
+    serviceName: { type: String, trim: true, default: '' },
+    service: { type: String, required: false },
     otherService: { type: String, trim: true },
     problemDescription: { type: String, trim: true, default: '' },
     locationType: { type: String, enum: ['Visit Workshop', 'Mechanic at My Location'], default: 'Visit Workshop' },
@@ -34,8 +36,12 @@ const bookingSchema = new mongoose.Schema({
 bookingSchema.pre('save', async function () {
     if (this.referenceNumber) return;
     const year = new Date().getFullYear();
-    const count = await mongoose.model('Booking').countDocuments();
-    this.referenceNumber = `CR-${year}-${String(count + 1).padStart(4, '0')}`;
+    const counter = await Counter.findOneAndUpdate(
+        { name: 'bookingReference' },
+        { $inc: { sequence: 1 } },
+        { new: true, upsert: true }
+    );
+    this.referenceNumber = `CR-${year}-${String(counter.sequence).padStart(4, '0')}`;
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);

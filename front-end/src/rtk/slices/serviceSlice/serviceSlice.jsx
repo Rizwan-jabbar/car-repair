@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
     createService,
     deleteService,
+    fetchAdminServices,
+    fetchServiceById,
     fetchServices,
     toggleServiceAvailability,
     updateService,
@@ -9,6 +11,9 @@ import {
 const initialState = {
     items: [],
     created: null,
+    selectedService: null,
+    selectedLoading: false,
+    selectedError: null,
     loading: false,
     error: null,
 }
@@ -52,6 +57,31 @@ const serviceSlice = createSlice({
             .addCase(fetchServices.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
+            })
+            .addCase(fetchAdminServices.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(fetchAdminServices.fulfilled, (state, action) => {
+                state.loading = false
+                state.items = action.payload
+            })
+            .addCase(fetchAdminServices.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload
+            })
+            .addCase(fetchServiceById.pending, (state) => {
+                state.selectedLoading = true
+                state.selectedError = null
+                state.selectedService = null
+            })
+            .addCase(fetchServiceById.fulfilled, (state, action) => {
+                state.selectedLoading = false
+                state.selectedService = action.payload
+            })
+            .addCase(fetchServiceById.rejected, (state, action) => {
+                state.selectedLoading = false
+                state.selectedError = action.payload
             })
             .addCase(updateService.pending, (state) => {
                 state.loading = true

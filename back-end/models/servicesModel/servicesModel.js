@@ -7,6 +7,8 @@ const servicesSchema = new mongoose.Schema(
         description: { type: String, required: true, trim: true },
         image: { type: String, default: '' },
         isAvailable: { type: Boolean, default: true },
+        commonSymptoms: [{ type: String, trim: true }],
+        inspectionPoints: [{ type: String, trim: true }],
     },
     { timestamps: true }
 );

@@ -11,6 +11,7 @@ import AuthLayout from './layout/authLayout'
 import Home from './pages/home/home'
 import WhyUs from './pages/whyUs/whyUs'
 import AllServices from './pages/services/allServices'
+import ServiceDetails from './pages/services/serviceDetails'
 import AllCustomerReviews from './pages/customerReviews/allCustomerReviews'
 import BookRepair from './pages/bookRepair/bookRepair'
 import EmergencyBooking from './pages/bookRepair/emergencyBooking'
@@ -95,6 +96,7 @@ function App () {
             <Route element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path='services' element={<AllServices />} />
+                <Route path='services/:serviceId' element={<ServiceDetails />} />
                 <Route path='emergency-booking' element={<EmergencyBooking />} />
                 <Route path='how-it-works' element={<HowItWorks />} />
                 <Route path='why-us' element={<WhyUs />} />
