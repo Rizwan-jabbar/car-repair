@@ -66,8 +66,8 @@ function Services () {
 
                 <motion.div className='mt-8 grid gap-4 sm:grid-cols-3' variants={fadeUp}>
                     <div className='flex items-center gap-3 rounded-xl border border-red-100 bg-red-50/80 p-4 shadow-sm'>
-                        <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600'><FiShield className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Transparent Pricing</p>
-                        <p className='mt-1 text-sm text-gray-600'>Estimate first—no surprise bills.</p>
+                        <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600'><FiShield className='h-6 w-6' /></span><div><p className='text-sm font-extrabold text-[#17345c]'>Clear Estimates</p>
+                        <p className='mt-1 text-sm text-gray-600'>Get a clear estimate after vehicle inspection before repair work begins.</p>
                         </div>
                     </div>
                     <div className='flex items-center gap-3 rounded-xl border border-[#dfe8f0] bg-white/90 p-4 shadow-sm'>

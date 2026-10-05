@@ -13,8 +13,14 @@ function FeedBack () {
     const dispatch = useDispatch()
     const { user } = useSelector((state) => state.user)
     const { created, loading, error } = useSelector((state) => state.review)
-    const serviceItems = useSelector((state) => state.service?.items || [])
-    const serviceTitles = serviceItems.map((item) => item?.service ?? item).filter((item) => item?.isAvailable !== false && item?.title).map((item) => item.title)
+    const { items: serviceItems = [], loading: servicesLoading, error: servicesError } = useSelector((state) => state.service)
+    const serviceOptions = useMemo(() => {
+        const list = Array.isArray(serviceItems) ? serviceItems : []
+        return list
+            .map((item) => item?.service ?? item)
+            .filter((item) => item?.isAvailable !== false && item?.title)
+            .map((item) => item.title)
+    }, [serviceItems])
 
     const [rating, setRating] = useState(5)
     const [hoverRating, setHoverRating] = useState(null)
@@ -31,31 +37,18 @@ function FeedBack () {
         dispatch(fetchServices())
     }, [dispatch])
 
-    useEffect(() => {
-        if (!form.service && serviceTitles[0]) setForm((prev) => ({ ...prev, service: serviceTitles[0] }))
-    }, [form.service, serviceTitles])
     const [touched, setTouched] = useState({})
-
-    // Prefill from logged-in user (but still editable)
-    useEffect(() => {
-        if (!user) return
-        setForm((prev) => ({
-            ...prev,
-            name: prev.name || user.name || '',
-            email: prev.email || user.email || '',
-            phone: prev.phone || user.contact || '',
-        }))
-    }, [user])
 
     const errors = useMemo(() => {
         const e = {}
-        if (!form.name.trim()) e.name = 'Required'
+        const name = form.name || user?.name || ''
+        if (!name.trim()) e.name = 'Required'
         if (!form.title.trim()) e.title = 'Required'
         if (!form.service.trim()) e.service = 'Required'
         if (!form.body.trim()) e.body = 'Required'
         if (!rating || rating < 1) e.rating = 'Required'
         return e
-    }, [form, rating])
+    }, [form, rating, user])
 
     const setField = (key, value) => setForm((p) => ({ ...p, [key]: value }))
     const markTouched = (key) => setTouched((p) => ({ ...p, [key]: true }))
@@ -77,9 +70,9 @@ function FeedBack () {
 
         dispatch(
             createReview({
-                name: form.name,
-                phone: form.phone,
-                email: form.email,
+                name: form.name || user?.name || '',
+                phone: form.phone || user?.contact || '',
+                email: form.email || user?.email || '',
                 rating,
                 title: form.title,
                 service: form.service,
@@ -175,7 +168,7 @@ function FeedBack () {
                                             value={form.title}
                                             onChange={(e) => setField('title', e.target.value)}
                                             onBlur={() => markTouched('title')}
-                                            placeholder='e.g. Quick service and transparent pricing'
+                                            placeholder='e.g. Quick service and clear communication'
                                             className='mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
                                         />
                                         {touched.title && errors.title && (
@@ -193,9 +186,13 @@ function FeedBack () {
                                                 value={form.service}
                                                 onChange={(e) => setField('service', e.target.value)}
                                                 onBlur={() => markTouched('service')}
+                                                disabled={servicesLoading || Boolean(servicesError) || serviceOptions.length === 0}
                                                 className='mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
                                             >
-                                                {serviceTitles.map((t) => (
+                                                <option value=''>
+                                                    {servicesLoading ? 'Loading services...' : servicesError ? 'Unable to load services. Please try again.' : serviceOptions.length === 0 ? 'No services are currently available.' : 'Select a service'}
+                                                </option>
+                                                {serviceOptions.map((t) => (
                                                     <option key={t} value={t}>{t}</option>
                                                 ))}
                                             </select>
@@ -211,7 +208,7 @@ function FeedBack () {
                                             </span>
                                             <input
                                                 type='text'
-                                                value={form.name}
+                                                value={form.name || user?.name || ''}
                                                 onChange={(e) => setField('name', e.target.value)}
                                                 onBlur={() => markTouched('name')}
                                                 placeholder='Your name'
@@ -231,7 +228,7 @@ function FeedBack () {
                                             </span>
                                             <input
                                                 type='tel'
-                                                value={form.phone}
+                                                value={form.phone || user?.contact || ''}
                                                 onChange={(e) => setField('phone', e.target.value)}
                                                 placeholder='03xx-xxxxxxx'
                                                 className='mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
@@ -245,7 +242,7 @@ function FeedBack () {
                                             </span>
                                             <input
                                                 type='email'
-                                                value={form.email}
+                                                value={form.email || user?.email || ''}
                                                 onChange={(e) => setField('email', e.target.value)}
                                                 placeholder='you@email.com'
                                                 className='mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
@@ -305,7 +302,7 @@ function FeedBack () {
                                                 name: user?.name || '',
                                                 phone: user?.contact || '',
                                                 email: user?.email || '',
-                                                service: serviceTitles[0] ?? '',
+                                                service: '',
                                                 title: '',
                                                 body: '',
                                             })

@@ -66,11 +66,16 @@ function BookRepair () {
     useEffect(() => {
         if (!requestedService) return
 
-        if (serviceOptions.some((service) => service.title === requestedService || service.id === requestedService)) {
-            setForm((prev) => ({ ...prev, service: requestedService, otherService: '' }))
-            return
-        }
-        setForm((prev) => ({ ...prev, service: '' }))
+        const nextService = serviceOptions.some((service) => service.title === requestedService || service.id === requestedService)
+            ? requestedService
+            : ''
+
+        queueMicrotask(() => {
+            setForm((prev) => {
+                if (prev.service === nextService && prev.otherService === '') return prev
+                return { ...prev, service: nextService, otherService: '' }
+            })
+        })
     }, [requestedService, serviceOptions])
 
     const [touched, setTouched] = useState({})
@@ -447,7 +452,7 @@ function BookRepair () {
                                     <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Expert & certified mechanics</li>
                                     <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Modern diagnostic tools</li>
                                     <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Fast and reliable service</li>
-                                    <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Affordable and transparent pricing</li>
+                                    <li className='flex items-center gap-2'><FiCheckCircle className='h-4 w-4 shrink-0 text-red-500' /> Clear estimate after inspection</li>
                                 </ul>
                             </motion.div>
 

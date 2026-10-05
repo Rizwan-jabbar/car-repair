@@ -13,10 +13,22 @@ import {
 
 import { fetchReviews, toggleReviewVisibility } from '../../rtk/thunks/reviewThunk/reviewThunk'
 
+function StarRow ({ rating }) {
+    return (
+        <div className='flex items-center gap-1'>
+            {Array.from({ length: 5 }).map((_, i) => (
+                <FiStar
+                    key={i}
+                    className={i < Number(rating || 0) ? 'h-4 w-4 text-amber-500' : 'h-4 w-4 text-gray-300'}
+                />
+            ))}
+        </div>
+    )
+}
+
 function ViewReviews () {
     const dispatch = useDispatch()
     const { items = [], loading, error } = useSelector((state) => state.review)
-    const reviews = Array.isArray(items) ? items : []
     const errorMessage = typeof error === 'string' ? error : (error?.message || 'Failed to load reviews')
 
     const [selectedReview, setSelectedReview] = useState(null)
@@ -27,8 +39,11 @@ function ViewReviews () {
     }, [dispatch])
 
     const visibleReviews = useMemo(
-        () => reviews.filter((r) => !deletedIds.includes(r?._id ?? r?.id)),
-        [reviews, deletedIds],
+        () => {
+            const reviews = Array.isArray(items) ? items : []
+            return reviews.filter((r) => !deletedIds.includes(r?._id ?? r?.id))
+        },
+        [items, deletedIds],
     )
 
     const toggleHidden = (review) => {
@@ -55,17 +70,6 @@ function ViewReviews () {
         if (Number.isNaN(d.getTime())) return '-'
         return d.toLocaleDateString()
     }
-
-    const StarRow = ({ rating }) => (
-        <div className='flex items-center gap-1'>
-            {Array.from({ length: 5 }).map((_, i) => (
-                <FiStar
-                    key={i}
-                    className={i < Number(rating || 0) ? 'h-4 w-4 text-amber-500' : 'h-4 w-4 text-gray-300'}
-                />
-            ))}
-        </div>
-    )
 
     return (
         <section className='bg-[#f5f9fe]'>

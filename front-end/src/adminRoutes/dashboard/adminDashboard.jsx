@@ -45,33 +45,33 @@ function AdminDashboard () {
 
     const bookings = useMemo(() => (
         Array.isArray(bookingState?.booking?.bookings) ? bookingState.booking.bookings : []
-    ), [bookingState?.booking])
+    ), [bookingState])
 
     const services = useMemo(() => {
         const list = Array.isArray(serviceState?.items) ? serviceState.items : []
         return list
             .map((item) => item?.service ?? item)
             .filter((service) => service && typeof service === 'object')
-    }, [serviceState?.items])
+    }, [serviceState])
 
     const reviews = useMemo(() => (
         Array.isArray(reviewState?.items) ? reviewState.items : []
-    ), [reviewState?.items])
+    ), [reviewState])
 
     const faqs = useMemo(() => {
         const list = Array.isArray(faqState?.items) ? faqState.items : []
         return list
             .map((item) => item?.faq ?? item)
             .filter((faq) => faq && typeof faq === 'object')
-    }, [faqState?.items])
+    }, [faqState])
 
     const contacts = useMemo(() => (
         Array.isArray(contactState?.contacts) ? contactState.contacts : []
-    ), [contactState?.contacts])
+    ), [contactState])
 
     const banners = useMemo(() => (
         Array.isArray(bannerState?.banners) ? bannerState.banners : []
-    ), [bannerState?.banners])
+    ), [bannerState])
 
     const bookingSummary = useMemo(() => {
         const summary = {

@@ -8,14 +8,30 @@ import reviewImage from '../../pictures/banner3.jpg'
 import { cardIn, fadeUp, sectionStagger } from '../../utils/motion'
 import { fetchReviews } from '../../rtk/thunks/reviewThunk/reviewThunk'
 
+function StarRow ({ rating }) {
+	return (
+		<div className='flex items-center gap-1' aria-label={`${rating} out of 5 stars`}>
+			{Array.from({ length: 5 }).map((_, i) => (
+				<FiStar
+					key={i}
+					className={i < rating ? 'h-4 w-4 text-amber-500' : 'h-4 w-4 text-gray-300'}
+					aria-hidden='true'
+				/>
+			))}
+		</div>
+	)
+}
+
 function AllCustomerReviews () {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 	const { items = [], loading, error } = useSelector((state) => state.review)
-	const reviews = Array.isArray(items) ? items : []
 	const visibleReviews = useMemo(
-		() => reviews.filter((r) => r?.visible !== false && r?.isVisible !== false),
-		[reviews],
+		() => {
+			const reviews = Array.isArray(items) ? items : []
+			return reviews.filter((r) => r?.visible !== false && r?.isVisible !== false)
+		},
+		[items],
 	)
 	const errorMessage = typeof error === 'string' ? error : (error?.message || 'Failed to load reviews')
 
@@ -36,18 +52,6 @@ function AllCustomerReviews () {
 		if (Number.isNaN(d.getTime())) return ''
 		return d.toLocaleDateString()
 	}
-
-	const StarRow = ({ rating }) => (
-		<div className='flex items-center gap-1' aria-label={`${rating} out of 5 stars`}>
-			{Array.from({ length: 5 }).map((_, i) => (
-				<FiStar
-					key={i}
-					className={i < rating ? 'h-4 w-4 text-amber-500' : 'h-4 w-4 text-gray-300'}
-					aria-hidden='true'
-				/>
-			))}
-		</div>
-	)
 
 	return (
 		<motion.section

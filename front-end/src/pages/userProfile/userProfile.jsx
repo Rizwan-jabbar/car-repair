@@ -58,7 +58,7 @@ function UserProfile () {
 
             <div className='mt-5 overflow-hidden rounded-2xl border border-white bg-white p-4 shadow-sm ring-1 ring-slate-100 sm:p-6'>
                      <div className='grid gap-5 sm:grid-cols-2'>
-                    {profileRows.map((row, idx) => (
+                    {profileRows.map((row) => (
                         <div
                             key={row.label}
                                className='flex min-h-[110px] items-center gap-5 rounded-2xl border border-[#e0ebf6] bg-white px-5 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-red-100 hover:shadow-md sm:px-6 sm:py-6'

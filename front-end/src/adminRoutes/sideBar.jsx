@@ -43,8 +43,12 @@ function SideBar () {
     const [openGroup, setOpenGroup] = useState(getGroupFromPath(pathname))
 
     useEffect(() => {
-        setOpenGroup(getGroupFromPath(pathname))
-        setIsMobileOpen(false)
+        const nextGroup = getGroupFromPath(pathname)
+
+        queueMicrotask(() => {
+            setOpenGroup((prev) => (prev === nextGroup ? prev : nextGroup))
+            setIsMobileOpen(false)
+        })
     }, [pathname])
 
     const groupClass = 'overflow-hidden rounded-2xl'

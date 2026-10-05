@@ -40,10 +40,20 @@ function UpdateBanner () {
     useEffect(() => {
         if (!latestBanner) return
 
-        setForm({
-            title: latestBanner.title || '',
-            description: latestBanner.description || '',
-            link: latestBanner.link || '',
+        queueMicrotask(() => {
+            setForm((prev) => {
+                const next = {
+                    title: latestBanner.title || '',
+                    description: latestBanner.description || '',
+                    link: latestBanner.link || '',
+                }
+
+                if (prev.title === next.title && prev.description === next.description && prev.link === next.link) {
+                    return prev
+                }
+
+                return next
+            })
         })
     }, [latestBanner])
 

@@ -22,14 +22,13 @@ import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useState } from 'react'
 
-import { cardIn, fadeUp, sectionStagger } from '../../utils/motion'
+import { fadeUp, sectionStagger } from '../../utils/motion'
 import { askAi } from '../../rtk/thunks/aiThunk/aiThunk'
 import { clearAiAnswer } from '../../rtk/slices/aiSlice/aiSlice'
 import { getMediaUrl } from '../../rtk/utils/apiUrl'
 
 function TipsForCar () {
     const dispatch = useDispatch()
-    const { user } = useSelector((state) => state.user)
     const { answer, loading: aiLoading, error: aiError } = useSelector((state) => state.ai)
     const [question, setQuestion] = useState('')
     const tipsHero = getMediaUrl('/uploads/cartips.png')

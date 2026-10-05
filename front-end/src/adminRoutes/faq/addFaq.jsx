@@ -83,7 +83,7 @@ function AddFaq () {
                             value={form.category}
                             onChange={(e) => setField('category', e.target.value)}
                             onBlur={() => markTouched('category')}
-                            placeholder='e.g. Pricing & Payment'
+                            placeholder='e.g. Estimates & Payment'
                             className='cr-input'
                         />
                         {touched.category && errors.category && <p className='mt-1 text-xs font-semibold text-red-600'>{errors.category}</p>}

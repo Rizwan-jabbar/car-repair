@@ -8,7 +8,7 @@ export const customerReviewsCatalog = [
         id: 'r1',
         name: 'Ahmed R.',
         rating: 5,
-        title: 'Quick service and transparent pricing',
+        title: 'Quick service and clear communication',
         date: 'March 2026',
         service: 'Brake Service',
         verified: true,

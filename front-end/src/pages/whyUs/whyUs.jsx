@@ -1,13 +1,11 @@
 import { FiShield, FiTool, FiClock, FiThumbsUp, FiStar, FiPhoneCall, FiHeart, FiUsers, FiMessageCircle, FiHeadphones, FiArrowRight } from 'react-icons/fi'
 import { motion } from 'framer-motion'
 import { NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import whyUsImage from '../../pictures/1_JktzC9GrA_l4yz0cCy8a5Q.jpg'
 
 import { cardIn, fadeUp, sectionStagger, viewportOnce } from '../../utils/motion'
 
 function WhyUs () {
-    const { user } = useSelector((state) => state.user)
     const highlights = [
         {
             title: 'Certified & Experienced',

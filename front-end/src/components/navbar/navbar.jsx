@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { FiChevronDown, FiMenu, FiPhoneCall, FiUser, FiX, FiTool, FiArrowUpRight, FiHelpCircle, FiStar, FiInfo, FiHome, FiCalendar, FiHeadphones, FiGrid, FiMapPin, FiShield, FiClock, FiZap } from 'react-icons/fi'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { logout } from '../../rtk/slices/userSlice/userSlice'
@@ -17,6 +17,7 @@ function Navbar () {
     const [isServicesOpen, setIsServicesOpen] = useState(false)
 
     const dispatch = useDispatch()
+    const { pathname } = useLocation()
 
     // Logged-in user (set by login + fetchCurrentUser thunk). If null => not logged in.
     const { user, loading } = useSelector((state) => state.user)
@@ -59,6 +60,7 @@ function Navbar () {
         { name: 'How It Works', to: '/how-it-works', Icon: FiClock, description: 'How your booking works' },
         { name: 'Car Tips', to: '/tips-for-car', Icon: FiTool, description: 'Helpful vehicle care tips' },
     ]
+    const isExploreActive = exploreLinks.some((link) => pathname === link.to)
 
     const authLinks = [
         { name: 'Sign In', to: '/login' },
@@ -149,12 +151,16 @@ function Navbar () {
                     >
                         <button
                             type='button'
-                            className={`inline-flex whitespace-nowrap items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-semibold transition lg:px-2.5 ${isExploreOpen ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`}
+                            className={`inline-flex whitespace-nowrap items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-semibold transition lg:px-2.5 ${isExploreOpen || isExploreActive ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`}
                             aria-haspopup='menu'
                             aria-expanded={isExploreOpen}
+                            onClick={() => {
+                                setIsExploreOpen((prev) => !prev)
+                                setIsServicesOpen(false)
+                            }}
                         >
                             <FiGrid className='h-4 w-4' />Explore
-                            <FiChevronDown className={`h-4 w-4 transition ${isExploreOpen ? 'rotate-180 text-red-600' : 'text-gray-500'}`} />
+                            <FiChevronDown className={`h-4 w-4 transition ${isExploreOpen ? 'rotate-180 text-red-600' : isExploreActive ? 'text-red-600' : 'text-gray-500'}`} />
                         </button>
 
                         <AnimatePresence>

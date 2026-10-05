@@ -11,7 +11,10 @@ function UserBooking () {
         dispatch(getUserBookings())
     }, [dispatch])
 
-    const bookings = Array.isArray(booking?.bookings) ? booking.bookings : []
+    const bookings = useMemo(() => (
+        Array.isArray(booking?.bookings) ? booking.bookings : []
+    ), [booking])
+
     const pendingCount = useMemo(
         () => bookings.filter((item) => (item?.status || 'Pending') === 'Pending').length,
         [bookings],
