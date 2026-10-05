@@ -3,16 +3,18 @@ import { FiCheckCircle, FiSend, FiStar, FiTool, FiUser, FiPhone, FiMail, FiTag }
 import { motion } from 'framer-motion'
 
 import { cardIn, fadeUp, sectionStagger, viewportOnce } from '../../utils/motion'
-import { serviceTitles } from '../../data/servicesCatalog'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { createReview } from '../../rtk/thunks/reviewThunk/reviewThunk'
 import { resetReviewCreate } from '../../rtk/slices/reviewSlice/reviewSlice'
+import { fetchServices } from '../../rtk/thunks/serviceThunk/serviceThunk'
 
 function FeedBack () {
     const dispatch = useDispatch()
     const { user } = useSelector((state) => state.user)
     const { created, loading, error } = useSelector((state) => state.review)
+    const serviceItems = useSelector((state) => state.service?.items || [])
+    const serviceTitles = serviceItems.map((item) => item?.service ?? item).filter((item) => item?.isAvailable !== false && item?.title).map((item) => item.title)
 
     const [rating, setRating] = useState(5)
     const [hoverRating, setHoverRating] = useState(null)
@@ -20,10 +22,18 @@ function FeedBack () {
         name: '',
         phone: '',
         email: '',
-        service: serviceTitles[0] ?? 'Engine Diagnostics',
+        service: '',
         title: '',
         body: '',
     })
+
+    useEffect(() => {
+        dispatch(fetchServices())
+    }, [dispatch])
+
+    useEffect(() => {
+        if (!form.service && serviceTitles[0]) setForm((prev) => ({ ...prev, service: serviceTitles[0] }))
+    }, [form.service, serviceTitles])
     const [touched, setTouched] = useState({})
 
     // Prefill from logged-in user (but still editable)
@@ -295,7 +305,7 @@ function FeedBack () {
                                                 name: user?.name || '',
                                                 phone: user?.contact || '',
                                                 email: user?.email || '',
-                                                service: serviceTitles[0] ?? 'Engine Diagnostics',
+                                                service: serviceTitles[0] ?? '',
                                                 title: '',
                                                 body: '',
                                             })

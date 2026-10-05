@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { FiChevronDown, FiMenu, FiPhoneCall, FiUser, FiX, FiTool, FiArrowUpRight, FiHelpCircle, FiStar, FiInfo, FiHome, FiBookOpen, FiCalendar, FiHeadphones, FiGrid, FiSearch, FiMapPin, FiShield, FiClock, FiZap } from 'react-icons/fi'
+import { FiChevronDown, FiMenu, FiPhoneCall, FiUser, FiX, FiTool, FiArrowUpRight, FiHelpCircle, FiStar, FiInfo, FiHome, FiCalendar, FiHeadphones, FiGrid, FiMapPin, FiShield, FiClock, FiZap } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -9,7 +9,6 @@ import { logout } from '../../rtk/slices/userSlice/userSlice'
 import { getVerifiedToken } from '../../rtk/utils/authToken'
 import logo from '../../pictures/mainLogo.png'
 import { fetchServices } from '../../rtk/thunks/serviceThunk/serviceThunk'
-import { servicesCatalog } from '../../data/servicesCatalog'
 
 function Navbar () {
     const [isOpen, setIsOpen] = useState(false)
@@ -48,7 +47,6 @@ function Navbar () {
 
     const navLinks = [
         { name: 'Home', to: '/', Icon: FiHome },
-        { name: 'Car Tips', to: '/tips-for-car', Icon: FiBookOpen },
         { name: 'Book Repair', to: isAuthed ? '/book-repair' : '/login', Icon: FiCalendar },
         { name: 'Emergency Mechanic', to: '/emergency-booking', Icon: FiZap },
         { name: 'Contact', to: '/contact', Icon: FiHeadphones },
@@ -59,6 +57,7 @@ function Navbar () {
         { name: 'Reviews', to: '/reviews', Icon: FiStar, description: 'Real customer feedback' },
         { name: 'FAQ', to: '/faq', Icon: FiHelpCircle, description: 'Common questions answered' },
         { name: 'How It Works', to: '/how-it-works', Icon: FiClock, description: 'How your booking works' },
+        { name: 'Car Tips', to: '/tips-for-car', Icon: FiTool, description: 'Helpful vehicle care tips' },
     ]
 
     const authLinks = [
@@ -73,7 +72,7 @@ function Navbar () {
             description: item.description || item.details || 'Professional care for your vehicle',
         })).filter((item) => item.title)
 
-        return normalized.length > 0 ? normalized : servicesCatalog.slice(0, 9)
+        return normalized
     }, [serviceState?.items])
 
     const shortDescription = (text) => String(text || '').split(/\s+/).filter(Boolean).slice(0, 5).join(' ')
@@ -110,19 +109,19 @@ function Navbar () {
     return (
         <header className='sticky top-0 z-50 border-b border-gray-200/90 bg-white/95 shadow-sm backdrop-blur'>
             <div className='hidden border-b border-[#edf2f7] bg-[#f7fafd] md:block'><div className='mx-auto flex max-w-7xl items-center justify-between px-4 py-2 text-[11px] font-semibold text-[#526b84] sm:px-6 lg:px-8'><div className='flex items-center gap-5'><span className='flex items-center gap-2'><FiShield className='text-red-600' />Trusted Car Repair Experts</span><span className='h-4 w-px bg-[#dce5ee]' /><span className='flex items-center gap-2'><FiTool className='text-[#17345c]' />Quality Service</span><span className='h-4 w-px bg-[#dce5ee]' /><span className='flex items-center gap-2'><FiClock className='text-red-600' />Open Mon - Sun | 9:00 AM - 10:00 PM</span></div><span className='flex items-center gap-2'><FiMapPin className='text-red-600' />Johar Town, Lahore</span></div></div>
-            <nav className='mx-auto flex max-w-7xl items-center justify-between gap-2 px-2 py-2.5 sm:px-4 lg:px-6'>
-                <NavLink to='/' className='flex items-center gap-2 lg:gap-3'>
-                    <img src={logo} className='h-9 w-auto object-contain sm:h-10 lg:h-12' alt='Car Repair Pro Logo' />
-                    <span className='text-base font-extrabold tracking-tight text-gray-900 sm:text-lg lg:text-xl'>Auto<span className='text-red-600'>Sphere</span></span>
+            <nav className='mx-auto flex min-w-0 max-w-7xl items-center justify-between gap-3 px-3 py-2.5 sm:px-5 lg:gap-5 lg:px-8'>
+                <NavLink to='/' className='flex shrink-0 items-center gap-2 lg:gap-3'>
+                    <img src={logo} className='h-10 w-10 shrink-0 object-contain sm:h-11 sm:w-11 lg:h-12 lg:w-12' alt='AutoSphere logo' />
+                    <span className='whitespace-nowrap text-base font-extrabold tracking-tight text-gray-900 sm:text-lg lg:text-xl'>Auto<span className='text-red-600'>Sphere</span></span>
                 </NavLink>
 
-                <ul className='hidden items-center gap-0.5 bg-white p-0 md:flex'>
+                <ul className='hidden min-w-0 flex-1 items-center justify-center gap-0.5 bg-white p-0 md:flex lg:gap-1'>
                     <li
                         className='relative'
                         onMouseEnter={() => { setIsServicesOpen(true); setIsExploreOpen(false) }}
                         onMouseLeave={() => setIsServicesOpen(false)}
                     >
-                        <button type='button' className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition ${isServicesOpen ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`} aria-haspopup='menu' aria-expanded={isServicesOpen}>
+                        <button type='button' className={`inline-flex whitespace-nowrap items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-semibold transition lg:px-2.5 ${isServicesOpen ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`} aria-haspopup='menu' aria-expanded={isServicesOpen}>
                             <FiTool className='h-4 w-4' />Services <FiChevronDown className={`h-4 w-4 transition ${isServicesOpen ? 'rotate-180 text-red-600' : 'text-gray-500'}`} />
                         </button>
                         <AnimatePresence>
@@ -137,7 +136,7 @@ function Navbar () {
 
                     {navLinks.map((link) => (
                         <li key={link.name}>
-                            <NavLink to={link.to} className={({ isActive }) => `inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition ${isActive ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`}>
+                            <NavLink to={link.to} className={({ isActive }) => `inline-flex whitespace-nowrap items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-semibold transition lg:px-2.5 ${isActive ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`}>
                                 <link.Icon className='h-4 w-4' />{link.name}
                             </NavLink>
                         </li>
@@ -150,7 +149,7 @@ function Navbar () {
                     >
                         <button
                             type='button'
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition ${isExploreOpen ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`}
+                            className={`inline-flex whitespace-nowrap items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-semibold transition lg:px-2.5 ${isExploreOpen ? 'text-red-600' : 'text-[#17345c] hover:text-red-600'}`}
                             aria-haspopup='menu'
                             aria-expanded={isExploreOpen}
                         >
@@ -186,8 +185,7 @@ function Navbar () {
                     </li>
                 </ul>
 
-                <div className='hidden items-center gap-1.5 md:flex'>
-                    <div className='hidden items-center gap-2 rounded-full px-2 py-1.5 text-[11px] text-[#7890a8] xl:flex'><FiSearch className='h-4 w-4 text-[#17345c]' />Search services, tips...</div>
+                <div className='hidden shrink-0 items-center gap-1.5 md:flex'>
                     {!isAuthed && !isHydratingAuth ? (
                         <>
                             <NavLink to={authLinks[0].to} className={navItemClass}>

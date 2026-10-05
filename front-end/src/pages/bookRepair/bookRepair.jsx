@@ -3,7 +3,6 @@ import { FiCalendar, FiClock, FiMapPin, FiPhone, FiTool, FiUser, FiMail, FiCheck
 import { motion } from 'framer-motion'
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { serviceTitles } from '../../data/servicesCatalog'
 import { cardIn, fadeUp, sectionStagger, viewportOnce } from '../../utils/motion'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -11,27 +10,29 @@ import { bookRepair } from '../../rtk/thunks/bookingThunk/bookingThunk'
 import { resetBooking } from '../../rtk/slices/bookRepair/bookRepair'
 import bookingImage from '../../pictures/banner2.jpg'
 import { getVerifiedToken } from '../../rtk/utils/authToken'
+import { fetchServices } from '../../rtk/thunks/serviceThunk/serviceThunk'
 
 function BookRepair () {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const { booking, loading, error } = useSelector((state) => state.booking)
-    const serviceOptions = useMemo(() => ([...serviceTitles, 'Others']), [])
+    const { items: serviceItems = [] } = useSelector((state) => state.service)
+    const serviceOptions = useMemo(() => serviceItems
+        .map((item) => item?.service ?? item)
+        .filter((service) => service?.isAvailable !== false && service?.title)
+        .map((service) => ({ id: service._id, title: service.title })), [serviceItems])
     const requestedService = (searchParams.get('service') || '').trim()
-    const defaultService = serviceOptions[0] ?? 'Engine Diagnostics'
+    const defaultService = serviceOptions[0]?.title || ''
 
     const [form, setForm] = useState(() => {
         let initialService = defaultService
         let initialOtherService = ''
 
         if (requestedService) {
-            if (serviceOptions.includes(requestedService)) {
-                initialService = requestedService
-            } else {
-                initialService = 'Others'
-                initialOtherService = requestedService
-            }
+            initialService = serviceOptions.some((service) => service.title === requestedService || service.id === requestedService)
+                ? requestedService
+                : ''
         }
 
         return {
@@ -57,16 +58,19 @@ function BookRepair () {
         }
     })
 
+    useEffect(() => {
+        dispatch(fetchServices())
+    }, [dispatch])
+
     // If the URL query changes while staying on this page, keep the service in sync.
     useEffect(() => {
         if (!requestedService) return
 
-        if (serviceOptions.includes(requestedService)) {
+        if (serviceOptions.some((service) => service.title === requestedService || service.id === requestedService)) {
             setForm((prev) => ({ ...prev, service: requestedService, otherService: '' }))
             return
         }
-
-        setForm((prev) => ({ ...prev, service: 'Others', otherService: requestedService }))
+        setForm((prev) => ({ ...prev, service: '' }))
     }, [requestedService, serviceOptions])
 
     const [touched, setTouched] = useState({})
@@ -288,8 +292,8 @@ function BookRepair () {
                                                 onBlur={() => markTouched('service')}
                                                 className='cr-input'
                                             >
-                                                {serviceOptions.map((title) => (
-                                                    <option key={title} value={title}>{title}</option>
+                                                {serviceOptions.map((service) => (
+                                                    <option key={service.id || service.title} value={service.title}>{service.title}</option>
                                                 ))}
                                             </select>
                                             {touched.service && errors.service && (

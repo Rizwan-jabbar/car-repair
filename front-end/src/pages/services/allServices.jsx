@@ -22,7 +22,7 @@ function AllServices () {
 		const list = Array.isArray(items) ? items : []
 		return list
 			.map((item) => item?.service ?? item)
-			.filter((service) => service && typeof service === 'object')
+			.filter((service) => service && typeof service === 'object' && service.isAvailable !== false)
 	}, [items])
 
 	return (
