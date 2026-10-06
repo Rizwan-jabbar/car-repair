@@ -44,7 +44,8 @@ router.get('/currentUser', authMiddleWare, userController.getCurrentUser);
 router.post('/bookings', authMiddleWare, roleAuthMiddleWare(['user']), bookingController.createBooking);
 router.get('/bookings', authMiddleWare, roleAuthMiddleWare(['user']), bookingController.getUserBooking);
 router.get('/allBookings', authMiddleWare, roleAuthMiddleWare(['admin']), bookingController.getAllBookings);
-router.patch('/bookings/:bookingId/status', authMiddleWare, roleAuthMiddleWare(['admin', 'user']), bookingController.updateBookingStatus);
+router.patch('/bookings/:bookingId/status', authMiddleWare, roleAuthMiddleWare(['admin']), bookingController.updateBookingStatus);
+router.patch('/bookings/:bookingId/cancel', authMiddleWare, roleAuthMiddleWare(['user']), bookingController.cancelBooking);
 router.patch('/bookings/:bookingId/arrival', authMiddleWare, roleAuthMiddleWare(['admin']), bookingController.updateBookingArrival);
 
 

@@ -160,6 +160,31 @@ const updateBookingStatus  = async (req , res) => {
 }
 
 
+const cancelBooking = async (req, res) => {
+    try {
+        const userId = req.user?.userId;
+        const { bookingId } = req.params;
+
+        if (!userId) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+        const booking = await Booking.findOne({ _id: bookingId, user: userId })
+            || await EmergencyBooking.findOne({ _id: bookingId, user: userId });
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        booking.status = 'Cancelled';
+        await booking.save();
+        return res.status(200).json({ message: 'Booking cancelled', booking });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || 'Internal server error' });
+    }
+};
+
+
 
 const updateBookingArrival = async (req, res) => {
     try {
@@ -201,6 +226,7 @@ const bookingController = {
     getUserBooking,
     getAllBookings,
     updateBookingStatus,
+    cancelBooking,
     updateBookingArrival,
 };
 export default bookingController;
