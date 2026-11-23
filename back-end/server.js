@@ -22,7 +22,12 @@ app.use('/uploads', express.static(uploadsPath))
 // Auth/user routes (frontend expects /api/auth/* via Vite proxy)
 app.use(`${API_BASE_PATH}/auth`, router)
 
-
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Car Repair Backend Running Successfully"
+  });
+});
 
 
 const startServer = async () => {
