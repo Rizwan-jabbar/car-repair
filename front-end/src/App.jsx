@@ -55,16 +55,16 @@ function ScrollToTop () {
 }
 
 function AdminRouteGuard ({ children, user, isAuthed, hasToken, loading }) {
+    if (hasToken && (loading || !user)) {
+        return null
+    }
+
     if (!user) {
         return <Navigate to='/login' replace />
     }
 
     if (user.role !== 'admin') {
         return <Navigate to='/' replace />
-    }
-
-    if (hasToken && loading) {
-        return null
     }
 
     if (!isAuthed) {

@@ -6,7 +6,9 @@ import { fileURLToPath } from 'url'
 import connectDB from './db/db.js'
 import router from './routes/routes.js'
 const app = express()
-dotenv.config()
+dotenv.config({
+  path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.env')
+})
 app.set('trust proxy', 1)
 
 const PORT = process.env.PORT || 3000

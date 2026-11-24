@@ -24,6 +24,7 @@ export const loginUser = createAsyncThunk(
         try {   
             const response = await axios.post(`${API_BASE_URL}/login`, credentials);
             localStorage.setItem('token', String(response.data.token || '').trim());
+            localStorage.setItem('authUser', JSON.stringify(response.data.user || null));
             return response.data;
         }
         catch (error) {
@@ -49,6 +50,11 @@ export const fetchCurrentUser = createAsyncThunk(
             return response.data.user;
         }
         catch (error) { 
+            const status = error?.response?.status;
+            if (status === 401 || status === 403) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('authUser');
+            }
             return rejectWithValue(error.response?.data || 'Failed to fetch user');
         }
     }

@@ -4,7 +4,15 @@ import { registerUser , loginUser , fetchCurrentUser} from "../../thunks/userThu
 
 
 const initialState = {
-    user: null,
+    user: (() => {
+        try {
+            const savedUser = localStorage.getItem('authUser');
+            return savedUser ? JSON.parse(savedUser) : null;
+        } catch {
+            localStorage.removeItem('authUser');
+            return null;
+        }
+    })(),
     loading: false,
     error: null,
 };
@@ -18,6 +26,7 @@ const userSlice = createSlice({
             state.user = null;
             state.error = null;
             localStorage.removeItem('token');
+            localStorage.removeItem('authUser');
         }
     },
     extraReducers: (builder) => {
@@ -41,6 +50,7 @@ const userSlice = createSlice({
         }).addCase(loginUser.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload.user;
+            localStorage.setItem('authUser', JSON.stringify(action.payload.user || null));
         }).addCase(loginUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
@@ -52,9 +62,15 @@ const userSlice = createSlice({
         }).addCase(fetchCurrentUser.fulfilled, (state, action) => {
             state.loading = false;
             state.user = action.payload;
+            localStorage.setItem('authUser', JSON.stringify(action.payload || null));
         }).addCase(fetchCurrentUser.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
+            if (typeof action.payload === 'object' && ['invalid token', 'access denied'].some((message) => String(action.payload?.message || '').toLowerCase().includes(message))) {
+                state.user = null;
+                localStorage.removeItem('token');
+                localStorage.removeItem('authUser');
+            }
         })
     }
 });
