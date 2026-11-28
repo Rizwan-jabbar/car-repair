@@ -161,8 +161,9 @@ function UpdateBanner () {
     return (
         <section>
             {successModal.open && (
-                <div className='fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4'>
-                    <div className='w-full max-w-md rounded-2xl border border-emerald-200 bg-white p-5 shadow-xl'>
+                <div className='fixed inset-0 z-[100] overflow-y-auto bg-black/40 p-3 sm:p-4'>
+                    <div className='flex min-h-full items-center justify-center py-2'>
+                    <div className='max-h-[calc(100dvh-3rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-emerald-200 bg-white p-4 shadow-xl sm:p-5'>
                         <div className='flex items-start gap-3'>
                             <div className='rounded-full bg-emerald-100 p-2'>
                                 <FiCheckCircle className='h-5 w-5 text-emerald-600' />
@@ -170,6 +171,7 @@ function UpdateBanner () {
                             <div>
                                 <h2 className='text-lg font-extrabold text-gray-900'>Success</h2>
                                 <p className='mt-1 text-sm font-medium text-gray-700'>{successModal.message}</p>
+                            </div>
                             </div>
                         </div>
 

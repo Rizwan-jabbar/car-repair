@@ -238,20 +238,21 @@ function ViewReviews () {
             <AnimatePresence>
                 {selectedReview && (
                     <motion.div
-                        className='fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-4'
+                        className='fixed inset-0 z-[80] overflow-y-auto bg-black/50 p-3 sm:p-4'
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSelectedReview(null)}
                     >
-                        <motion.div
-                            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-                            transition={{ duration: 0.2, ease: 'easeOut' }}
-                            onClick={(e) => e.stopPropagation()}
-                            className='w-full max-w-2xl rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 p-5 shadow-2xl ring-1 ring-black/5 sm:p-6'
-                        >
+                        <div className='flex min-h-full items-center justify-center py-2'>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 20, scale: 0.98 }}
+                                transition={{ duration: 0.2, ease: 'easeOut' }}
+                                onClick={(e) => e.stopPropagation()}
+                                className='max-h-[calc(100dvh-3rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 p-4 shadow-2xl ring-1 ring-black/5 sm:p-6'
+                            >
                             <div className='flex items-start justify-between gap-3'>
                                 <div>
                                     <p className='text-xs font-semibold uppercase tracking-wide text-red-600'>Review Details</p>
@@ -294,7 +295,8 @@ function ViewReviews () {
                                 <p className='text-xs font-semibold uppercase tracking-wide text-gray-500'>Review Message</p>
                                 <p className='mt-2 text-sm leading-6 text-gray-700'>{selectedReview?.body || '-'}</p>
                             </div>
-                        </motion.div>
+                            </motion.div>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>

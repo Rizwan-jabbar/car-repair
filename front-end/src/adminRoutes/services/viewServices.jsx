@@ -351,20 +351,21 @@ function ViewServices () {
             <AnimatePresence>
                 {selectedService && (
                     <motion.div
-                        className='fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-4'
+                        className='fixed inset-0 z-[80] overflow-y-auto bg-black/50 p-3 sm:p-4'
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSelectedService(null)}
                     >
-                        <motion.div
-                            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-                            transition={{ duration: 0.2, ease: 'easeOut' }}
-                            onClick={(e) => e.stopPropagation()}
-                            className='w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl sm:p-6'
-                        >
+                        <div className='flex min-h-full items-center justify-center py-2'>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 20, scale: 0.98 }}
+                                transition={{ duration: 0.2, ease: 'easeOut' }}
+                                onClick={(e) => e.stopPropagation()}
+                                className='max-h-[calc(100dvh-3rem)] w-full max-w-2xl overflow-y-auto rounded-2xl border border-gray-200 bg-white p-4 shadow-2xl sm:p-6'
+                            >
                             <div className='flex items-start justify-between gap-3'>
                                 <div>
                                     <p className='text-xs font-semibold uppercase tracking-wide text-red-600'>Service Details</p>
@@ -400,7 +401,8 @@ function ViewServices () {
                                 <p className='text-xs font-semibold uppercase tracking-wide text-gray-500'>Description</p>
                                 <p className='mt-2 text-sm leading-6 text-gray-700'>{selectedService?.description || '-'}</p>
                             </div>
-                        </motion.div>
+                            </motion.div>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -408,116 +410,123 @@ function ViewServices () {
             <AnimatePresence>
                 {editingService && (
                     <motion.div
-                        className='fixed inset-0 z-[90] flex items-center justify-center bg-black/50 p-4'
+                        className='fixed inset-0 z-[90] overflow-y-auto bg-black/50 p-3 sm:p-4'
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={closeEditModal}
                     >
-                        <motion.div
-                            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-                            transition={{ duration: 0.2, ease: 'easeOut' }}
-                            onClick={(e) => e.stopPropagation()}
-                            className='w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-5 shadow-2xl sm:p-6'
-                        >
-                            <div className='flex items-start justify-between gap-3'>
-                                <div>
-                                    <p className='text-xs font-semibold uppercase tracking-wide text-red-600'>Edit Service</p>
-                                    <h3 className='mt-1 text-xl font-extrabold text-gray-900'>Update service details</h3>
-                                </div>
-                                <button
-                                    type='button'
-                                    onClick={closeEditModal}
-                                    className='inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50'
-                                >
-                                    <FiX className='h-4 w-4' />
-                                </button>
-                            </div>
-
-                            <form className='mt-4 space-y-4' onSubmit={submitEditForm}>
-                                <label className='block'>
-                                    <span className='text-sm font-semibold text-gray-900'>Title</span>
-                                    <input
-                                        type='text'
-                                        value={editForm.title}
-                                        onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))}
-                                        className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
-                                    />
-                                </label>
-
-                                <label className='block'>
-                                    <span className='text-sm font-semibold text-gray-900'>Description</span>
-                                    <textarea
-                                        rows={4}
-                                        value={editForm.description}
-                                        onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
-                                        className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
-                                    />
-                                </label>
-
-                                <label className='flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2'>
-                                    <input
-                                        type='checkbox'
-                                        checked={editForm.isAvailable}
-                                        onChange={(e) => setEditForm((prev) => ({ ...prev, isAvailable: e.target.checked }))}
-                                        className='h-4 w-4 accent-red-600'
-                                    />
-                                    <span className='text-sm font-semibold text-gray-900'>Service is available</span>
-                                </label>
-
-                                <label className='block'>
-                                    <span className='text-sm font-semibold text-gray-900'>Service Image</span>
-                                    <input
-                                        type='file'
-                                        accept='image/jpeg,image/png,image/gif,image/webp'
-                                        onChange={(e) => setEditForm((prev) => ({ ...prev, image: e.target.files?.[0] || null }))}
-                                        className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition file:mr-3 file:rounded-md file:border-0 file:bg-red-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-red-600 focus:border-red-300 focus:ring-2 focus:ring-red-100'
-                                    />
-                                    <p className='mt-1 text-xs text-gray-500'>Leave empty to keep the current image.</p>
-                                </label>
-
-                                <div className='grid gap-4 sm:grid-cols-2'>
-                                    <label className='block'>
-                                        <span className='text-sm font-semibold text-gray-900'>Common Symptoms</span>
-                                        <textarea
-                                            rows={3}
-                                            value={editForm.commonSymptoms}
-                                            onChange={(e) => setEditForm((prev) => ({ ...prev, commonSymptoms: e.target.value }))}
-                                            className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
-                                        />
-                                    </label>
-
-                                    <label className='block'>
-                                        <span className='text-sm font-semibold text-gray-900'>Inspection Points</span>
-                                        <textarea
-                                            rows={3}
-                                            value={editForm.inspectionPoints}
-                                            onChange={(e) => setEditForm((prev) => ({ ...prev, inspectionPoints: e.target.value }))}
-                                            className='mt-1 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 outline-none transition focus:border-red-300 focus:ring-2 focus:ring-red-100'
-                                        />
-                                    </label>
-                                </div>
-
-
-                                <div className='flex items-center justify-end gap-2 pt-2'>
+                        <div className='flex min-h-full items-center justify-center py-2'>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 20, scale: 0.98 }}
+                                transition={{ duration: 0.2, ease: 'easeOut' }}
+                                onClick={(e) => e.stopPropagation()}
+                                className='flex max-h-[calc(100dvh-3rem)] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl'
+                            >
+                                <div className='flex shrink-0 items-start justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-red-50/80 to-white px-5 py-4 sm:px-6'>
+                                    <div>
+                                        <p className='text-xs font-bold uppercase tracking-wider text-red-600'>Edit Service</p>
+                                        <h3 className='mt-1 text-lg font-extrabold text-gray-900 sm:text-xl'>Update service details</h3>
+                                        <p className='mt-1 text-sm text-gray-500'>Edit the information customers see about this service.</p>
+                                    </div>
                                     <button
                                         type='button'
                                         onClick={closeEditModal}
-                                        className='rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50'
+                                        aria-label='Close edit service'
+                                        className='inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600'
                                     >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type='submit'
-                                        className='rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700'
-                                    >
-                                        Update Service
+                                        <FiX className='h-4 w-4' />
                                     </button>
                                 </div>
-                            </form>
-                        </motion.div>
+
+                                <form className='flex min-h-0 flex-1 flex-col' onSubmit={submitEditForm}>
+                                    <div className='min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4 sm:px-6 sm:py-5'>
+                                        <label className='block'>
+                                            <span className='text-xs font-bold uppercase tracking-wide text-gray-600'>Title</span>
+                                            <input
+                                                type='text'
+                                                value={editForm.title}
+                                                onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))}
+                                                className='mt-1.5 w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                                            />
+                                        </label>
+
+                                        <label className='block'>
+                                            <span className='text-xs font-bold uppercase tracking-wide text-gray-600'>Description</span>
+                                            <textarea
+                                                rows={3}
+                                                value={editForm.description}
+                                                onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
+                                                className='mt-1.5 w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm leading-6 text-gray-800 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                                            />
+                                        </label>
+
+                                        <label className='flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 transition hover:border-red-200 hover:bg-red-50/50'>
+                                            <input
+                                                type='checkbox'
+                                                checked={editForm.isAvailable}
+                                                onChange={(e) => setEditForm((prev) => ({ ...prev, isAvailable: e.target.checked }))}
+                                                className='h-4 w-4 accent-red-600'
+                                            />
+                                            <span className='text-sm font-semibold text-gray-800'>Service is available</span>
+                                        </label>
+
+                                        <label className='block'>
+                                            <span className='text-xs font-bold uppercase tracking-wide text-gray-600'>Service Image</span>
+                                            <input
+                                                type='file'
+                                                accept='image/jpeg,image/png,image/gif,image/webp'
+                                                onChange={(e) => setEditForm((prev) => ({ ...prev, image: e.target.files?.[0] || null }))}
+                                                className='mt-1.5 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition file:mr-3 file:rounded-md file:border-0 file:bg-red-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-red-600 hover:file:bg-red-100 focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                                            />
+                                            <p className='mt-1.5 text-xs text-gray-500'>Leave empty to keep the current image.</p>
+                                        </label>
+
+                                        <div className='grid gap-4 sm:grid-cols-2'>
+                                            <label className='block'>
+                                                <span className='text-xs font-bold uppercase tracking-wide text-gray-600'>Common Symptoms</span>
+                                                <textarea
+                                                    rows={5}
+                                                    value={editForm.commonSymptoms}
+                                                    onChange={(e) => setEditForm((prev) => ({ ...prev, commonSymptoms: e.target.value }))}
+                                                    className='mt-1.5 min-h-36 w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm leading-6 text-gray-800 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                                                />
+                                                <p className='mt-1 text-xs text-gray-500'>Enter one item per line or separate items with commas.</p>
+                                            </label>
+
+                                            <label className='block'>
+                                                <span className='text-xs font-bold uppercase tracking-wide text-gray-600'>Inspection Points</span>
+                                                <textarea
+                                                    rows={5}
+                                                    value={editForm.inspectionPoints}
+                                                    onChange={(e) => setEditForm((prev) => ({ ...prev, inspectionPoints: e.target.value }))}
+                                                    className='mt-1.5 min-h-36 w-full resize-none rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm leading-6 text-gray-800 shadow-sm outline-none transition focus:border-red-300 focus:ring-4 focus:ring-red-100'
+                                                />
+                                                <p className='mt-1 text-xs text-gray-500'>Enter one item per line or separate items with commas.</p>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div className='flex shrink-0 flex-col-reverse gap-2 border-t border-gray-100 bg-gray-50/80 px-5 py-4 sm:flex-row sm:justify-end sm:px-6'>
+                                        <button
+                                            type='button'
+                                            onClick={closeEditModal}
+                                            className='rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300'
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type='submit'
+                                            className='rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'
+                                        >
+                                            Update Service
+                                        </button>
+                                    </div>
+                                </form>
+                            </motion.div>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
